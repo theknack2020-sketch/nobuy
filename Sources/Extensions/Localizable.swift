@@ -62,6 +62,21 @@ enum L10n {
     static let version = String(localized: "version", defaultValue: "Versiyon")
     static let rateApp = String(localized: "rate_app", defaultValue: "Uygulamayı Değerlendir")
 
+    // MARK: - Paywall
+    static let paywallTitle = String(localized: "paywall_title", defaultValue: "NoBuy Pro")
+    static let paywallSubtitle = String(localized: "paywall_subtitle", defaultValue: "Tüm özelliklerin kilidini aç")
+    static let paywallFeature1 = String(localized: "paywall_feature1", defaultValue: "Detaylı istatistikler ve grafikler")
+    static let paywallFeature2 = String(localized: "paywall_feature2", defaultValue: "Streak kartını paylaş")
+    static let paywallFeature3 = String(localized: "paywall_feature3", defaultValue: "Sınırsız zorunlu kategori")
+    static let paywallFeature4 = String(localized: "paywall_feature4", defaultValue: "Geliştiriciyi destekle ❤️")
+    static func paywallUnlock(_ price: String) -> String {
+        String(format: String(localized: "paywall_unlock_format", defaultValue: "Pro'ya Geç — %@"), price)
+    }
+    static let paywallRestore = String(localized: "paywall_restore", defaultValue: "Satın Alımı Geri Yükle")
+    static let proBadge = String(localized: "pro_badge", defaultValue: "PRO")
+    static let upgradeButton = String(localized: "upgrade_button", defaultValue: "Pro'ya Geç")
+    static let categoryLimitReached = String(localized: "category_limit_reached", defaultValue: "Ücretsiz sürümde en fazla 3 kategori ekleyebilirsin.")
+
     // MARK: - Onboarding
     static let onboardingTitle1 = String(localized: "onboarding_title1", defaultValue: "Harcamasız Günlerini Takip Et")
     static let onboardingDesc1 = String(localized: "onboarding_desc1", defaultValue: "Her gün tek bir butonla kayıt yap. Basit, hızlı, etkili.")

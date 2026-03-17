@@ -3,8 +3,11 @@ import SwiftData
 
 struct HomeScreen: View {
     @Environment(\.modelContext) private var modelContext
+    @Environment(StoreService.self) private var store
     @Query(sort: \DayRecord.date, order: .reverse) private var records: [DayRecord]
     @State private var viewModel = HomeViewModel()
+    @State private var showPaywall = false
+    @State private var showShareSheet = false
 
     var body: some View {
         NavigationStack {
@@ -25,6 +28,22 @@ struct HomeScreen: View {
             }
             .navigationTitle(L10n.appTitle)
             .navigationBarTitleDisplayMode(.large)
+            .toolbar {
+                ToolbarItem(placement: .topBarTrailing) {
+                    if viewModel.streakInfo.currentStreak > 0 {
+                        Button {
+                            if store.isPro {
+                                shareStreakCard()
+                            } else {
+                                showPaywall = true
+                            }
+                        } label: {
+                            Image(systemName: "square.and.arrow.up")
+                                .foregroundStyle(.noBuyGreen)
+                        }
+                    }
+                }
+            }
         }
         .onAppear {
             viewModel.loadToday(records: records)
@@ -36,6 +55,9 @@ struct HomeScreen: View {
             SpendOptionsSheet(viewModel: viewModel, records: records)
                 .presentationDetents([.height(280)])
                 .presentationDragIndicator(.visible)
+        }
+        .sheet(isPresented: $showPaywall) {
+            PaywallView(store: store)
         }
     }
 
@@ -72,8 +94,6 @@ struct HomeScreen: View {
             Button {
                 if viewModel.isTodayRecorded && viewModel.isTodayNoBuy {
                     viewModel.showSpendOptions = true
-                } else if viewModel.isTodayRecorded && !viewModel.isTodayNoBuy {
-                    viewModel.markNoBuy(context: modelContext, allRecords: records)
                 } else {
                     viewModel.markNoBuy(context: modelContext, allRecords: records)
                 }
@@ -172,9 +192,61 @@ struct HomeScreen: View {
                 .fill(Color.surfaceSecondary)
         )
     }
+
+    // MARK: - Share
+
+    @MainActor
+    private func shareStreakCard() {
+        let renderer = ImageRenderer(content: StreakShareCard(streakInfo: viewModel.streakInfo))
+        renderer.scale = 3.0
+        guard let image = renderer.uiImage else { return }
+        let activityVC = UIActivityViewController(activityItems: [image], applicationActivities: nil)
+        if let scene = UIApplication.shared.connectedScenes.first(where: { $0.activationState == .foregroundActive }) as? UIWindowScene,
+           let root = scene.windows.first?.rootViewController {
+            root.present(activityVC, animated: true)
+        }
+    }
+}
+
+// MARK: - Streak Share Card (rendered to image)
+
+struct StreakShareCard: View {
+    let streakInfo: StreakInfo
+
+    var body: some View {
+        VStack(spacing: 16) {
+            Text("🔥")
+                .font(.system(size: 48))
+
+            Text("\(streakInfo.currentStreak)")
+                .font(.system(size: 72, weight: .black, design: .rounded))
+                .foregroundStyle(Color.noBuyGreen)
+
+            Text("GÜN STREAK")
+                .font(.headline)
+                .tracking(3)
+                .foregroundStyle(.secondary)
+
+            Divider()
+                .padding(.horizontal, 40)
+
+            Text("NoBuy")
+                .font(.caption)
+                .fontWeight(.medium)
+                .foregroundStyle(.tertiary)
+        }
+        .padding(40)
+        .frame(width: 320, height: 400)
+        .background(
+            RoundedRectangle(cornerRadius: 24)
+                .fill(.white)
+                .shadow(color: .black.opacity(0.1), radius: 20)
+        )
+    }
 }
 
 #Preview {
     HomeScreen()
+        .environment(StoreService.shared)
         .modelContainer(for: [DayRecord.self, MandatoryCategory.self], inMemory: true)
 }

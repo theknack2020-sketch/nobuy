@@ -10,15 +10,18 @@
 		0B629BEBE8BD66EB530F624A /* HapticManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27CA5830D6F66BF20FD36B83 /* HapticManager.swift */; };
 		1276058968C16BF7E3C0DE3D /* CalendarScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADA66F580FD7232B2371424D /* CalendarScreen.swift */; };
 		147C00B8DE39D19FF8064A7F /* Color+Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7E8173966314EF253C97AEC /* Color+Theme.swift */; };
+		1C7F8AA81C79D547A231C633 /* PaywallView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9627BC33C7F8321DFB2AD363 /* PaywallView.swift */; };
 		23F442FB556636BB835A3013 /* StreakCalculator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 769691C3CBD3B73D2686D364 /* StreakCalculator.swift */; };
 		26F83DDEA9ED92490656DC9F /* SummaryPill.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A4C67FA13CD673C09FFBDAC /* SummaryPill.swift */; };
 		3108B1519528891825EEB552 /* CalendarViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 559845A9D47D3716C6CBA7B1 /* CalendarViewModel.swift */; };
 		386460431127CDA2DCC10A35 /* NotificationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30D0AC1EDE4126A69F717A77 /* NotificationManager.swift */; };
 		39434D0C22D88C7AF20E2EC7 /* MainTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 124F497D2FA87BA978DDAC60 /* MainTabView.swift */; };
 		3B773E15C1BC2CE83200E36A /* OnboardingScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9FBF1251FCE54D6654B340B2 /* OnboardingScreen.swift */; };
+		3E34C760160F85D805C1381C /* StoreService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 073618F2DA3B33F2080F6CA9 /* StoreService.swift */; };
 		3F42E9103F72272E0B3A260D /* HomeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A5DAE80792AAF08D62E01A0 /* HomeViewModel.swift */; };
 		4796895001EA631D573BD73F /* StreakCalculatorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 247C73A3FC28963EA0B4EAFF /* StreakCalculatorTests.swift */; };
 		50741BC3B6A4B42550FFEF3D /* StreakInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = F26B60366567349951C736E1 /* StreakInfo.swift */; };
+		5198BC3496A190C0E8A129F0 /* NoBuy.storekit in Resources */ = {isa = PBXBuildFile; fileRef = 6EBF363C19DCEE68B0536450 /* NoBuy.storekit */; };
 		8422996FD48EC227A919D8F7 /* NoBuyApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00CF61C05D4E39A885ECD694 /* NoBuyApp.swift */; };
 		8780C6C19557D4E8E76F0189 /* SpendOptionsSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDA0FD59113F562A13CDDBE6 /* SpendOptionsSheet.swift */; };
 		8E2B50E19C7503D11D0864ED /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 50639D6968D64D0929AB5913 /* Assets.xcassets */; };
@@ -57,6 +60,7 @@
 		00CF61C05D4E39A885ECD694 /* NoBuyApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoBuyApp.swift; sourceTree = "<group>"; };
 		017004D0348DAE5AE0254D2D /* DayEditSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DayEditSheet.swift; sourceTree = "<group>"; };
 		025E0CC393B6F7B5409DA0F1 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		073618F2DA3B33F2080F6CA9 /* StoreService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreService.swift; sourceTree = "<group>"; };
 		0A4C67FA13CD673C09FFBDAC /* SummaryPill.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SummaryPill.swift; sourceTree = "<group>"; };
 		124F497D2FA87BA978DDAC60 /* MainTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainTabView.swift; sourceTree = "<group>"; };
 		247C73A3FC28963EA0B4EAFF /* StreakCalculatorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StreakCalculatorTests.swift; sourceTree = "<group>"; };
@@ -68,11 +72,13 @@
 		50639D6968D64D0929AB5913 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		55601A529B3E75E3419C05A4 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		559845A9D47D3716C6CBA7B1 /* CalendarViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarViewModel.swift; sourceTree = "<group>"; };
+		6EBF363C19DCEE68B0536450 /* NoBuy.storekit */ = {isa = PBXFileReference; path = NoBuy.storekit; sourceTree = "<group>"; };
 		769691C3CBD3B73D2686D364 /* StreakCalculator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StreakCalculator.swift; sourceTree = "<group>"; };
 		806C944FDAC4C58F58E6792A /* SettingsScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsScreen.swift; sourceTree = "<group>"; };
 		80E515F34D14802B57156DB7 /* MandatoryCategory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MandatoryCategory.swift; sourceTree = "<group>"; };
 		8231360A22F6DC1ECF17FEE2 /* Localizable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Localizable.swift; sourceTree = "<group>"; };
 		935996357F6A20E03655293D /* DayRecord.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DayRecord.swift; sourceTree = "<group>"; };
+		9627BC33C7F8321DFB2AD363 /* PaywallView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaywallView.swift; sourceTree = "<group>"; };
 		9FBF1251FCE54D6654B340B2 /* OnboardingScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingScreen.swift; sourceTree = "<group>"; };
 		A47A034E36700A34D9F40F6E /* app-icon-1024.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "app-icon-1024.png"; sourceTree = "<group>"; };
 		AC9FDA46ED6299CE2D10F04F /* NoBuyUITests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = NoBuyUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -105,6 +111,7 @@
 				29650800E154346D6A78123A /* HomeScreen.swift */,
 				124F497D2FA87BA978DDAC60 /* MainTabView.swift */,
 				9FBF1251FCE54D6654B340B2 /* OnboardingScreen.swift */,
+				9627BC33C7F8321DFB2AD363 /* PaywallView.swift */,
 				806C944FDAC4C58F58E6792A /* SettingsScreen.swift */,
 			);
 			path = Screens;
@@ -181,6 +188,7 @@
 			children = (
 				025E0CC393B6F7B5409DA0F1 /* Info.plist */,
 				DA3C25D8A531D177BE88825A /* NoBuy.entitlements */,
+				6EBF363C19DCEE68B0536450 /* NoBuy.storekit */,
 				55601A529B3E75E3419C05A4 /* PrivacyInfo.xcprivacy */,
 				5FBA6DD094158B012FC108D6 /* App */,
 				8440796E71B8986B12758F8C /* Extensions */,
@@ -216,6 +224,7 @@
 			children = (
 				27CA5830D6F66BF20FD36B83 /* HapticManager.swift */,
 				30D0AC1EDE4126A69F717A77 /* NotificationManager.swift */,
+				073618F2DA3B33F2080F6CA9 /* StoreService.swift */,
 				769691C3CBD3B73D2686D364 /* StreakCalculator.swift */,
 			);
 			path = Services;
@@ -338,6 +347,7 @@
 			files = (
 				8E2B50E19C7503D11D0864ED /* Assets.xcassets in Resources */,
 				E6729D3DDA9D1E4D1E7CC9A4 /* Localizable.xcstrings in Resources */,
+				5198BC3496A190C0E8A129F0 /* NoBuy.storekit in Resources */,
 				8E9FD91C18F40F723DEE3CA9 /* PrivacyInfo.xcprivacy in Resources */,
 				D640AB2E0D32478CE0084FBC /* app-icon-1024.png in Resources */,
 			);
@@ -374,8 +384,10 @@
 				8422996FD48EC227A919D8F7 /* NoBuyApp.swift in Sources */,
 				386460431127CDA2DCC10A35 /* NotificationManager.swift in Sources */,
 				3B773E15C1BC2CE83200E36A /* OnboardingScreen.swift in Sources */,
+				1C7F8AA81C79D547A231C633 /* PaywallView.swift in Sources */,
 				A010EE7BE61CA7366D711327 /* SettingsScreen.swift in Sources */,
 				8780C6C19557D4E8E76F0189 /* SpendOptionsSheet.swift in Sources */,
+				3E34C760160F85D805C1381C /* StoreService.swift in Sources */,
 				23F442FB556636BB835A3013 /* StreakCalculator.swift in Sources */,
 				50741BC3B6A4B42550FFEF3D /* StreakInfo.swift in Sources */,
 				26F83DDEA9ED92490656DC9F /* SummaryPill.swift in Sources */,

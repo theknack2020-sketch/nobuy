@@ -4,9 +4,12 @@ import StoreKit
 
 struct SettingsScreen: View {
     @Environment(\.modelContext) private var modelContext
+    @Environment(StoreService.self) private var store
     @Query private var mandatoryCategories: [MandatoryCategory]
     @State private var showAddCategory = false
     @State private var showDeleteConfirmation = false
+    @State private var showPaywall = false
+    @State private var showCategoryLimit = false
     @State private var newCategoryName = ""
     @AppStorage("hasSeededDefaults") private var hasSeededDefaults = false
     @AppStorage("launchCount") private var launchCount = 0
@@ -14,6 +17,37 @@ struct SettingsScreen: View {
     var body: some View {
         NavigationStack {
             List {
+                // MARK: - Pro Upgrade
+                if !store.isPro {
+                    Section {
+                        Button {
+                            showPaywall = true
+                        } label: {
+                            HStack(spacing: 14) {
+                                ZStack {
+                                    Circle()
+                                        .fill(Color.noBuyGreen.opacity(0.15))
+                                        .frame(width: 40, height: 40)
+                                    Image(systemName: "crown.fill")
+                                        .foregroundStyle(.noBuyGreen)
+                                }
+                                VStack(alignment: .leading, spacing: 2) {
+                                    Text(L10n.upgradeButton)
+                                        .fontWeight(.semibold)
+                                        .foregroundStyle(.textPrimary)
+                                    Text(L10n.paywallSubtitle)
+                                        .font(.caption)
+                                        .foregroundStyle(.textSecondary)
+                                }
+                                Spacer()
+                                Image(systemName: "chevron.right")
+                                    .font(.caption)
+                                    .foregroundStyle(.textTertiary)
+                            }
+                        }
+                    }
+                }
+
                 // MARK: - Mandatory Categories
                 Section {
                     ForEach(mandatoryCategories) { category in
@@ -27,12 +61,22 @@ struct SettingsScreen: View {
                     .onDelete(perform: deleteCategories)
 
                     Button {
-                        showAddCategory = true
+                        if store.canAddCategory(currentCount: mandatoryCategories.count) {
+                            showAddCategory = true
+                        } else {
+                            showCategoryLimit = true
+                        }
                     } label: {
                         HStack {
                             Image(systemName: "plus.circle.fill")
                                 .foregroundStyle(.noBuyGreen)
                             Text(L10n.addCategory)
+                            if !store.isPro {
+                                Spacer()
+                                Text("\(mandatoryCategories.count)/\(StoreService.freeCategoryLimit)")
+                                    .font(.caption)
+                                    .foregroundStyle(.textTertiary)
+                            }
                         }
                     }
                 } header: {
@@ -109,6 +153,12 @@ struct SettingsScreen: View {
                     newCategoryName = ""
                 }
             }
+            .alert(L10n.categoryLimitReached, isPresented: $showCategoryLimit) {
+                Button(L10n.upgradeButton) {
+                    showPaywall = true
+                }
+                Button(L10n.cancel, role: .cancel) {}
+            }
             .alert("Tüm verileri silmek istediğinden emin misin?", isPresented: $showDeleteConfirmation) {
                 Button("Sil", role: .destructive) {
                     resetAllData()
@@ -116,6 +166,9 @@ struct SettingsScreen: View {
                 Button(L10n.cancel, role: .cancel) {}
             } message: {
                 Text("Bu işlem geri alınamaz. Tüm günlük kayıtlar ve streak bilgilerin silinecek.")
+            }
+            .sheet(isPresented: $showPaywall) {
+                PaywallView(store: store)
             }
             .onAppear {
                 seedDefaultsIfNeeded()
@@ -205,5 +258,6 @@ struct NotificationSettingsView: View {
 
 #Preview {
     SettingsScreen()
+        .environment(StoreService.shared)
         .modelContainer(for: [DayRecord.self, MandatoryCategory.self], inMemory: true)
 }

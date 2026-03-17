@@ -29,5 +29,6 @@ struct MainTabView: View {
 
 #Preview {
     MainTabView()
+        .environment(StoreService.shared)
         .modelContainer(for: [DayRecord.self, MandatoryCategory.self], inMemory: true)
 }

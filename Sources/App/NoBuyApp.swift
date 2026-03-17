@@ -4,6 +4,7 @@ import SwiftData
 @main
 struct NoBuyApp: App {
     @AppStorage("hasCompletedOnboarding") private var hasCompletedOnboarding = false
+    @State private var store = StoreService.shared
     let modelContainer: ModelContainer
 
     init() {
@@ -21,10 +22,20 @@ struct NoBuyApp: App {
 
     var body: some Scene {
         WindowGroup {
-            if hasCompletedOnboarding {
-                MainTabView()
-            } else {
-                OnboardingScreen()
+            Group {
+                if hasCompletedOnboarding {
+                    MainTabView()
+                } else {
+                    OnboardingScreen()
+                }
+            }
+            .environment(store)
+            .task {
+                await store.loadProducts()
+                await store.checkEntitlements()
+            }
+            .task {
+                await store.listenForTransactions()
             }
         }
         .modelContainer(modelContainer)
