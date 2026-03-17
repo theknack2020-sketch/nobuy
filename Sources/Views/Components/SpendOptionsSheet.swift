@@ -10,7 +10,7 @@ struct SpendOptionsSheet: View {
     var body: some View {
         NavigationStack {
             VStack(spacing: 20) {
-                Text("Ne tür harcama yaptın?")
+                Text(L10n.spendTypeQuestion)
                     .font(.headline)
                     .padding(.top, 8)
 
@@ -23,9 +23,9 @@ struct SpendOptionsSheet: View {
                         Image(systemName: "building.columns.fill")
                             .font(.title2)
                         VStack(alignment: .leading, spacing: 4) {
-                            Text("Sadece Zorunlu Harcama")
+                            Text(L10n.mandatorySpend)
                                 .fontWeight(.semibold)
-                            Text("Kira, fatura, ulaşım — streak bozulmaz")
+                            Text(L10n.mandatoryDesc)
                                 .font(.caption)
                                 .foregroundStyle(.textSecondary)
                         }
@@ -50,9 +50,9 @@ struct SpendOptionsSheet: View {
                         Image(systemName: "cart.fill")
                             .font(.title2)
                         VStack(alignment: .leading, spacing: 4) {
-                            Text("İsteğe Bağlı Harcama")
+                            Text(L10n.discretionarySpend)
                                 .fontWeight(.semibold)
-                            Text("Yeme-içme, alışveriş, eğlence")
+                            Text(L10n.discretionaryDesc)
                                 .font(.caption)
                                 .foregroundStyle(.textSecondary)
                         }
@@ -73,7 +73,7 @@ struct SpendOptionsSheet: View {
             .padding(.horizontal, 20)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
-                    Button("İptal") { dismiss() }
+                    Button(L10n.cancel) { dismiss() }
                 }
             }
         }

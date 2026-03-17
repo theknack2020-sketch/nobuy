@@ -14,25 +14,16 @@ struct HomeScreen: View {
 
                 VStack(spacing: 32) {
                     Spacer()
-
-                    // Streak badge
                     streakBadge
-
-                    // Main action button
                     mainButton
-
-                    // Today status
                     todayStatus
-
                     Spacer()
-
-                    // Monthly summary card
                     monthlySummaryCard
                 }
                 .padding(.horizontal, 24)
                 .padding(.bottom, 16)
             }
-            .navigationTitle("NoBuy")
+            .navigationTitle(L10n.appTitle)
             .navigationBarTitleDisplayMode(.large)
         }
         .onAppear {
@@ -58,7 +49,7 @@ struct HomeScreen: View {
                 .contentTransition(.numericText())
                 .animation(.spring(duration: 0.4), value: viewModel.streakInfo.currentStreak)
 
-            Text("gün streak")
+            Text(L10n.dayStreak)
                 .font(.subheadline)
                 .fontWeight(.medium)
                 .foregroundStyle(.textSecondary)
@@ -66,7 +57,7 @@ struct HomeScreen: View {
                 .tracking(2)
 
             if viewModel.streakInfo.longestStreak > 0 {
-                Text("En uzun: \(viewModel.streakInfo.longestStreak) gün")
+                Text(L10n.longestStreak(viewModel.streakInfo.longestStreak))
                     .font(.caption)
                     .foregroundStyle(.textTertiary)
             }
@@ -92,7 +83,7 @@ struct HomeScreen: View {
                         .font(.system(size: 56))
                         .symbolEffect(.bounce, value: viewModel.isTodayNoBuy)
 
-                    Text(viewModel.isTodayNoBuy ? "Harcama Yapmadım ✓" : "Bugün Harcama Yapmadım")
+                    Text(viewModel.isTodayNoBuy ? L10n.noBuyDone : L10n.noBuyButton)
                         .font(.title3)
                         .fontWeight(.bold)
                 }
@@ -111,7 +102,7 @@ struct HomeScreen: View {
                 Button {
                     viewModel.showSpendOptions = true
                 } label: {
-                    Text("Harcama yaptım")
+                    Text(L10n.spentButton)
                         .font(.subheadline)
                         .foregroundStyle(.spendRed)
                 }
@@ -136,7 +127,7 @@ struct HomeScreen: View {
             HStack {
                 Image(systemName: "chart.bar.fill")
                     .foregroundStyle(.noBuyGreen)
-                Text("Bu Ay")
+                Text(L10n.thisMonth)
                     .fontWeight(.semibold)
                 Spacer()
             }
@@ -146,7 +137,7 @@ struct HomeScreen: View {
                     .font(.system(size: 32, weight: .black, design: .rounded))
                     .foregroundStyle(.noBuyGreen)
 
-                Text("/ \(viewModel.streakInfo.totalDaysThisMonth) gün harcamasız")
+                Text(L10n.monthSummary(viewModel.streakInfo.noBuyDaysThisMonth, viewModel.streakInfo.totalDaysThisMonth))
                     .font(.callout)
                     .foregroundStyle(.textSecondary)
 
@@ -158,7 +149,6 @@ struct HomeScreen: View {
                     .foregroundStyle(.noBuyGreen)
             }
 
-            // Progress bar
             GeometryReader { geo in
                 ZStack(alignment: .leading) {
                     RoundedRectangle(cornerRadius: 4)

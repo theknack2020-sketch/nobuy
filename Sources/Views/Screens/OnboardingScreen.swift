@@ -5,9 +5,9 @@ struct OnboardingScreen: View {
     @State private var currentPage = 0
 
     private let pages: [(icon: String, title: String, description: String, color: Color)] = [
-        ("circle.fill", L10n.onboardingTitle1, L10n.onboardingDesc1, .noBuyGreen),
+        ("checkmark.circle.fill", L10n.onboardingTitle1, L10n.onboardingDesc1, .noBuyGreen),
         ("flame.fill", L10n.onboardingTitle2, L10n.onboardingDesc2, .orange),
-        ("calendar", L10n.onboardingTitle3, L10n.onboardingDesc3, .blue),
+        ("calendar.badge.checkmark", L10n.onboardingTitle3, L10n.onboardingDesc3, .noBuyGreen),
     ]
 
     var body: some View {

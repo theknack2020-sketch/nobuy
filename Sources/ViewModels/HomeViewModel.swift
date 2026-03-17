@@ -19,12 +19,12 @@ final class HomeViewModel {
 
     var todayStatusText: String {
         guard let record = todayRecord else {
-            return "Bugün henüz kayıt yok"
+            return L10n.noRecordYet
         }
         if record.isNoBuyDay {
-            return "Bugün harcama yapmadın! 💪"
+            return L10n.noBuyToday
         } else {
-            return "Bugün harcama yaptın"
+            return L10n.spentToday
         }
     }
 
