@@ -3,6 +3,7 @@ import SwiftData
 
 @main
 struct NoBuyApp: App {
+    @AppStorage("hasCompletedOnboarding") private var hasCompletedOnboarding = false
     let modelContainer: ModelContainer
 
     init() {
@@ -20,7 +21,11 @@ struct NoBuyApp: App {
 
     var body: some Scene {
         WindowGroup {
-            MainTabView()
+            if hasCompletedOnboarding {
+                MainTabView()
+            } else {
+                OnboardingScreen()
+            }
         }
         .modelContainer(modelContainer)
     }
