@@ -36,6 +36,7 @@
 		E6729D3DDA9D1E4D1E7CC9A4 /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = D8FC7CC9CFD47858873E5A58 /* Localizable.xcstrings */; };
 		E7B5A97AF1830923895B0DE4 /* MandatoryCategory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80E515F34D14802B57156DB7 /* MandatoryCategory.swift */; };
 		F42142672E380FD821C97526 /* Date+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = E47D84A71F84546C202C8559 /* Date+Extensions.swift */; };
+		F4FE8D155A8C11C21EADFB9C /* ScreenshotTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B98AAAB567B25324B95F3A8B /* ScreenshotTests.swift */; };
 		FF4A5BE4D0BE991DE56E5169 /* CalendarDayCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA4FEAB4A4DA15C878E24007 /* CalendarDayCell.swift */; };
 /* End PBXBuildFile section */
 
@@ -83,6 +84,7 @@
 		A47A034E36700A34D9F40F6E /* app-icon-1024.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "app-icon-1024.png"; sourceTree = "<group>"; };
 		AC9FDA46ED6299CE2D10F04F /* NoBuyUITests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = NoBuyUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		ADA66F580FD7232B2371424D /* CalendarScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarScreen.swift; sourceTree = "<group>"; };
+		B98AAAB567B25324B95F3A8B /* ScreenshotTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenshotTests.swift; sourceTree = "<group>"; };
 		CA4FEAB4A4DA15C878E24007 /* CalendarDayCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarDayCell.swift; sourceTree = "<group>"; };
 		CDA0FD59113F562A13CDDBE6 /* SpendOptionsSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpendOptionsSheet.swift; sourceTree = "<group>"; };
 		D8FC7CC9CFD47858873E5A58 /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = Localizable.xcstrings; sourceTree = "<group>"; };
@@ -171,6 +173,7 @@
 			isa = PBXGroup;
 			children = (
 				313EA2D986C732E287BA05A2 /* NoBuyUITests.swift */,
+				B98AAAB567B25324B95F3A8B /* ScreenshotTests.swift */,
 			);
 			path = UITests;
 			sourceTree = "<group>";
@@ -361,6 +364,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				E01BEB796CECC66DDFFEAEE3 /* NoBuyUITests.swift in Sources */,
+				F4FE8D155A8C11C21EADFB9C /* ScreenshotTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
