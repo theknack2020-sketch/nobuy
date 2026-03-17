@@ -10,6 +10,18 @@ platform :ios do
     )
   end
 
+  desc "Create app on App Store Connect"
+  lane :create_app do
+    create_app_online(
+      app_identifier: "com.ufukozdemir.nobuy",
+      app_name: "NoBuy",
+      language: "English",
+      sku: "com.ufukozdemir.nobuy",
+      team_id: "99H9NJ6Z6J",
+      itc_team_id: ENV["ITC_TEAM_ID"]
+    )
+  end
+
   desc "Upload metadata to App Store Connect"
   lane :upload_metadata do
     deliver(
@@ -21,6 +33,7 @@ platform :ios do
       edit_live: false,
       force: true,
       precheck_include_in_app_purchases: false,
+      app_review_information: {},
       submission_information: {
         add_id_info_uses_idfa: false
       }
@@ -32,7 +45,8 @@ platform :ios do
     build_app(
       scheme: "NoBuy",
       export_method: "app-store",
-      clean: true
+      clean: true,
+      xcargs: "-allowProvisioningUpdates"
     )
 
     upload_to_testflight(
