@@ -11,6 +11,7 @@ struct PaywallView: View {
     @State private var pulseGlow = false
     @State private var tableAppeared = false
     @State private var ctaAppeared = false
+    @State private var isLoadingProduct = true
     @State private var socialProofCount = 2847 // Simulated social proof
 
     // MARK: - Feature Row Model
@@ -364,45 +365,86 @@ struct PaywallView: View {
     private var ctaSection: some View {
         VStack(spacing: DS.Spacing.md) {
             // Large CTA button
-            Button {
-                Task { await store.purchase() }
-            } label: {
-                Group {
-                    if case .purchasing = store.purchaseState {
-                        ProgressView()
-                            .tint(.white)
-                    } else if let product = store.product {
+            if store.product != nil {
+                // Product loaded — show purchase button
+                Button {
+                    Task { await store.purchase() }
+                } label: {
+                    Group {
+                        if case .purchasing = store.purchaseState {
+                            ProgressView()
+                                .tint(.white)
+                        } else {
+                            HStack(spacing: DS.Spacing.sm) {
+                                Image(systemName: "crown.fill")
+                                    .font(.callout)
+                                Text(L10n.paywallUnlock(store.product!.displayPrice))
+                                    .font(.headline)
+                            }
+                        }
+                    }
+                    .foregroundStyle(.white)
+                    .frame(maxWidth: .infinity)
+                    .frame(height: 58)
+                    .background(
+                        RoundedRectangle(cornerRadius: DS.Radius.lg)
+                            .fill(
+                                LinearGradient(
+                                    colors: [Color.noBuyGreen, Color.noBuyGreen.opacity(0.8)],
+                                    startPoint: .leading,
+                                    endPoint: .trailing
+                                )
+                            )
+                            .shadow(color: .noBuyGreen.opacity(0.4), radius: 16, y: 6)
+                    )
+                }
+                .buttonStyle(ScaleButtonStyle())
+                .disabled(isPurchasing)
+                .accessibilityLabel("Unlock Pro for \(store.product!.displayPrice)")
+                .accessibilityHint("Double tap to purchase NoBuy Pro")
+                .accessibilityIdentifier("paywall_purchase_button")
+            } else if isLoadingProduct {
+                // Still loading product — show spinner with timeout message
+                VStack(spacing: DS.Spacing.sm) {
+                    ProgressView()
+                        .tint(.white)
+                        .frame(height: 58)
+                    Text("Loading price…")
+                        .font(.caption)
+                        .foregroundStyle(.white.opacity(0.5))
+                }
+            } else {
+                // Product failed to load — show retry
+                VStack(spacing: DS.Spacing.md) {
+                    Text("Unable to load product information.")
+                        .font(.subheadline)
+                        .foregroundStyle(.white.opacity(0.7))
+                        .multilineTextAlignment(.center)
+
+                    Button {
+                        isLoadingProduct = true
+                        Task {
+                            await store.loadProducts()
+                            isLoadingProduct = false
+                        }
+                    } label: {
                         HStack(spacing: DS.Spacing.sm) {
-                            Image(systemName: "crown.fill")
-                                .font(.callout)
-                            Text(L10n.paywallUnlock(product.displayPrice))
+                            Image(systemName: "arrow.clockwise")
+                            Text("Try Again")
                                 .font(.headline)
                         }
-                    } else {
-                        ProgressView()
-                            .tint(.white)
-                    }
-                }
-                .foregroundStyle(.white)
-                .frame(maxWidth: .infinity)
-                .frame(height: 58)
-                .background(
-                    RoundedRectangle(cornerRadius: DS.Radius.lg)
-                        .fill(
-                            LinearGradient(
-                                colors: [Color.noBuyGreen, Color.noBuyGreen.opacity(0.8)],
-                                startPoint: .leading,
-                                endPoint: .trailing
-                            )
+                        .foregroundStyle(.white)
+                        .frame(maxWidth: .infinity)
+                        .frame(height: 58)
+                        .background(
+                            RoundedRectangle(cornerRadius: DS.Radius.lg)
+                                .fill(Color.white.opacity(0.15))
                         )
-                        .shadow(color: .noBuyGreen.opacity(0.4), radius: 16, y: 6)
-                )
+                    }
+                    .buttonStyle(ScaleButtonStyle())
+                    .accessibilityLabel("Retry loading product")
+                }
             }
-            .buttonStyle(ScaleButtonStyle())
-            .disabled(store.product == nil || isPurchasing)
-            .accessibilityLabel(store.product != nil ? "Unlock Pro for \(store.product!.displayPrice)" : "Loading price")
-            .accessibilityHint("Double tap to purchase NoBuy Pro")
-            .accessibilityIdentifier("paywall_purchase_button")
 
             // Restore purchases link
             Button(L10n.paywallRestore) {
@@ -477,6 +519,29 @@ struct PaywallView: View {
 
     private func onAppearSetup() {
         store.trackPaywallShown()
+
+        // Reset purchase state on re-open
+        if case .failed = store.purchaseState {
+            store.purchaseState = .idle
+        }
+
+        // Load/retry product if nil
+        if store.product == nil {
+            isLoadingProduct = true
+            Task {
+                await store.loadProducts()
+                isLoadingProduct = false
+            }
+        } else {
+            isLoadingProduct = false
+        }
+
+        // Timeout for product loading — stop spinner after 10s
+        DispatchQueue.main.asyncAfter(deadline: .now() + 10) {
+            if store.product == nil {
+                isLoadingProduct = false
+            }
+        }
 
         // Delayed close button (2s)
         DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {

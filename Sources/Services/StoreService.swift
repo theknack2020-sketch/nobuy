@@ -10,7 +10,7 @@ final class StoreService {
 
     private(set) var isPro = false
     private(set) var product: Product?
-    private(set) var purchaseState: PurchaseState = .idle
+    var purchaseState: PurchaseState = .idle
     private(set) var restoreState: RestoreState = .idle
 
     private let productID = "com.ufukozdemir.nobuy.pro"
@@ -110,7 +110,7 @@ final class StoreService {
             let products = try await Product.products(for: [productID])
             product = products.first
             if product == nil {
-                AppLogger.store.warning("No products returned for \(productID)")
+                AppLogger.store.warning("No products returned for \(self.productID)")
             }
         } catch {
             AppLogger.store.error("Failed to load products: \(error.localizedDescription)")
