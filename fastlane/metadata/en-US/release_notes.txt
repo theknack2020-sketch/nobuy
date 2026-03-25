@@ -1,17 +1,12 @@
-What's New in NoBuy
+🆕 Major Update — Complete Redesign!
 
-📊 DETAILED STATISTICS
-See your spending patterns with monthly and weekly breakdowns. Track your no-spend percentage over time and watch your progress grow.
-
-🏆 ACHIEVEMENTS & MILESTONES
-Unlock badges as you hit streak milestones — 3, 7, 14, 30, 60, and 100 days. Celebrate your progress with milestone animations.
-
-🔔 IMPROVED NOTIFICATIONS
-Smarter evening reminders with rotating messages. Streak milestone alerts and weekly summary notifications to keep you on track.
-
-📤 DATA EXPORT
-Export your complete no-spend history as CSV. Analyze your patterns, share your progress, or keep records for your budget planning.
-
-🐛 Bug fixes and performance improvements
-
-Love NoBuy? Leave a review — it helps others discover the no-spend challenge!
+🎨 5 beautiful themes (2 free, 3 Pro)
+📊 6 new chart types with detailed analytics
+🧊 Glassmorphism design throughout the app
+♿ 169 accessibility improvements
+📱 iPad support with sidebar navigation
+🎯 Enhanced paywall with feature comparison
+🔔 Day 1-3 onboarding journey notifications
+🛡️ Streak freeze + challenge system improved
+🌍 Now fully English (redesigned from scratch)
+🔒 Improved Pro feature gates and reliability
