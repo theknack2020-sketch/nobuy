@@ -20,22 +20,15 @@ fastlane/report.xml
 fastlane/Preview.html
 fastlane/test_output
 
-## Environment
-.env
-
-## Secrets — never commit
+## Secrets — NEVER commit
 AuthKey_*.p8
+*.p8
 *.p12
+*.pem
 api_key.json
 fastlane/api_key.json
-*.secret
-
-## Security (NEVER commit)
-AuthKey_*.p8
-*.p12
-api_key.json
 .env
 *.secret
-fastlane/api_key.json
+
+## Internal
 .bg-shell
-fastlane/api_key.json

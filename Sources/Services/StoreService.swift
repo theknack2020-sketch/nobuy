@@ -109,15 +109,22 @@ final class StoreService {
         do {
             let products = try await Product.products(for: [productID])
             product = products.first
+            if product == nil {
+                AppLogger.store.warning("No products returned for \(productID)")
+            }
         } catch {
             AppLogger.store.error("Failed to load products: \(error.localizedDescription)")
+            // Product stays nil — PaywallView will show fallback UI
         }
     }
 
     // MARK: - Purchase
 
     func purchase() async {
-        guard let product else { return }
+        guard let product else {
+            purchaseState = .failed("Unable to load product. Please check your connection and try again.")
+            return
+        }
         purchaseState = .purchasing
 
         do {

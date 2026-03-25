@@ -1,0 +1,17 @@
+NoBuy'daki Yenilikler
+
+📊 DETAYLI İSTATİSTİKLER
+Aylık ve haftalık dökümlerle harcama kalıplarını gör. Harcamasız gün yüzdeni zaman içinde takip et ve ilerlemenin büyümesini izle.
+
+🏆 BAŞARIMLAR VE KİLOMETRE TAŞLARI
+Streak kilometre taşlarına ulaştıkça rozetlerin kilidini aç — 3, 7, 14, 30, 60 ve 100 gün. İlerlemenizi kilometre taşı animasyonlarıyla kutla.
+
+🔔 GELİŞTİRİLMİŞ BİLDİRİMLER
+Dönen mesajlarla daha akıllı akşam hatırlatmaları. Yolda kalmanız için streak kilometre taşı uyarıları ve haftalık özet bildirimleri.
+
+📤 VERİ DIŞA AKTARMA
+Harcamasız gün geçmişini CSV olarak dışa aktar. Kalıplarını analiz et, ilerlemenizi paylaş veya bütçe planlaması için kayıt tut.
+
+🐛 Hata düzeltmeleri ve performans iyileştirmeleri
+
+NoBuy'ı sevdin mi? Bir değerlendirme bırak — başkalarının harcamasız gün meydan okumasını keşfetmesine yardımcı olur!
