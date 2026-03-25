@@ -38,3 +38,4 @@ api_key.json
 *.secret
 fastlane/api_key.json
 .bg-shell
+fastlane/api_key.json
