@@ -14,9 +14,9 @@ final class MandatoryCategory {
     }
 
     static let defaults: [(String, String)] = [
-        ("Kira", "house"),
-        ("Fatura", "bolt"),
-        ("Ulaşım", "bus"),
-        ("Market (temel gıda)", "cart"),
+        (L10n.categoryRent, "house"),
+        (L10n.categoryBills, "bolt"),
+        (L10n.categoryTransport, "bus"),
+        (L10n.categoryGroceries, "cart"),
     ]
 }

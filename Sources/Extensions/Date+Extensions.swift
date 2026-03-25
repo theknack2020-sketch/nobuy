@@ -27,14 +27,14 @@ extension Date {
 
     var monthYearString: String {
         let formatter = DateFormatter()
-        formatter.locale = Locale(identifier: "tr_TR")
+        formatter.locale = Locale.current
         formatter.dateFormat = "MMMM yyyy"
         return formatter.string(from: self).capitalized
     }
 
     var shortDayName: String {
         let formatter = DateFormatter()
-        formatter.locale = Locale(identifier: "tr_TR")
+        formatter.locale = Locale.current
         formatter.dateFormat = "EEE"
         return formatter.string(from: self).uppercased()
     }

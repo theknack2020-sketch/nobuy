@@ -16,7 +16,7 @@ settings:
     SWIFT_VERSION: "6.0"
     DEVELOPMENT_TEAM: 99H9NJ6Z6J
     MARKETING_VERSION: "1.0.0"
-    CURRENT_PROJECT_VERSION: "2"
+    CURRENT_PROJECT_VERSION: "4"
 
 targets:
   NoBuy:
@@ -30,6 +30,9 @@ targets:
       path: Sources/Info.plist
       properties:
         CFBundleDisplayName: NoBuy
+        CFBundleURLTypes:
+          - CFBundleURLSchemes:
+              - nobuy
         UILaunchScreen: {}
         UISupportedInterfaceOrientations:
           - UIInterfaceOrientationPortrait

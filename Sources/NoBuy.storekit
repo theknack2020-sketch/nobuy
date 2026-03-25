@@ -1,88 +1,79 @@
 {
-  "identifier" : "B7FD0F55-9A3B-4D1C-A1E8-7B5E8F3C2D4A",
-  "nonRenewingSubscriptions" : [
-
-  ],
-  "products" : [
+  "identifier": "B7FD0F55-9A3B-4D1C-A1E8-7B5E8F3C2D4A",
+  "nonRenewingSubscriptions": [],
+  "products": [
     {
-      "displayPrice" : "2.99",
-      "familyShareable" : false,
-      "internalID" : "A1B2C3D4-E5F6-7890-ABCD-EF1234567890",
-      "localizations" : [
+      "displayPrice": "2.99",
+      "familyShareable": false,
+      "internalID": "A1B2C3D4-E5F6-7890-ABCD-EF1234567890",
+      "localizations": [
         {
-          "description" : "Unlock all premium features",
-          "displayName" : "NoBuy Pro",
-          "locale" : "en_US"
-        },
-        {
-          "description" : "Tüm premium özelliklerin kilidini aç",
-          "displayName" : "NoBuy Pro",
-          "locale" : "tr"
+          "description": "Unlock all premium features",
+          "displayName": "NoBuy Pro",
+          "locale": "en_US"
         }
       ],
-      "productID" : "com.ufukozdemir.nobuy.pro",
-      "referenceName" : "NoBuy Pro",
-      "type" : "NonConsumable"
+      "productID": "com.ufukozdemir.nobuy.pro",
+      "referenceName": "NoBuy Pro",
+      "type": "NonConsumable"
     }
   ],
-  "settings" : {
-    "_applicationInternalID" : "6744100000",
-    "_developerTeamID" : "99H9NJ6Z6J",
-    "_failTransactionsEnabled" : false,
-    "_lastSynchronizedDate" : 764854800,
-    "_storeKitErrors" : [
+  "settings": {
+    "_applicationInternalID": "6744100000",
+    "_developerTeamID": "99H9NJ6Z6J",
+    "_failTransactionsEnabled": false,
+    "_lastSynchronizedDate": 764854800,
+    "_storeKitErrors": [
       {
-        "current" : null,
-        "enabled" : false,
-        "name" : "Load Products"
+        "current": null,
+        "enabled": false,
+        "name": "Load Products"
       },
       {
-        "current" : null,
-        "enabled" : false,
-        "name" : "Purchase"
+        "current": null,
+        "enabled": false,
+        "name": "Purchase"
       },
       {
-        "current" : null,
-        "enabled" : false,
-        "name" : "Verification"
+        "current": null,
+        "enabled": false,
+        "name": "Verification"
       },
       {
-        "current" : null,
-        "enabled" : false,
-        "name" : "App Store Sync"
+        "current": null,
+        "enabled": false,
+        "name": "App Store Sync"
       },
       {
-        "current" : null,
-        "enabled" : false,
-        "name" : "Subscription Status"
+        "current": null,
+        "enabled": false,
+        "name": "Subscription Status"
       },
       {
-        "current" : null,
-        "enabled" : false,
-        "name" : "App Transaction"
+        "current": null,
+        "enabled": false,
+        "name": "App Transaction"
       },
       {
-        "current" : null,
-        "enabled" : false,
-        "name" : "Manage Subscriptions Sheet"
+        "current": null,
+        "enabled": false,
+        "name": "Manage Subscriptions Sheet"
       },
       {
-        "current" : null,
-        "enabled" : false,
-        "name" : "Refund Request Sheet"
+        "current": null,
+        "enabled": false,
+        "name": "Refund Request Sheet"
       },
       {
-        "current" : null,
-        "enabled" : false,
-        "name" : "Offer Code Redeem Sheet"
+        "current": null,
+        "enabled": false,
+        "name": "Offer Code Redeem Sheet"
       }
     ]
   },
-  "subscriptionGroups" : [
-
-  ],
-  "version" : {
-    "major" : 4,
-    "minor" : 0
+  "subscriptionGroups": [],
+  "version": {
+    "major": 4,
+    "minor": 0
   }
 }

@@ -1,28 +1,54 @@
-One question every day: Did you spend money today?
+Take control of your money — one day at a time. NoBuy is the simplest no-spend tracker that helps you break impulse buying habits, build saving streaks, and become more intentional with every purchase decision.
 
-NoBuy Day is the simplest way to track your discretionary spending. No complex budget categories - just tap "No Spend Today" and watch your saving streak grow.
+Join thousands who are embracing the no-buy challenge and underconsumption trend. Track each day with a single tap, watch your streak grow, and see real progress toward financial freedom.
+
+HOW IT WORKS
+
+Tap "No Spend Today" at the end of each day
+Log if you made a discretionary purchase
+Mark mandatory expenses (rent, bills) — they don't break your streak
 
 FEATURES
-- One-tap daily logging - done in 2 seconds
-- Streak system - track consecutive no-spend days
-- Calendar view - see your month at a glance, green and red days
-- Monthly summary - see your progress as a percentage
-- Mandatory expense separation - rent and bills don't break your streak
-- Motivational notifications - celebrate streak milestones
+
+Streak Tracker — Build consecutive no-spend day streaks and celebrate milestones
+Calendar View — See your month at a glance with color-coded days
+Monthly Stats — Track your no-spend percentage and monthly progress
+Achievements — Unlock badges at 3, 7, 14, 30, 60, and 100-day milestones
+Mandatory Expenses — Separate rent, bills, and groceries so they never break your streak
+Smart Reminders — Evening notifications to log your day and protect your streak
+Streak Freeze — Had to spend? Use a freeze to protect your streak for one day
+Urge Surfing Timer — Feeling the urge to buy? Start a 10-minute mindfulness countdown and let the impulse pass
+Impulse Buy Checklist — Answer "Should I buy this?" questions before any purchase to make smarter decisions
+Custom Challenges — Set your own no-spend goals (7 days, 30 days, or any duration you choose)
+Data Export — Download your history as CSV (Pro)
+Daily Tips — Research-backed spending awareness tips to stay motivated
 
 PERFECT FOR
-- No Buy Challenge participants
-- Anyone reducing unnecessary spending
-- Minimalist lifestyle followers
-- People saving for a goal
-- Breaking impulse shopping habits
 
-WHY NOBUY DAY?
-Unlike other finance apps, NoBuy Day doesn't ask for complex categories, bank connections, or detailed entries. It asks one question: Did you make an unnecessary purchase today?
+• No-Buy Challenge & No-Spend Challenge participants
+• Low-Buy Year followers
+• Minimalist and frugal living enthusiasts
+• Anyone saving for a goal — vacation, emergency fund, debt freedom
+• People breaking impulse shopping and stress spending habits
 
-The power of this simple question is proven - research shows spending awareness can increase savings by up to 20%.
+WHY NOBUY WORKS
 
-PRIVACY
-Your data stays on your device only. No account required, no data collected.
+Unlike complex budget apps, NoBuy asks one powerful question each day: Did you make an unnecessary purchase today?
 
-Questions or suggestions: theknack2020@gmail.com
+Research shows that spending awareness alone can increase savings by up to 20%. NoBuy turns that awareness into a daily habit with streaks, milestones, and achievements that keep you motivated.
+
+No spreadsheets. No bank connections. No complicated categories. Just one tap, every day.
+
+PRIVACY FIRST
+
+Your data stays on your device — always
+No account required
+No tracking, no analytics, no data collection
+Your financial habits are your business
+
+Download NoBuy today and start your first no-spend streak. Your future self will thank you.
+
+Privacy Policy: https://theknack2020-sketch.github.io/nobuy/privacy
+Terms of Use: https://theknack2020-sketch.github.io/nobuy/terms
+Support: https://theknack2020-sketch.github.io/nobuy/support
+Questions or feedback? theknack2020@gmail.com

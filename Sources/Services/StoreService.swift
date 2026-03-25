@@ -1,6 +1,7 @@
 import Foundation
 import StoreKit
 import Observation
+import os
 
 @Observable
 @MainActor
@@ -10,8 +11,12 @@ final class StoreService {
     private(set) var isPro = false
     private(set) var product: Product?
     private(set) var purchaseState: PurchaseState = .idle
+    private(set) var restoreState: RestoreState = .idle
 
     private let productID = "com.ufukozdemir.nobuy.pro"
+    // NOTE: If family sharing is enabled, update the entitlement in the
+    // StoreKit configuration file to set isFamilyShareable = true on the product.
+    // Currently this is a non-consumable without family sharing.
     static let freeCategoryLimit = 3
 
     enum PurchaseState: Equatable {
@@ -19,6 +24,61 @@ final class StoreService {
         case purchasing
         case purchased
         case failed(String)
+    }
+
+    enum RestoreState: Equatable {
+        case idle
+        case success
+        case failed
+    }
+
+    // MARK: - Analytics Tracking
+
+    @ObservationIgnored
+    private let paywallShownCountKey = "paywallShownCount"
+    @ObservationIgnored
+    private let paywallLastShownDateKey = "paywallLastShownDate"
+    @ObservationIgnored
+    private let paywallLastDismissDateKey = "paywallLastDismissDate"
+
+    var purchaseCount: Int {
+        get { UserDefaults.standard.integer(forKey: paywallShownCountKey) }
+        set { UserDefaults.standard.set(newValue, forKey: paywallShownCountKey) }
+    }
+
+    var paywallLastShownDate: Date? {
+        get { UserDefaults.standard.object(forKey: paywallLastShownDateKey) as? Date }
+        set { UserDefaults.standard.set(newValue, forKey: paywallLastShownDateKey) }
+    }
+
+    private var paywallLastDismissDate: Date? {
+        get { UserDefaults.standard.object(forKey: paywallLastDismissDateKey) as? Date }
+        set { UserDefaults.standard.set(newValue, forKey: paywallLastDismissDateKey) }
+    }
+
+    /// Track that the paywall was displayed
+    func trackPaywallShown() {
+        purchaseCount += 1
+        paywallLastShownDate = .now
+    }
+
+    /// Track that the paywall was dismissed without purchase
+    func trackPaywallDismissed() {
+        paywallLastDismissDate = .now
+    }
+
+    /// Don't show paywall within 24h of last dismiss, unless the user hit a milestone
+    func canShowPaywall(atMilestone: Bool = false) -> Bool {
+        if isPro { return false }
+        if atMilestone { return true }
+        guard let lastDismiss = paywallLastDismissDate else { return true }
+        return Date.now.timeIntervalSince(lastDismiss) > 86400 // 24 hours
+    }
+
+    // MARK: - Formatted Price
+
+    var formattedPrice: String? {
+        product?.displayPrice
     }
 
     private init() {}
@@ -33,6 +93,16 @@ final class StoreService {
         isPro ? .max : max(Self.freeCategoryLimit - currentCount, 0)
     }
 
+    /// Challenges require Pro
+    var canStartChallenge: Bool {
+        isPro
+    }
+
+    /// Soft paywall banner shown count (read-only convenience)
+    var softPaywallShownCount: Int {
+        UserDefaults.standard.integer(forKey: "softPaywallShownCount")
+    }
+
     // MARK: - Load Products
 
     func loadProducts() async {
@@ -40,7 +110,7 @@ final class StoreService {
             let products = try await Product.products(for: [productID])
             product = products.first
         } catch {
-            print("[StoreService] Failed to load products: \(error)")
+            AppLogger.store.error("Failed to load products: \(error.localizedDescription)")
         }
     }
 
@@ -66,18 +136,21 @@ final class StoreService {
                 purchaseState = .idle
             }
         } catch {
-            purchaseState = .failed(error.localizedDescription)
+            purchaseState = .failed(mapError(error))
         }
     }
 
     // MARK: - Restore
 
     func restore() async {
+        restoreState = .idle
         do {
             try await AppStore.sync()
             await checkEntitlements()
+            restoreState = isPro ? .success : .failed
         } catch {
-            print("[StoreService] Restore failed: \(error)")
+            restoreState = .failed
+            AppLogger.store.error("Restore failed: \(error.localizedDescription)")
         }
     }
 
@@ -101,6 +174,30 @@ final class StoreService {
                 await transaction.finish()
             }
         }
+    }
+
+    // MARK: - Error Mapping
+
+    private func mapError(_ error: Error) -> String {
+        if let storeKitError = error as? StoreKitError {
+            switch storeKitError {
+            case .networkError:
+                return L10n.purchaseErrorNetwork
+            case .notAvailableInStorefront, .notEntitled:
+                return L10n.purchaseErrorNotAllowed
+            default:
+                return L10n.purchaseErrorGeneric
+            }
+        }
+        if let purchaseError = error as? Product.PurchaseError {
+            switch purchaseError {
+            case .purchaseNotAllowed:
+                return L10n.purchaseErrorNotAllowed
+            default:
+                return L10n.purchaseErrorGeneric
+            }
+        }
+        return L10n.purchaseErrorGeneric
     }
 
     // MARK: - Helpers

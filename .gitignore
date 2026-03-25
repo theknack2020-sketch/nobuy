@@ -22,3 +22,19 @@ fastlane/test_output
 
 ## Environment
 .env
+
+## Secrets — never commit
+AuthKey_*.p8
+*.p12
+api_key.json
+fastlane/api_key.json
+*.secret
+
+## Security (NEVER commit)
+AuthKey_*.p8
+*.p12
+api_key.json
+.env
+*.secret
+fastlane/api_key.json
+.bg-shell

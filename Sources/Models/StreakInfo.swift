@@ -6,11 +6,15 @@ struct StreakInfo: Equatable, Sendable {
     let noBuyDaysThisMonth: Int
     let totalDaysThisMonth: Int
     let noBuyPercentageThisMonth: Double
+    let frozenDaysThisMonth: Int
 
     var monthSummary: String {
         let calendar = Calendar.current
-        let monthName = calendar.monthSymbols[calendar.component(.month, from: .now) - 1]
-        return "\(monthName): \(totalDaysThisMonth) günün \(noBuyDaysThisMonth)'inde harcama yapmadın"
+        let formatter = DateFormatter()
+        formatter.locale = Locale(identifier: "en_US")
+        formatter.dateFormat = "MMMM"
+        let monthName = formatter.string(from: .now)
+        return "\(monthName): \(noBuyDaysThisMonth) of \(totalDaysThisMonth) days no-spend"
     }
 
     static let empty = StreakInfo(
@@ -18,6 +22,7 @@ struct StreakInfo: Equatable, Sendable {
         longestStreak: 0,
         noBuyDaysThisMonth: 0,
         totalDaysThisMonth: 0,
-        noBuyPercentageThisMonth: 0
+        noBuyPercentageThisMonth: 0,
+        frozenDaysThisMonth: 0
     )
 }
