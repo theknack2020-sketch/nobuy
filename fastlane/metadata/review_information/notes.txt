@@ -1,1 +1,0 @@
-No login required. The app works fully offline with local data storage only. Simply tap the button to log your daily spending status.

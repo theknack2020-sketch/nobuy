@@ -32,3 +32,5 @@ fastlane/api_key.json
 
 ## Internal
 .bg-shell
+fastlane/metadata/tr/
+fastlane/metadata/review_information/
