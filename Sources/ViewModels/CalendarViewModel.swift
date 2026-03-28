@@ -32,7 +32,7 @@ final class CalendarViewModel {
         let formatter = DateFormatter()
         formatter.locale = Locale.current
         // Monday-first
-        var symbols = formatter.veryShortWeekdaySymbols!
+        var symbols = formatter.veryShortWeekdaySymbols ?? ["S", "M", "T", "W", "T", "F", "S"]
         let sunday = symbols.removeFirst()
         symbols.append(sunday)
         return symbols

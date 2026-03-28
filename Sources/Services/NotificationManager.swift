@@ -76,7 +76,7 @@ final class NotificationManager: Sendable {
                 trigger: trigger
             )
 
-            try? await center.add(request)
+            do { try await center.add(request) } catch { AppLogger.notification.error("Failed to schedule notification: \(error.localizedDescription)") }
         }
     }
 
@@ -131,7 +131,7 @@ final class NotificationManager: Sendable {
             trigger: trigger
         )
 
-        try? await center.add(request)
+        do { try await center.add(request) } catch { AppLogger.notification.error("Failed to schedule notification: \(error.localizedDescription)") }
     }
 
     // MARK: - Streak Break (Compassionate)
@@ -160,7 +160,7 @@ final class NotificationManager: Sendable {
             trigger: trigger
         )
 
-        try? await center.add(request)
+        do { try await center.add(request) } catch { AppLogger.notification.error("Failed to schedule notification: \(error.localizedDescription)") }
     }
 
     // MARK: - Approaching Personal Best
@@ -182,7 +182,7 @@ final class NotificationManager: Sendable {
             trigger: trigger
         )
 
-        try? await center.add(request)
+        do { try await center.add(request) } catch { AppLogger.notification.error("Failed to schedule notification: \(error.localizedDescription)") }
     }
 
     // MARK: - Weekly Summary (Sunday 19:00)
@@ -213,7 +213,7 @@ final class NotificationManager: Sendable {
             trigger: trigger
         )
 
-        try? await center.add(request)
+        do { try await center.add(request) } catch { AppLogger.notification.error("Failed to schedule notification: \(error.localizedDescription)") }
     }
 
     func cancelWeeklySummary() {
@@ -247,7 +247,7 @@ final class NotificationManager: Sendable {
             trigger: trigger
         )
 
-        try? await center.add(request)
+        do { try await center.add(request) } catch { AppLogger.notification.error("Failed to schedule notification: \(error.localizedDescription)") }
     }
 
     // MARK: - Onboarding Journey (Day 1-3)
@@ -289,7 +289,7 @@ final class NotificationManager: Sendable {
                 trigger: trigger
             )
 
-            try? await center.add(request)
+            do { try await center.add(request) } catch { AppLogger.notification.error("Failed to schedule notification: \(error.localizedDescription)") }
         }
     }
 

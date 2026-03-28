@@ -11,6 +11,7 @@ struct DayEditSheet: View {
     @State private var isFrozen: Bool = false
     @State private var appeared = false
     @State private var showDeleteConfirmation = false
+    @State private var saveError: String?
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     private var dateString: String {
@@ -232,7 +233,11 @@ struct DayEditSheet: View {
                                 SoundManager.playIfEnabled(.delete)
                                 if let record = existingRecord {
                                     modelContext.delete(record)
-                                    try? modelContext.save()
+                                    do {
+                                        try modelContext.save()
+                                    } catch {
+                                        saveError = "Failed to delete: \(error.localizedDescription)"
+                                    }
                                 }
                                 dismiss()
                             }
@@ -274,6 +279,14 @@ struct DayEditSheet: View {
                 }
             }
         }
+        .alert("Error", isPresented: Binding(
+            get: { saveError != nil },
+            set: { if !$0 { saveError = nil } }
+        )) {
+            Button("OK", role: .cancel) { }
+        } message: {
+            Text(saveError ?? "An unexpected error occurred.")
+        }
     }
 
     @Query(sort: \DayRecord.date, order: .reverse) private var allRecords: [DayRecord]
@@ -302,7 +315,12 @@ struct DayEditSheet: View {
             modelContext.insert(record)
         }
 
-        try? modelContext.save()
+        do {
+            try modelContext.save()
+        } catch {
+            saveError = "Failed to save: \(error.localizedDescription)"
+            return
+        }
 
         // Check achievements with updated record set
         let streakInfo = StreakCalculator.calculate(from: allRecords)

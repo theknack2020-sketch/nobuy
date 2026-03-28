@@ -42,15 +42,15 @@ extension Date {
 
 extension Calendar {
     func datesInMonth(of date: Date) -> [Date] {
-        guard let range = self.range(of: .day, in: .month, for: date) else { return [] }
-        let startOfMonth = self.date(from: self.dateComponents([.year, .month], from: date))!
+        guard let range = self.range(of: .day, in: .month, for: date),
+              let startOfMonth = self.date(from: self.dateComponents([.year, .month], from: date)) else { return [] }
         return range.compactMap { day in
             self.date(byAdding: .day, value: day - 1, to: startOfMonth)
         }
     }
 
     func firstWeekdayOfMonth(of date: Date) -> Int {
-        let startOfMonth = self.date(from: self.dateComponents([.year, .month], from: date))!
+        guard let startOfMonth = self.date(from: self.dateComponents([.year, .month], from: date)) else { return 1 }
         return self.component(.weekday, from: startOfMonth)
     }
 }

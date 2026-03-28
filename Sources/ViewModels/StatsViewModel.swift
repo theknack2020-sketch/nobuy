@@ -165,7 +165,7 @@ final class StatsViewModel {
         formatter.locale = Locale.current
 
         // Monday-first short names
-        var symbols = formatter.shortWeekdaySymbols!
+        var symbols = formatter.shortWeekdaySymbols ?? ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
         let sunday = symbols.removeFirst()
         symbols.append(sunday)
 

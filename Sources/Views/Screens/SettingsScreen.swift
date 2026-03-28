@@ -24,6 +24,7 @@ struct SettingsScreen: View {
     @AppStorage("challengeDuration") private var challengeDuration = 0
     @AppStorage("challengeStartDate") private var challengeStartDate: Double = 0
     @AppStorage("soundEnabled") private var soundEnabled = true
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     var body: some View {
         NavigationStack {
@@ -684,6 +685,7 @@ struct NotificationSettingsView: View {
 
 struct ThemePickerView: View {
     @Environment(StoreService.self) private var store
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @Binding var showPaywall: Bool
     @State private var gridAppeared = false
 
@@ -706,7 +708,7 @@ struct ThemePickerView: View {
                             showPaywall = true
                         } else {
                             HapticManager.impact(.light)
-                            withAnimation(DS.Anim.quick) {
+                            withAnimation(reduceMotion ? nil : DS.Anim.quick) {
                                 UserSettings.shared.currentTheme = theme
                             }
                         }
@@ -715,7 +717,7 @@ struct ThemePickerView: View {
             }
             .opacity(gridAppeared ? 1 : 0)
             .scaleEffect(gridAppeared ? 1 : 0.95)
-            .animation(.spring(response: 0.5, dampingFraction: 0.8), value: gridAppeared)
+            .animation(reduceMotion ? nil : .spring(response: 0.5, dampingFraction: 0.8), value: gridAppeared)
             .onAppear { gridAppeared = true }
         }
         .padding(.vertical, DS.Spacing.xs)

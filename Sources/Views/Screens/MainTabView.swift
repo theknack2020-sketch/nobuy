@@ -39,24 +39,28 @@ struct MainTabView: View {
                         Label(L10n.tabToday, systemImage: "checkmark.circle.fill")
                     }
                     .tag(0)
+                    .accessibilityIdentifier("tab_today")
 
                 CalendarScreen()
                     .tabItem {
                         Label(L10n.tabCalendar, systemImage: "calendar")
                     }
                     .tag(1)
+                    .accessibilityIdentifier("tab_calendar")
 
                 StatsScreen()
                     .tabItem {
                         Label(L10n.tabStats, systemImage: "chart.bar.fill")
                     }
                     .tag(2)
+                    .accessibilityIdentifier("tab_stats")
 
                 SettingsScreen()
                     .tabItem {
                         Label(L10n.tabSettings, systemImage: "gearshape.fill")
                     }
                     .tag(3)
+                    .accessibilityIdentifier("tab_settings")
             }
             .tint(Color.themePrimary)
             .onChange(of: selectedTab) { _, _ in
