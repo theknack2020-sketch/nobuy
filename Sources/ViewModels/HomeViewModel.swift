@@ -1,7 +1,7 @@
 import Foundation
-import SwiftData
 import Observation
 import os
+import SwiftData
 
 @MainActor
 @Observable
@@ -91,7 +91,7 @@ final class HomeViewModel {
     // MARK: - Savings Goal
 
     var savingsGoal: String {
-        get { userDefaults.string(forKey: "savingsGoal") ?? "" }
+        userDefaults.string(forKey: "savingsGoal") ?? ""
     }
 
     var dailySpendingEstimate: Double {
@@ -138,23 +138,23 @@ final class HomeViewModel {
     /// Icon for the savings goal
     var savingsGoalIcon: String {
         switch savingsGoal {
-        case "emergencyFund": return "shield.fill"
-        case "vacation": return "airplane"
-        case "debtFree": return "creditcard.trianglebadge.exclamationmark"
-        case "discipline": return "brain.head.profile"
-        default: return "target"
+        case "emergencyFund": "shield.fill"
+        case "vacation": "airplane"
+        case "debtFree": "creditcard.trianglebadge.exclamationmark"
+        case "discipline": "brain.head.profile"
+        default: "target"
         }
     }
 
     /// Localized label for the savings goal
     var savingsGoalLabel: String {
         switch savingsGoal {
-        case "emergencyFund": return L10n.goalEmergencyFund
-        case "vacation": return L10n.goalVacation
-        case "debtFree": return L10n.goalDebtFree
-        case "discipline": return L10n.goalDiscipline
-        case "": return ""
-        default: return savingsGoal // Custom text from user
+        case "emergencyFund": L10n.goalEmergencyFund
+        case "vacation": L10n.goalVacation
+        case "debtFree": L10n.goalDebtFree
+        case "discipline": L10n.goalDiscipline
+        case "": ""
+        default: savingsGoal // Custom text from user
         }
     }
 
@@ -164,14 +164,13 @@ final class HomeViewModel {
         if streak == 0 {
             return "I'm starting my no-spend journey with NoBuy! 🌱"
         }
-        let emoji: String
-        switch streak {
-        case 100...: emoji = "💯"
-        case 60...: emoji = "👑"
-        case 30...: emoji = "🏆"
-        case 14...: emoji = "⭐"
-        case 7...: emoji = "🔥"
-        default: emoji = "🌱"
+        let emoji = switch streak {
+        case 100...: "💯"
+        case 60...: "👑"
+        case 30...: "🏆"
+        case 14...: "⭐"
+        case 7...: "🔥"
+        default: "🌱"
         }
         return "I've been on a \(streak)-day no-spend streak with NoBuy! \(emoji) #NoBuy #MindfulSpending"
     }
@@ -332,7 +331,7 @@ final class HomeViewModel {
         let streakBeforeAction = streakInfo.currentStreak
 
         // If discretionary spend and user has streak + freeze available, offer freeze
-        if !mandatoryOnly && streakBeforeAction > 0 && hasFreezeAvailable {
+        if !mandatoryOnly, streakBeforeAction > 0, hasFreezeAvailable {
             pendingFreezeContext = context
             pendingFreezeRecords = allRecords
             pendingSpendAmount = amount
@@ -388,7 +387,7 @@ final class HomeViewModel {
             records: updated
         )
 
-        if !mandatoryOnly && !useFrozen && streakBeforeAction > 0 && streakInfo.currentStreak == 0 {
+        if !mandatoryOnly, !useFrozen, streakBeforeAction > 0, streakInfo.currentStreak == 0 {
             previousStreakBeforeBreak = streakBeforeAction
             showStreakBreak = true
 

@@ -1,6 +1,6 @@
 import Foundation
-import SwiftData
 import os
+import SwiftData
 
 enum DataExportError: LocalizedError {
     case noData
@@ -9,18 +9,18 @@ enum DataExportError: LocalizedError {
     var errorDescription: String? {
         switch self {
         case .noData:
-            return L10n.exportEmpty
+            L10n.exportEmpty
         case .writeFailed:
-            return L10n.errorExportMessage
+            L10n.errorExportMessage
         }
     }
 
     var userMessage: String {
         switch self {
         case .noData:
-            return L10n.exportEmpty
+            L10n.exportEmpty
         case .writeFailed:
-            return L10n.errorExportMessage
+            L10n.errorExportMessage
         }
     }
 }

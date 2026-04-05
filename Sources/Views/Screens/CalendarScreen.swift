@@ -1,5 +1,5 @@
-import SwiftUI
 import SwiftData
+import SwiftUI
 
 struct CalendarScreen: View {
     @Query(sort: \DayRecord.date, order: .reverse) private var records: [DayRecord]
@@ -9,6 +9,12 @@ struct CalendarScreen: View {
     @State private var monthTransitionDirection: Edge = .trailing
     @State private var showPaywall = false
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @Environment(\.horizontalSizeClass) private var sizeClass
+
+    private var isRegular: Bool {
+        sizeClass == .regular
+    }
+
     @State private var summaryAppeared = false
     @State private var isLoading = true
 
@@ -43,7 +49,7 @@ struct CalendarScreen: View {
                     .presentationDetents([.medium])
                     .presentationDragIndicator(.visible)
             }
-            .sheet(isPresented: $showPaywall) {
+            .fullScreenCover(isPresented: $showPaywall) {
                 PaywallView(store: store)
             }
             .onAppear {
@@ -63,7 +69,7 @@ struct CalendarScreen: View {
             Spacer().frame(height: DS.Spacing.xxxl)
 
             Image(systemName: "calendar.badge.plus")
-                .font(.system(size: 64))
+                .font(Font.adaptiveDisplay(size: 64, isRegular: isRegular))
                 .foregroundStyle(.noBuyGreen.opacity(0.6))
                 .symbolEffect(.pulse, options: reduceMotion ? .nonRepeating : .repeating)
                 .accessibilityHidden(true)
@@ -91,56 +97,56 @@ struct CalendarScreen: View {
     private var monthHeader: some View {
         VStack(spacing: DS.Spacing.sm) {
             HStack {
-            Button {
-                HapticManager.impact(.light)
-                if !store.isPro && viewModel.monthsFromCurrent() <= -1 {
-                    // Free users can go back max 1 month
-                    showPaywall = true
-                } else {
-                    monthTransitionDirection = .leading
-                    withAnimation(reduceMotion ? nil : DS.Anim.normal) {
-                        viewModel.goToPreviousMonth()
+                Button {
+                    HapticManager.impact(.light)
+                    if !store.isPro, viewModel.monthsFromCurrent() <= -1 {
+                        // Free users can go back max 1 month
+                        showPaywall = true
+                    } else {
+                        monthTransitionDirection = .leading
+                        withAnimation(reduceMotion ? nil : DS.Anim.normal) {
+                            viewModel.goToPreviousMonth()
+                        }
                     }
+                } label: {
+                    Image(systemName: "chevron.left")
+                        .font(.title3)
+                        .fontWeight(.semibold)
+                        .foregroundStyle(.textPrimary)
+                        .frame(width: 44, height: 44)
                 }
-            } label: {
-                Image(systemName: "chevron.left")
-                    .font(.title3)
-                    .fontWeight(.semibold)
-                    .foregroundStyle(.textPrimary)
-                    .frame(width: 44, height: 44)
-            }
-            .buttonStyle(.scale)
-            .accessibilityLabel("Previous month")
-            .accessibilityHint("Double tap to go to previous month")
+                .buttonStyle(.scale)
+                .accessibilityLabel("Previous month")
+                .accessibilityHint("Double tap to go to previous month")
 
-            Spacer()
+                Spacer()
 
-            Text(viewModel.monthTitle)
-                .font(.title2)
-                .fontWeight(.bold)
-                .id(viewModel.monthTitle)
-                .transition(.push(from: monthTransitionDirection == .leading ? .leading : .trailing))
-                .accessibilityAddTraits(.isHeader)
+                Text(viewModel.monthTitle)
+                    .font(.title2)
+                    .fontWeight(.bold)
+                    .id(viewModel.monthTitle)
+                    .transition(.push(from: monthTransitionDirection == .leading ? .leading : .trailing))
+                    .accessibilityAddTraits(.isHeader)
 
-            Spacer()
+                Spacer()
 
-            Button {
-                HapticManager.impact(.light)
-                monthTransitionDirection = .trailing
-                withAnimation(reduceMotion ? nil : DS.Anim.normal) {
-                    viewModel.goToNextMonth()
+                Button {
+                    HapticManager.impact(.light)
+                    monthTransitionDirection = .trailing
+                    withAnimation(reduceMotion ? nil : DS.Anim.normal) {
+                        viewModel.goToNextMonth()
+                    }
+                } label: {
+                    Image(systemName: "chevron.right")
+                        .font(.title3)
+                        .fontWeight(.semibold)
+                        .foregroundStyle(viewModel.canGoForward ? .textPrimary : .textTertiary)
+                        .frame(width: 44, height: 44)
                 }
-            } label: {
-                Image(systemName: "chevron.right")
-                    .font(.title3)
-                    .fontWeight(.semibold)
-                    .foregroundStyle(viewModel.canGoForward ? .textPrimary : .textTertiary)
-                    .frame(width: 44, height: 44)
-            }
-            .buttonStyle(.scale)
-            .disabled(!viewModel.canGoForward)
-            .accessibilityLabel("Next month")
-            .accessibilityHint("Double tap to go to next month")
+                .buttonStyle(.scale)
+                .disabled(!viewModel.canGoForward)
+                .accessibilityLabel("Next month")
+                .accessibilityHint("Double tap to go to next month")
             }
 
             // Gradient accent line
@@ -173,7 +179,7 @@ struct CalendarScreen: View {
 
             let columns = Array(repeating: GridItem(.flexible(), spacing: DS.Spacing.xs), count: 7)
             LazyVGrid(columns: columns, spacing: DS.Spacing.xs) {
-                ForEach(0..<viewModel.firstDayOffset, id: \.self) { _ in
+                ForEach(0 ..< viewModel.firstDayOffset, id: \.self) { _ in
                     Color.clear.frame(height: 44)
                 }
 
@@ -202,7 +208,7 @@ struct CalendarScreen: View {
                 .onEnded { value in
                     if value.translation.width > 50 {
                         HapticManager.impact(.light)
-                        if !store.isPro && viewModel.monthsFromCurrent() <= -1 {
+                        if !store.isPro, viewModel.monthsFromCurrent() <= -1 {
                             showPaywall = true
                         } else {
                             monthTransitionDirection = .leading
@@ -210,7 +216,7 @@ struct CalendarScreen: View {
                                 viewModel.goToPreviousMonth()
                             }
                         }
-                    } else if value.translation.width < -50 && viewModel.canGoForward {
+                    } else if value.translation.width < -50, viewModel.canGoForward {
                         HapticManager.impact(.light)
                         monthTransitionDirection = .trailing
                         withAnimation(reduceMotion ? nil : DS.Anim.normal) {
@@ -335,7 +341,9 @@ struct CalendarScreen: View {
 
 struct IdentifiableDate: Identifiable {
     let date: Date
-    var id: TimeInterval { date.timeIntervalSince1970 }
+    var id: TimeInterval {
+        date.timeIntervalSince1970
+    }
 }
 
 #Preview {

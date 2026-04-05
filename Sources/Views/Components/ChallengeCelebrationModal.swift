@@ -6,15 +6,20 @@ struct ChallengeCelebrationModal: View {
 
     @State private var appear = false
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @Environment(\.horizontalSizeClass) private var sizeClass
+
+    private var isRegular: Bool {
+        sizeClass == .regular
+    }
 
     private var celebrationMessage: String {
         switch totalDays {
-        case ...7: return "A solid week of discipline! You proved you can do it."
-        case ...14: return "Two weeks of willpower! You're building a real habit."
-        case ...30: return "A full month! Your self-control is inspiring."
-        case ...60: return "60 days of saying no. You're in the top 1% of savers."
-        case ...100: return "100 days! You've mastered the art of mindful spending."
-        default: return "You showed incredible willpower and commitment."
+        case ...7: "A solid week of discipline! You proved you can do it."
+        case ...14: "Two weeks of willpower! You're building a real habit."
+        case ...30: "A full month! Your self-control is inspiring."
+        case ...60: "60 days of saying no. You're in the top 1% of savers."
+        case ...100: "100 days! You've mastered the art of mindful spending."
+        default: "You showed incredible willpower and commitment."
         }
     }
 
@@ -40,7 +45,7 @@ struct ChallengeCelebrationModal: View {
                         .animation(reduceMotion ? nil : .spring(response: 0.6, dampingFraction: 0.5), value: appear)
 
                     Image(systemName: "trophy.fill")
-                        .font(.system(size: 56))
+                        .font(Font.adaptiveDisplay(size: 56, isRegular: isRegular))
                         .foregroundStyle(
                             LinearGradient(
                                 colors: [.mandatoryAmber, .orange],
@@ -54,7 +59,7 @@ struct ChallengeCelebrationModal: View {
 
                 VStack(spacing: DS.Spacing.sm) {
                     Text("Challenge Completed!")
-                        .font(.system(size: 28, weight: .bold, design: .rounded))
+                        .font(Font.adaptiveDisplay(size: 28, weight: .bold, design: .rounded, isRegular: isRegular))
                         .multilineTextAlignment(.center)
 
                     Text(celebrationMessage)
@@ -67,7 +72,7 @@ struct ChallengeCelebrationModal: View {
                 // Big number display
                 VStack(spacing: DS.Spacing.xs) {
                     Text("\(totalDays)")
-                        .font(.system(size: 64, weight: .black, design: .rounded))
+                        .font(Font.adaptiveDisplay(size: 64, weight: .black, design: .rounded, isRegular: isRegular))
                         .foregroundStyle(
                             LinearGradient(
                                 colors: [.mandatoryAmber, .orange],

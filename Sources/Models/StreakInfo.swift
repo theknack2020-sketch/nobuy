@@ -1,6 +1,6 @@
 import Foundation
 
-struct StreakInfo: Equatable, Sendable {
+struct StreakInfo: Equatable {
     let currentStreak: Int
     let longestStreak: Int
     let noBuyDaysThisMonth: Int

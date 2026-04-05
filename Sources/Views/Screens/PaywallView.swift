@@ -4,6 +4,12 @@ struct PaywallView: View {
     @Environment(\.dismiss) private var dismiss
     @Environment(\.colorScheme) private var colorScheme
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @Environment(\.horizontalSizeClass) private var sizeClass
+
+    private var isRegular: Bool {
+        sizeClass == .regular
+    }
+
     let store: StoreService
 
     @State private var showCloseButton = false
@@ -31,8 +37,8 @@ struct PaywallView: View {
 
         var isAvailable: Bool {
             switch self {
-            case .cross: return false
-            default: return true
+            case .cross: false
+            default: true
             }
         }
     }
@@ -69,7 +75,7 @@ struct PaywallView: View {
 
                         // Bold headline
                         Text(L10n.paywallTitle)
-                            .font(.system(size: 30, weight: .bold, design: .rounded))
+                            .font(Font.adaptiveDisplay(size: 30, weight: .bold, design: .rounded, isRegular: isRegular))
                             .foregroundStyle(.white)
                             .multilineTextAlignment(.center)
 
@@ -105,6 +111,8 @@ struct PaywallView: View {
                             .offset(y: ctaAppeared ? 0 : 16)
                     }
                     .padding(.horizontal, DS.Spacing.xl)
+                    .frame(maxWidth: isRegular ? 600 : .infinity)
+                    .frame(maxWidth: .infinity)
                 }
                 .scrollDismissesKeyboard(.interactively)
                 .opacity(showCelebration ? 0 : 1)
@@ -118,7 +126,7 @@ struct PaywallView: View {
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
-                    if showCloseButton && !isPurchasing {
+                    if showCloseButton, !isPurchasing {
                         Button {
                             store.trackPaywallDismissed()
                             dismiss()
@@ -152,7 +160,7 @@ struct PaywallView: View {
             colors: [
                 Color.noBuyGreen.opacity(0.35),
                 Color.black.opacity(0.92),
-                Color.black
+                Color.black,
             ],
             startPoint: .top,
             endPoint: .bottom
@@ -192,7 +200,7 @@ struct PaywallView: View {
                 .shadow(color: .noBuyGreen.opacity(0.5), radius: 20, y: 4)
 
             Image(systemName: "crown.fill")
-                .font(.system(size: 44))
+                .font(Font.adaptiveDisplay(size: 44, isRegular: isRegular))
                 .foregroundStyle(.white)
                 .shadow(color: .black.opacity(0.2), radius: 2, y: 1)
         }
@@ -223,7 +231,7 @@ struct PaywallView: View {
         HStack(spacing: DS.Spacing.xs) {
             // Mini avatar stack
             HStack(spacing: -6) {
-                ForEach(0..<3, id: \.self) { i in
+                ForEach(0 ..< 3, id: \.self) { i in
                     Circle()
                         .fill(
                             [Color.blue, Color.purple, Color.orange][i].opacity(0.8)
@@ -327,7 +335,7 @@ struct PaywallView: View {
             Image(systemName: "minus")
                 .font(.caption.weight(.medium))
                 .foregroundStyle(.white.opacity(0.2))
-        case .text(let text):
+        case let .text(text):
             Text(text)
                 .font(.caption.weight(.bold))
                 .foregroundStyle(isPro ? .noBuyGreen : .white.opacity(0.5))
@@ -456,7 +464,7 @@ struct PaywallView: View {
             .accessibilityHint("Double tap to restore previous purchases")
 
             // Error message
-            if case .failed(let message) = store.purchaseState {
+            if case let .failed(message) = store.purchaseState {
                 Text(message)
                     .font(.caption)
                     .foregroundStyle(.spendRed)
@@ -497,13 +505,13 @@ struct PaywallView: View {
                         .frame(width: 140, height: 140)
 
                     Image(systemName: "checkmark.circle.fill")
-                        .font(.system(size: 80))
+                        .font(Font.adaptiveDisplay(size: 80, isRegular: isRegular))
                         .foregroundStyle(.noBuyGreen)
                         .symbolEffect(.bounce, value: showCelebration)
                 }
 
                 Text(L10n.paywallWelcome)
-                    .font(.system(size: 30, weight: .bold, design: .rounded))
+                    .font(Font.adaptiveDisplay(size: 30, weight: .bold, design: .rounded, isRegular: isRegular))
                     .foregroundStyle(.white)
 
                 Text(L10n.paywallWelcomeDetail)
@@ -545,7 +553,7 @@ struct PaywallView: View {
 
         // Delayed close button (2s)
         DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
-            withAnimation(reduceMotion ? nil : .easeIn(duration: 0.3)) {
+            withAnimation(reduceMotion ? nil : .spring(duration: 0.3, bounce: 0.15)) {
                 showCloseButton = true
             }
         }
@@ -554,7 +562,7 @@ struct PaywallView: View {
         if !reduceMotion {
             withAnimation(
                 .easeInOut(duration: 2.0)
-                .repeatForever(autoreverses: true)
+                    .repeatForever(autoreverses: true)
             ) {
                 pulseGlow = true
             }

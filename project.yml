@@ -9,7 +9,7 @@ options:
   developmentLanguage: en
   knownRegions:
     - en
-    - tr
+    - Base
 
 settings:
   base:

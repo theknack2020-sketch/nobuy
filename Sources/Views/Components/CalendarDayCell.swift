@@ -4,6 +4,11 @@ struct CalendarDayCell: View {
     let date: Date
     let status: DayStatus
     var onTap: (() -> Void)?
+    @Environment(\.horizontalSizeClass) private var sizeClass
+
+    private var isRegular: Bool {
+        sizeClass == .regular
+    }
 
     private var isToday: Bool {
         Calendar.current.isDateInToday(date)
@@ -35,7 +40,7 @@ struct CalendarDayCell: View {
                     .offset(x: 12, y: -12)
 
                 // Bottom dot indicator for colorblind-friendliness
-                if status != .unrecorded && status != .future {
+                if status != .unrecorded, status != .future {
                     Circle()
                         .fill(statusDotColor)
                         .frame(width: 5, height: 5)
@@ -67,22 +72,22 @@ struct CalendarDayCell: View {
         switch status {
         case .noBuy:
             Image(systemName: "checkmark.circle.fill")
-                .font(.system(size: 10, weight: .bold))
+                .font(Font.adaptiveBadge(isRegular: isRegular))
                 .foregroundStyle(.white)
                 .shadow(color: .noBuyGreen.opacity(0.5), radius: 1, x: 0, y: 1)
         case .spent:
             Image(systemName: "xmark.circle.fill")
-                .font(.system(size: 10, weight: .bold))
+                .font(Font.adaptiveBadge(isRegular: isRegular))
                 .foregroundStyle(.white)
                 .shadow(color: .spendRed.opacity(0.5), radius: 1, x: 0, y: 1)
         case .essential:
             Image(systemName: "building.columns.circle.fill")
-                .font(.system(size: 10, weight: .bold))
+                .font(Font.adaptiveBadge(isRegular: isRegular))
                 .foregroundStyle(.white)
                 .shadow(color: .mandatoryAmber.opacity(0.5), radius: 1, x: 0, y: 1)
         case .frozen:
             Image(systemName: "shield.fill")
-                .font(.system(size: 10, weight: .bold))
+                .font(Font.adaptiveBadge(isRegular: isRegular))
                 .foregroundStyle(.white)
                 .shadow(color: .blue.opacity(0.5), radius: 1, x: 0, y: 1)
         case .unrecorded, .future:
@@ -94,45 +99,45 @@ struct CalendarDayCell: View {
 
     private var foregroundColor: Color {
         switch status {
-        case .noBuy: return .white
-        case .spent: return .white
-        case .essential: return .white
-        case .frozen: return .white
-        case .unrecorded: return isFuture ? .textTertiary : .textPrimary
-        case .future: return .textTertiary
+        case .noBuy: .white
+        case .spent: .white
+        case .essential: .white
+        case .frozen: .white
+        case .unrecorded: isFuture ? .textTertiary : .textPrimary
+        case .future: .textTertiary
         }
     }
 
     private var backgroundColor: Color {
         switch status {
-        case .noBuy: return .noBuyGreen
-        case .spent: return .spendRed
-        case .essential: return .mandatoryAmber
-        case .frozen: return .blue.opacity(0.55)
-        case .unrecorded: return .clear
-        case .future: return .clear
+        case .noBuy: .noBuyGreen
+        case .spent: .spendRed
+        case .essential: .mandatoryAmber
+        case .frozen: .blue.opacity(0.55)
+        case .unrecorded: .clear
+        case .future: .clear
         }
     }
 
     private var statusShadowColor: Color {
         switch status {
-        case .noBuy: return .noBuyGreen.opacity(0.3)
-        case .spent: return .spendRed.opacity(0.25)
-        case .essential: return .mandatoryAmber.opacity(0.25)
-        case .frozen: return .blue.opacity(0.2)
-        case .unrecorded: return .clear
-        case .future: return .clear
+        case .noBuy: .noBuyGreen.opacity(0.3)
+        case .spent: .spendRed.opacity(0.25)
+        case .essential: .mandatoryAmber.opacity(0.25)
+        case .frozen: .blue.opacity(0.2)
+        case .unrecorded: .clear
+        case .future: .clear
         }
     }
 
     private var statusDotColor: Color {
         switch status {
-        case .noBuy: return .white.opacity(0.8)
-        case .spent: return .white.opacity(0.8)
-        case .essential: return .white.opacity(0.8)
-        case .frozen: return .white.opacity(0.8)
-        case .unrecorded: return .clear
-        case .future: return .clear
+        case .noBuy: .white.opacity(0.8)
+        case .spent: .white.opacity(0.8)
+        case .essential: .white.opacity(0.8)
+        case .frozen: .white.opacity(0.8)
+        case .unrecorded: .clear
+        case .future: .clear
         }
     }
 

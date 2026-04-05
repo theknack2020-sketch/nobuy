@@ -1,6 +1,6 @@
-import SwiftUI
-import SwiftData
 import CoreSpotlight
+import SwiftData
+import SwiftUI
 
 // MARK: - Quick Action Types
 
@@ -35,7 +35,7 @@ final class AppDelegate: NSObject, UIApplicationDelegate {
     var quickActionHandler: QuickActionHandler?
 
     func application(
-        _ application: UIApplication,
+        _: UIApplication,
         performActionFor shortcutItem: UIApplicationShortcutItem,
         completionHandler: @escaping (Bool) -> Void
     ) {

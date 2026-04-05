@@ -13,6 +13,11 @@ struct SavingsGoalCard: View {
     @State private var appeared = false
     @State private var progressAnimationValue: Double = 0
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @Environment(\.horizontalSizeClass) private var sizeClass
+
+    private var isRegular: Bool {
+        sizeClass == .regular
+    }
 
     private var currentSavings: Double {
         Double(noBuyDays) * dailyEstimate
@@ -37,7 +42,7 @@ struct SavingsGoalCard: View {
             HStack(spacing: DS.Spacing.lg) {
                 // Circular progress ring (or static badge when no target)
                 ZStack {
-                    if targetAmount > 0 && dailyEstimate > 0 {
+                    if targetAmount > 0, dailyEstimate > 0 {
                         // Background track
                         Circle()
                             .stroke(Color.noBuyGreenLight, lineWidth: 6)
@@ -55,7 +60,7 @@ struct SavingsGoalCard: View {
 
                         // Percentage or icon inside
                         Text("\(Int(progressAnimationValue * 100))%")
-                            .font(.system(size: 13, weight: .bold, design: .rounded))
+                            .font(Font.adaptiveCaption(isRegular: isRegular).weight(.bold))
                             .foregroundStyle(.noBuyGreen)
                             .contentTransition(.numericText())
                     } else {
@@ -63,7 +68,7 @@ struct SavingsGoalCard: View {
                             .fill(Color.noBuyGreenLight)
                             .frame(width: 56, height: 56)
                         Image(systemName: goalIcon)
-                            .font(.system(size: 22))
+                            .font(Font.adaptiveTitle3(isRegular: isRegular))
                             .foregroundStyle(.noBuyGreen)
                     }
                 }
@@ -99,7 +104,7 @@ struct SavingsGoalCard: View {
                 if dailyEstimate > 0 {
                     VStack(spacing: 2) {
                         Text("\(noBuyDays)")
-                            .font(.system(size: 24, weight: .bold, design: .rounded))
+                            .font(Font.adaptiveDisplay(size: 24, weight: .bold, design: .rounded, isRegular: isRegular))
                             .foregroundStyle(.noBuyGreen)
                             .contentTransition(.numericText())
                         Text("days")

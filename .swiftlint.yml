@@ -1,0 +1,28 @@
+disabled_rules:
+  - trailing_comma
+  - line_length
+  - identifier_name
+  - redundant_string_enum_value
+  - type_body_length
+  - function_body_length
+  - cyclomatic_complexity
+  - nesting
+  - inclusive_language
+  - large_tuple
+  - opening_brace
+  - multiple_closures_with_trailing_closure
+  - statement_position
+  - redundant_discardable_let
+  - type_name
+  - implicit_optional_initialization
+
+excluded:
+  - build
+  - DerivedData
+  - .build
+  - Tests
+  - UITests
+
+file_length:
+  warning: 1400
+  error: 1800

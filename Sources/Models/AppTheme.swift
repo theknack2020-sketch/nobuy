@@ -9,24 +9,26 @@ enum AppTheme: String, CaseIterable, Identifiable, Codable {
     case midnight
     case forest
 
-    var id: String { rawValue }
+    var id: String {
+        rawValue
+    }
 
     // MARK: - Display Info
 
     var displayName: String {
         switch self {
-        case .mint: return "Mint"
-        case .ocean: return "Ocean"
-        case .sunset: return "Sunset"
-        case .midnight: return "Midnight"
-        case .forest: return "Forest"
+        case .mint: "Mint"
+        case .ocean: "Ocean"
+        case .sunset: "Sunset"
+        case .midnight: "Midnight"
+        case .forest: "Forest"
         }
     }
 
     var isPro: Bool {
         switch self {
-        case .mint, .ocean: return false
-        case .sunset, .midnight, .forest: return true
+        case .mint, .ocean: false
+        case .sunset, .midnight, .forest: true
         }
     }
 
@@ -36,15 +38,15 @@ enum AppTheme: String, CaseIterable, Identifiable, Codable {
     var primary: Color {
         switch self {
         case .mint:
-            return Color(red: 0.27, green: 0.63, blue: 0.45)
+            Color(red: 0.27, green: 0.63, blue: 0.45)
         case .ocean:
-            return Color(red: 0.20, green: 0.47, blue: 0.75)
+            Color(red: 0.20, green: 0.47, blue: 0.75)
         case .sunset:
-            return Color(red: 0.90, green: 0.42, blue: 0.30)
+            Color(red: 0.90, green: 0.42, blue: 0.30)
         case .midnight:
-            return Color(red: 0.45, green: 0.38, blue: 0.82)
+            Color(red: 0.45, green: 0.38, blue: 0.82)
         case .forest:
-            return Color(red: 0.22, green: 0.55, blue: 0.35)
+            Color(red: 0.22, green: 0.55, blue: 0.35)
         }
     }
 
@@ -52,15 +54,15 @@ enum AppTheme: String, CaseIterable, Identifiable, Codable {
     var secondary: Color {
         switch self {
         case .mint:
-            return Color(red: 0.35, green: 0.75, blue: 0.55)
+            Color(red: 0.35, green: 0.75, blue: 0.55)
         case .ocean:
-            return Color(red: 0.35, green: 0.62, blue: 0.88)
+            Color(red: 0.35, green: 0.62, blue: 0.88)
         case .sunset:
-            return Color(red: 0.95, green: 0.60, blue: 0.35)
+            Color(red: 0.95, green: 0.60, blue: 0.35)
         case .midnight:
-            return Color(red: 0.60, green: 0.52, blue: 0.92)
+            Color(red: 0.60, green: 0.52, blue: 0.92)
         case .forest:
-            return Color(red: 0.40, green: 0.72, blue: 0.48)
+            Color(red: 0.40, green: 0.72, blue: 0.48)
         }
     }
 
@@ -68,15 +70,15 @@ enum AppTheme: String, CaseIterable, Identifiable, Codable {
     var accent: Color {
         switch self {
         case .mint:
-            return Color(red: 0.18, green: 0.80, blue: 0.60)
+            Color(red: 0.18, green: 0.80, blue: 0.60)
         case .ocean:
-            return Color(red: 0.25, green: 0.78, blue: 0.92)
+            Color(red: 0.25, green: 0.78, blue: 0.92)
         case .sunset:
-            return Color(red: 1.00, green: 0.72, blue: 0.30)
+            Color(red: 1.00, green: 0.72, blue: 0.30)
         case .midnight:
-            return Color(red: 0.75, green: 0.55, blue: 1.00)
+            Color(red: 0.75, green: 0.55, blue: 1.00)
         case .forest:
-            return Color(red: 0.55, green: 0.85, blue: 0.45)
+            Color(red: 0.55, green: 0.85, blue: 0.45)
         }
     }
 
@@ -107,6 +109,6 @@ enum AppTheme: String, CaseIterable, Identifiable, Codable {
     }
 
     static var proThemes: [AppTheme] {
-        allCases.filter { $0.isPro }
+        allCases.filter(\.isPro)
     }
 }

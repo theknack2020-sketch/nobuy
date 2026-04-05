@@ -1,7 +1,6 @@
 import Foundation
 
 enum StreakCalculator {
-
     /// Calculate all streak information from an array of DayRecords
     static func calculate(from records: [DayRecord]) -> StreakInfo {
         let calendar = Calendar.current
@@ -10,14 +9,14 @@ enum StreakCalculator {
         // Build a lookup set of no-buy days (includes frozen days)
         let noBuyDates: Set<Date> = Set(
             records
-                .filter { $0.isNoBuyDay }
+                .filter(\.isNoBuyDay)
                 .map { calendar.startOfDay(for: $0.date) }
         )
 
         // Build a lookup set of frozen dates
         let frozenDates: Set<Date> = Set(
             records
-                .filter { $0.isFrozen }
+                .filter(\.isFrozen)
                 .map { calendar.startOfDay(for: $0.date) }
         )
 
@@ -31,12 +30,12 @@ enum StreakCalculator {
         let monthStart = calendar.date(from: calendar.dateComponents([.year, .month], from: today))!
         let daysSoFar = calendar.dateComponents([.day], from: monthStart, to: today).day! + 1
 
-        let noBuyThisMonth = (0..<daysSoFar).count { dayOffset in
+        let noBuyThisMonth = (0 ..< daysSoFar).count { dayOffset in
             guard let date = calendar.date(byAdding: .day, value: dayOffset, to: monthStart) else { return false }
             return noBuyDates.contains(date)
         }
 
-        let frozenThisMonth = (0..<daysSoFar).count { dayOffset in
+        let frozenThisMonth = (0 ..< daysSoFar).count { dayOffset in
             guard let date = calendar.date(byAdding: .day, value: dayOffset, to: monthStart) else { return false }
             return frozenDates.contains(date)
         }
@@ -85,7 +84,7 @@ enum StreakCalculator {
         var longest = 1
         var current = 1
 
-        for i in 1..<sortedDates.count {
+        for i in 1 ..< sortedDates.count {
             let diff = calendar.dateComponents([.day], from: sortedDates[i - 1], to: sortedDates[i]).day ?? 0
             if diff == 1 {
                 current += 1

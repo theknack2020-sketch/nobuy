@@ -2,16 +2,16 @@ import AudioToolbox
 
 enum SoundManager {
     enum Sound: String {
-        case success = "success"
-        case milestone = "milestone"
+        case success
+        case milestone
         case streakBreak = "streak_break"
-        case save = "save"
-        case delete = "delete"
-        case celebration = "celebration"
-        case error = "error"
-        case tap = "tap"
-        case freeze = "freeze"
-        case complete = "complete"
+        case save
+        case delete
+        case celebration
+        case error
+        case tap
+        case freeze
+        case complete
         case levelUp = "level_up"
     }
 

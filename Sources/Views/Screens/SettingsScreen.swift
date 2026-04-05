@@ -1,8 +1,8 @@
-import SwiftUI
-import SwiftData
-import StoreKit
-import UniformTypeIdentifiers
 import os
+import StoreKit
+import SwiftData
+import SwiftUI
+import UniformTypeIdentifiers
 
 struct SettingsScreen: View {
     @Environment(\.modelContext) private var modelContext
@@ -25,11 +25,17 @@ struct SettingsScreen: View {
     @AppStorage("challengeStartDate") private var challengeStartDate: Double = 0
     @AppStorage("soundEnabled") private var soundEnabled = true
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @Environment(\.horizontalSizeClass) private var sizeClass
+
+    private var isRegular: Bool {
+        sizeClass == .regular
+    }
 
     var body: some View {
         NavigationStack {
             List {
                 // MARK: - Settings Header
+
                 Section {
                     VStack(spacing: DS.Spacing.md) {
                         ZStack {
@@ -47,19 +53,19 @@ struct SettingsScreen: View {
                             Group {
                                 if store.isPro {
                                     Image(systemName: "crown.fill")
-                                        .font(.system(size: 36))
+                                        .font(Font.adaptiveDisplay(size: 36, isRegular: isRegular))
                                         .foregroundStyle(Color.noBuyGreen)
                                 } else {
                                     ZStack {
                                         Image(systemName: "bag.fill")
-                                            .font(.system(size: 32, weight: .medium))
+                                            .font(Font.adaptiveDisplay(size: 32, weight: .medium, isRegular: isRegular))
                                         Image(systemName: "line.diagonal")
-                                            .font(.system(size: 40, weight: .bold))
+                                            .font(Font.adaptiveDisplay(size: 40, isRegular: isRegular))
                                     }
                                     .foregroundStyle(.textSecondary)
                                 }
                             }
-                                .symbolEffect(.pulse, options: .repeating)
+                            .symbolEffect(.pulse, options: .repeating)
                         }
 
                         Text(store.isPro ? "NoBuy Pro" : "NoBuy")
@@ -98,11 +104,13 @@ struct SettingsScreen: View {
                 }
 
                 // MARK: - Pro Features
+
                 if store.isPro {
                     proFeaturesSection
                 }
 
                 // MARK: - Mandatory Categories
+
                 Section {
                     ForEach(mandatoryCategories) { category in
                         HStack {
@@ -142,6 +150,7 @@ struct SettingsScreen: View {
                 }
 
                 // MARK: - Streak
+
                 Section {
                     HStack {
                         Image(systemName: "shield.fill")
@@ -180,6 +189,7 @@ struct SettingsScreen: View {
                 }
 
                 // MARK: - Challenge
+
                 Section {
                     if challengeDuration > 0, challengeStartDate > 0 {
                         let startDate = Date(timeIntervalSince1970: challengeStartDate)
@@ -233,6 +243,7 @@ struct SettingsScreen: View {
                 }
 
                 // MARK: - Notifications
+
                 Section {
                     Toggle(isOn: $soundEnabled) {
                         HStack {
@@ -264,6 +275,7 @@ struct SettingsScreen: View {
                 }
 
                 // MARK: - Data
+
                 Section {
                     Button {
                         if store.isPro {
@@ -307,6 +319,7 @@ struct SettingsScreen: View {
                 }
 
                 // MARK: - Appearance
+
                 Section {
                     ThemePickerView(showPaywall: $showPaywall)
 
@@ -338,6 +351,7 @@ struct SettingsScreen: View {
                 }
 
                 // MARK: - About
+
                 Section {
                     HStack {
                         Text(L10n.version)
@@ -371,6 +385,7 @@ struct SettingsScreen: View {
                 }
 
                 // MARK: - Privacy
+
                 Section {
                     HStack(spacing: DS.Spacing.md) {
                         Image(systemName: "lock.shield.fill")
@@ -389,8 +404,9 @@ struct SettingsScreen: View {
                 }
 
                 // MARK: - Privacy & Legal
+
                 Section {
-                    Link(destination: URL(string: "https://ufukozdemir.com/nobuy/privacy")!) {
+                    Link(destination: URL(string: "https://theknack2020-sketch.github.io/nobuy/privacy/")!) {
                         HStack {
                             Image(systemName: "hand.raised.fill")
                                 .foregroundStyle(.noBuyGreen)
@@ -406,7 +422,7 @@ struct SettingsScreen: View {
                     .accessibilityLabel("Privacy Policy")
                     .accessibilityHint("Opens privacy policy in browser")
 
-                    Link(destination: URL(string: "https://ufukozdemir.com/nobuy/terms")!) {
+                    Link(destination: URL(string: "https://theknack2020-sketch.github.io/nobuy/terms/")!) {
                         HStack {
                             Image(systemName: "doc.text.fill")
                                 .foregroundStyle(.noBuyGreen)
@@ -448,7 +464,7 @@ struct SettingsScreen: View {
             } message: {
                 Text("This action cannot be undone. All daily records and streak data will be deleted.")
             }
-            .sheet(isPresented: $showPaywall) { PaywallView(store: store) }
+            .fullScreenCover(isPresented: $showPaywall) { PaywallView(store: store) }
             .sheet(isPresented: $showExportSheet) {
                 if let url = exportURL { ShareSheet(items: [url]) }
             }
@@ -471,6 +487,7 @@ struct SettingsScreen: View {
     }
 
     // MARK: - Pro Features Section
+
     private var freezeDisplayText: String {
         if store.isPro {
             return "Unlimited"
@@ -496,6 +513,7 @@ struct SettingsScreen: View {
     }
 
     // MARK: - CSV Export
+
     private func exportCSV() {
         do {
             let url = try DataExportService.exportCSV(records: records)
@@ -508,6 +526,7 @@ struct SettingsScreen: View {
     }
 
     // MARK: - Rating Prompt
+
     /// Automatically prompts for review when streak >= 7 and at least 60 days since last prompt.
     private func checkRatingPrompt() {
         let sixtyDaysInSeconds: TimeInterval = 60 * 24 * 60 * 60
@@ -524,7 +543,9 @@ struct SettingsScreen: View {
     }
 
     private func deleteCategories(at offsets: IndexSet) {
-        for index in offsets { modelContext.delete(mandatoryCategories[index]) }
+        for index in offsets {
+            modelContext.delete(mandatoryCategories[index])
+        }
     }
 
     private func resetAllData() {
@@ -546,11 +567,14 @@ struct SettingsScreen: View {
         hasSeededDefaults = true
     }
 
-    private func trackLaunch() { launchCount += 1 }
+    private func trackLaunch() {
+        launchCount += 1
+    }
 
     private func requestReview() {
         if let scene = UIApplication.shared.connectedScenes
-            .first(where: { $0.activationState == .foregroundActive }) as? UIWindowScene {
+            .first(where: { $0.activationState == .foregroundActive }) as? UIWindowScene
+        {
             SKStoreReviewController.requestReview(in: scene)
         }
     }
@@ -558,10 +582,11 @@ struct SettingsScreen: View {
 
 struct ShareSheet: UIViewControllerRepresentable {
     let items: [Any]
-    func makeUIViewController(context: Context) -> UIActivityViewController {
+    func makeUIViewController(context _: Context) -> UIActivityViewController {
         UIActivityViewController(activityItems: items, applicationActivities: nil)
     }
-    func updateUIViewController(_ uiViewController: UIActivityViewController, context: Context) {}
+
+    func updateUIViewController(_: UIActivityViewController, context _: Context) {}
 }
 
 struct NotificationSettingsView: View {
@@ -675,7 +700,7 @@ struct NotificationSettingsView: View {
                 notificationTime = date
             }
         }
-        .sheet(isPresented: $showPaywall) {
+        .fullScreenCover(isPresented: $showPaywall) {
             PaywallView(store: store)
         }
     }
@@ -704,7 +729,7 @@ struct ThemePickerView: View {
                         isSelected: UserSettings.shared.currentTheme == theme,
                         isLocked: theme.isPro && !store.isPro
                     ) {
-                        if theme.isPro && !store.isPro {
+                        if theme.isPro, !store.isPro {
                             showPaywall = true
                         } else {
                             HapticManager.impact(.light)
@@ -731,6 +756,11 @@ private struct ThemeDot: View {
     let isSelected: Bool
     let isLocked: Bool
     let action: () -> Void
+    @Environment(\.horizontalSizeClass) private var sizeClass
+
+    private var isRegular: Bool {
+        sizeClass == .regular
+    }
 
     var body: some View {
         Button(action: action) {
@@ -757,7 +787,7 @@ private struct ThemeDot: View {
                     // Checkmark for selected
                     if isSelected {
                         Image(systemName: "checkmark")
-                            .font(.system(size: 14, weight: .bold))
+                            .font(Font.adaptiveDetail(isRegular: isRegular).weight(.bold))
                             .foregroundStyle(.white)
                     }
 
@@ -768,7 +798,7 @@ private struct ThemeDot: View {
                             .frame(width: 44, height: 44)
 
                         Image(systemName: "lock.fill")
-                            .font(.system(size: 12, weight: .semibold))
+                            .font(Font.adaptiveCaption(isRegular: isRegular).weight(.semibold))
                             .foregroundStyle(.white)
                     }
                 }
@@ -778,11 +808,12 @@ private struct ThemeDot: View {
                     .font(.caption2)
                     .foregroundStyle(isSelected ? .textPrimary : .textSecondary)
                     .lineLimit(1)
+                    .minimumScaleFactor(0.75)
 
                 // PRO badge
                 if theme.isPro {
                     Text("PRO")
-                        .font(.system(size: 8, weight: .bold))
+                        .font(Font.adaptiveCaption2(isRegular: isRegular).weight(.bold))
                         .foregroundStyle(.noBuyGreen)
                         .padding(.horizontal, 4)
                         .padding(.vertical, 1)
@@ -792,7 +823,7 @@ private struct ThemeDot: View {
                 } else {
                     // Spacer for alignment
                     Text(" ")
-                        .font(.system(size: 8))
+                        .font(Font.adaptiveCaption2(isRegular: isRegular))
                         .padding(.vertical, 1)
                         .opacity(0)
                 }

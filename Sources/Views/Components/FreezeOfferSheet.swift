@@ -8,6 +8,11 @@ struct FreezeOfferSheet: View {
 
     @State private var appeared = false
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @Environment(\.horizontalSizeClass) private var sizeClass
+
+    private var isRegular: Bool {
+        sizeClass == .regular
+    }
 
     var body: some View {
         VStack(spacing: DS.Spacing.xxl) {
@@ -24,7 +29,7 @@ struct FreezeOfferSheet: View {
                     .frame(width: 100, height: 100)
 
                 Image(systemName: "shield.fill")
-                    .font(.system(size: 48))
+                    .font(Font.adaptiveDisplay(size: 48, isRegular: isRegular))
                     .foregroundStyle(
                         LinearGradient(
                             colors: [.noBuyGreen, .green.opacity(0.7)],
@@ -39,7 +44,7 @@ struct FreezeOfferSheet: View {
 
             VStack(spacing: DS.Spacing.sm) {
                 Text("Protect Your Streak")
-                    .font(.system(size: 22, weight: .bold, design: .rounded))
+                    .font(Font.adaptiveDisplay(size: 22, weight: .bold, design: .rounded, isRegular: isRegular))
 
                 Text("Your \(streakCount)-day streak is about to break. Use a freeze to protect it.")
                     .font(.body)

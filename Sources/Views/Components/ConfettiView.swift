@@ -5,7 +5,7 @@ struct ConfettiView: View {
     @State private var isAnimating = false
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     let colors: [Color] = [.noBuyGreen, .yellow, .orange, .blue, .pink, .purple]
-    
+
     var body: some View {
         if reduceMotion {
             EmptyView()
@@ -33,16 +33,16 @@ struct ConfettiView: View {
             .allowsHitTesting(false)
         }
     }
-    
+
     private func generateParticles() {
-        particles = (0..<50).map { _ in
+        particles = (0 ..< 50).map { _ in
             ConfettiParticle(
-                x: CGFloat.random(in: -200...200),
-                startY: CGFloat.random(in: -100...(-50)),
-                endY: CGFloat.random(in: 300...600),
-                size: CGFloat.random(in: 4...10),
+                x: CGFloat.random(in: -200 ... 200),
+                startY: CGFloat.random(in: -100 ... -50),
+                endY: CGFloat.random(in: 300 ... 600),
+                size: CGFloat.random(in: 4 ... 10),
                 color: colors.randomElement()!,
-                rotation: Double.random(in: 180...720),
+                rotation: Double.random(in: 180 ... 720),
                 isCircle: Bool.random()
             )
         }

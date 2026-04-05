@@ -9,6 +9,12 @@ struct ChallengeCard: View {
     let onSetup: () -> Void
 
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @Environment(\.horizontalSizeClass) private var sizeClass
+
+    private var isRegular: Bool {
+        sizeClass == .regular
+    }
+
     @State private var appeared = false
     @State private var showCelebration = false
 
@@ -25,10 +31,10 @@ struct ChallengeCard: View {
         if let start = challengeStartDate, challengeDuration > 0 {
             let calendar = Calendar.current
             let endDate = calendar.date(byAdding: .day, value: challengeDuration, to: start) ?? start
-            let noBuyCount = records.filter { record in
+            let noBuyCount = records.count(where: { record in
                 let day = calendar.startOfDay(for: record.date)
                 return day >= start && day < endDate && record.isNoBuyDay
-            }.count
+            })
             self.daysCompleted = min(noBuyCount, challengeDuration)
 
             let elapsed = calendar.dateComponents([.day], from: start, to: .now).day ?? 0
@@ -106,10 +112,10 @@ struct ChallengeCard: View {
 
                     VStack(spacing: 0) {
                         Text("\(daysCompleted)")
-                            .font(.system(size: 20, weight: .black, design: .rounded))
+                            .font(Font.adaptiveTitle3(isRegular: isRegular).weight(.black))
                             .foregroundStyle(isCompleted ? .mandatoryAmber : .noBuyGreen)
                         Text("/\(totalDays)")
-                            .font(.system(size: 11, weight: .medium, design: .rounded))
+                            .font(Font.adaptiveSmallLabel(isRegular: isRegular))
                             .foregroundStyle(.textTertiary)
                     }
                 }

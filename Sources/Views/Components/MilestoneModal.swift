@@ -6,13 +6,18 @@ struct MilestoneModal: View {
     let onDismiss: () -> Void
     @State private var appear = false
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
-    
+    @Environment(\.horizontalSizeClass) private var sizeClass
+
+    private var isRegular: Bool {
+        sizeClass == .regular
+    }
+
     var body: some View {
         ZStack {
             Color.black.opacity(appear ? 0.4 : 0)
                 .ignoresSafeArea()
                 .onTapGesture { dismiss() }
-            
+
             VStack(spacing: DS.Spacing.xxl) {
                 ZStack {
                     Circle()
@@ -27,28 +32,28 @@ struct MilestoneModal: View {
                         .frame(width: 120, height: 120)
                         .scaleEffect(appear ? 1.0 : (reduceMotion ? 1.0 : 0.3))
                         .animation(reduceMotion ? nil : .spring(response: 0.6, dampingFraction: 0.5), value: appear)
-                    
+
                     Image(systemName: achievement?.icon ?? milestoneIcon)
-                        .font(.system(size: 56))
+                        .font(Font.adaptiveDisplay(size: 56, isRegular: isRegular))
                         .foregroundStyle(milestoneColor)
                         .symbolEffect(.bounce, value: reduceMotion ? false : appear)
                         .shadow(color: milestoneColor.opacity(0.4), radius: 8, x: 0, y: 4)
                 }
-                
+
                 VStack(spacing: DS.Spacing.sm) {
                     Text(achievement?.title ?? milestoneTitle)
-                        .font(.system(size: 28, weight: .bold, design: .rounded))
+                        .font(Font.adaptiveDisplay(size: 28, weight: .bold, design: .rounded, isRegular: isRegular))
                         .multilineTextAlignment(.center)
-                    
+
                     Text(achievement?.description ?? milestoneDescription)
                         .font(.body)
                         .foregroundStyle(.secondary)
                         .multilineTextAlignment(.center)
                         .padding(.horizontal, DS.Spacing.xxxl)
                 }
-                
+
                 Text("\(streak)")
-                    .font(.system(size: 64, weight: .black, design: .rounded))
+                    .font(Font.adaptiveDisplay(size: 64, weight: .black, design: .rounded, isRegular: isRegular))
                     .foregroundStyle(
                         LinearGradient(
                             colors: [milestoneColor, milestoneColor.opacity(0.7)],
@@ -58,14 +63,14 @@ struct MilestoneModal: View {
                     )
                     .contentTransition(.numericText())
                     .shadow(color: milestoneColor.opacity(0.3), radius: 4, x: 0, y: 2)
-                
+
                 Text("day streak")
                     .font(.subheadline)
                     .fontWeight(.medium)
                     .foregroundStyle(.secondary)
                     .textCase(.uppercase)
                     .tracking(2)
-                
+
                 Button {
                     HapticManager.tap()
                     dismiss()
@@ -114,7 +119,7 @@ struct MilestoneModal: View {
             }
         }
     }
-    
+
     private func dismiss() {
         if reduceMotion {
             appear = false
@@ -124,51 +129,51 @@ struct MilestoneModal: View {
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) { onDismiss() }
         }
     }
-    
+
     private var milestoneColor: Color {
         switch streak {
-        case 1...3: return .noBuyGreen
-        case 4...7: return .blue
-        case 8...14: return .purple
-        case 15...30: return .orange
-        default: return Color(red: 0.85, green: 0.65, blue: 0.13) // Gold
+        case 1 ... 3: .noBuyGreen
+        case 4 ... 7: .blue
+        case 8 ... 14: .purple
+        case 15 ... 30: .orange
+        default: Color(red: 0.85, green: 0.65, blue: 0.13) // Gold
         }
     }
-    
+
     private var milestoneIcon: String {
         switch streak {
-        case 1: return "star.fill"
-        case 3: return "flame.fill"
-        case 7: return "trophy.fill"
-        case 14: return "medal.fill"
-        case 30: return "crown.fill"
-        case 60: return "bolt.shield.fill"
-        case 100: return "star.circle.fill"
-        default: return "sparkles"
+        case 1: "star.fill"
+        case 3: "flame.fill"
+        case 7: "trophy.fill"
+        case 14: "medal.fill"
+        case 30: "crown.fill"
+        case 60: "bolt.shield.fill"
+        case 100: "star.circle.fill"
+        default: "sparkles"
         }
     }
-    
+
     private var milestoneTitle: String {
         switch streak {
-        case 1: return "First Step!"
-        case 3: return "3 Days Done!"
-        case 7: return "One Week!"
-        case 14: return "Two Weeks!"
-        case 30: return "One Month!"
-        case 60: return "60 Days!"
-        case 100: return "100 Days!"
-        default: return "\(streak) Days!"
+        case 1: "First Step!"
+        case 3: "3 Days Done!"
+        case 7: "One Week!"
+        case 14: "Two Weeks!"
+        case 30: "One Month!"
+        case 60: "60 Days!"
+        case 100: "100 Days!"
+        default: "\(streak) Days!"
         }
     }
-    
+
     private var milestoneDescription: String {
         switch streak {
-        case 1: return "The journey has begun. Every long road starts with a single step."
-        case 3: return "A habit is forming. You're doing great!"
-        case 7: return "A full week! You've proven your willpower."
-        case 14: return "You stayed strong for two weeks. This is becoming a lifestyle."
-        case 30: return "30 days! You're a savings machine."
-        default: return "An incredible achievement! Keep going."
+        case 1: "The journey has begun. Every long road starts with a single step."
+        case 3: "A habit is forming. You're doing great!"
+        case 7: "A full week! You've proven your willpower."
+        case 14: "You stayed strong for two weeks. This is becoming a lifestyle."
+        case 30: "30 days! You're a savings machine."
+        default: "An incredible achievement! Keep going."
         }
     }
 }

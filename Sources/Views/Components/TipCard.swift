@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct TipCard: View {
-    @State private var currentTip: TipEntry = TipEntry(text: "", icon: "lightbulb.fill", tint: .mandatoryAmber)
+    @State private var currentTip: TipEntry = .init(text: "", icon: "lightbulb.fill", tint: .mandatoryAmber)
     @State private var appeared = false
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
 

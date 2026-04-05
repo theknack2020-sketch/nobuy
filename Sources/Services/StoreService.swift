@@ -1,7 +1,7 @@
 import Foundation
-import StoreKit
 import Observation
 import os
+import StoreKit
 
 @Observable
 @MainActor
@@ -14,9 +14,9 @@ final class StoreService {
     private(set) var restoreState: RestoreState = .idle
 
     private let productID = "com.ufukozdemir.nobuy.pro"
-    // NOTE: If family sharing is enabled, update the entitlement in the
-    // StoreKit configuration file to set isFamilyShareable = true on the product.
-    // Currently this is a non-consumable without family sharing.
+    /// NOTE: If family sharing is enabled, update the entitlement in the
+    /// StoreKit configuration file to set isFamilyShareable = true on the product.
+    /// Currently this is a non-consumable without family sharing.
     static let freeCategoryLimit = 3
 
     enum PurchaseState: Equatable {
@@ -130,7 +130,7 @@ final class StoreService {
         do {
             let result = try await product.purchase()
             switch result {
-            case .success(let verification):
+            case let .success(verification):
                 let transaction = try checkVerified(verification)
                 isPro = true
                 purchaseState = .purchased
@@ -166,7 +166,8 @@ final class StoreService {
     func checkEntitlements() async {
         for await result in Transaction.currentEntitlements {
             if let transaction = try? checkVerified(result),
-               transaction.productID == productID {
+               transaction.productID == productID
+            {
                 isPro = true
                 return
             }
@@ -176,7 +177,8 @@ final class StoreService {
     func listenForTransactions() async {
         for await result in Transaction.updates {
             if let transaction = try? checkVerified(result),
-               transaction.productID == productID {
+               transaction.productID == productID
+            {
                 isPro = true
                 await transaction.finish()
             }
@@ -211,9 +213,9 @@ final class StoreService {
 
     private func checkVerified<T>(_ result: VerificationResult<T>) throws -> T {
         switch result {
-        case .unverified(_, let error):
+        case let .unverified(_, error):
             throw error
-        case .verified(let item):
+        case let .verified(item):
             return item
         }
     }

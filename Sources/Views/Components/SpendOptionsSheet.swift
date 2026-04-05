@@ -1,5 +1,5 @@
-import SwiftUI
 import SwiftData
+import SwiftUI
 
 struct SpendOptionsSheet: View {
     @Environment(\.modelContext) private var modelContext
@@ -12,6 +12,11 @@ struct SpendOptionsSheet: View {
     @State private var showError = false
     @State private var errorMessage = ""
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @Environment(\.horizontalSizeClass) private var sizeClass
+
+    private var isRegular: Bool {
+        sizeClass == .regular
+    }
 
     var body: some View {
         NavigationStack {
@@ -19,7 +24,7 @@ struct SpendOptionsSheet: View {
                 // Header
                 VStack(spacing: DS.Spacing.sm) {
                     Image(systemName: "questionmark.circle.fill")
-                        .font(.system(size: 32))
+                        .font(Font.adaptiveDisplay(size: 32, isRegular: isRegular))
                         .foregroundStyle(
                             LinearGradient(
                                 colors: [.textSecondary, .textTertiary],
@@ -204,7 +209,7 @@ struct SpendOptionsSheet: View {
                 }
             }
             .alert(L10n.errorGenericTitle, isPresented: $showError) {
-                Button(L10n.errorOK) { }
+                Button(L10n.errorOK) {}
             } message: {
                 Text(errorMessage)
             }

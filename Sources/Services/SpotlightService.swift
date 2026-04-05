@@ -1,6 +1,6 @@
 import CoreSpotlight
-import UniformTypeIdentifiers
 import os
+import UniformTypeIdentifiers
 
 enum SpotlightService {
     static func indexStreak(_ streak: Int) {

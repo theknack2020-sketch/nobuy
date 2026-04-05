@@ -6,6 +6,11 @@ struct StreakBreakView: View {
     let onDismiss: () -> Void
     @State private var appear = false
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @Environment(\.horizontalSizeClass) private var sizeClass
+
+    private var isRegular: Bool {
+        sizeClass == .regular
+    }
 
     private var compassionateMessages: [String] {
         [
@@ -30,7 +35,7 @@ struct StreakBreakView: View {
                     .frame(width: 100, height: 100)
 
                 Image(systemName: "heart.fill")
-                    .font(.system(size: 48))
+                    .font(Font.adaptiveDisplay(size: 48, isRegular: isRegular))
                     .foregroundStyle(.spendRed.opacity(0.6))
                     .symbolEffect(.pulse, value: reduceMotion ? false : appear)
                     .shadow(color: .spendRed.opacity(0.2), radius: 6, x: 0, y: 3)
@@ -38,7 +43,7 @@ struct StreakBreakView: View {
             }
 
             Text("Streak ended")
-                .font(.system(size: 22, weight: .bold, design: .rounded))
+                .font(Font.adaptiveDisplay(size: 22, weight: .bold, design: .rounded, isRegular: isRegular))
 
             Text(compassionateMessages.randomElement()!)
                 .font(.body)
@@ -50,7 +55,7 @@ struct StreakBreakView: View {
                 HStack(spacing: DS.Spacing.xl) {
                     VStack {
                         Text("\(previousStreak)")
-                            .font(.system(size: 28, weight: .bold, design: .rounded))
+                            .font(Font.adaptiveDisplay(size: 28, weight: .bold, design: .rounded, isRegular: isRegular))
                             .foregroundStyle(.textSecondary)
                         Text("Last streak")
                             .font(.caption)
@@ -67,7 +72,7 @@ struct StreakBreakView: View {
 
                     VStack {
                         Text("\(longestStreak)")
-                            .font(.system(size: 28, weight: .bold, design: .rounded))
+                            .font(Font.adaptiveDisplay(size: 28, weight: .bold, design: .rounded, isRegular: isRegular))
                             .foregroundStyle(.noBuyGreen)
                         Text("Best")
                             .font(.caption)

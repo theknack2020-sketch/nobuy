@@ -1,12 +1,18 @@
 import SwiftUI
 
 // MARK: - Impulse Checklist Screen
+
 // Before-you-buy questionnaire — 5 questions, one at a time.
 // Accessible from HomeScreen ("I want to buy but...") and SpendOptionsSheet.
 
 struct ImpulseChecklistScreen: View {
     @Environment(\.dismiss) private var dismiss
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @Environment(\.horizontalSizeClass) private var sizeClass
+
+    private var isRegular: Bool {
+        sizeClass == .regular
+    }
 
     @State private var currentIndex = 0
     @State private var answers: [Bool?] = Array(repeating: nil, count: 5)
@@ -22,7 +28,7 @@ struct ImpulseChecklistScreen: View {
 
     enum Phase {
         case questions
-        case earlyExit   // Answered in a way that clearly says "don't buy"
+        case earlyExit // Answered in a way that clearly says "don't buy"
         case summary
     }
 
@@ -40,12 +46,12 @@ struct ImpulseChecklistScreen: View {
         Question(
             icon: "questionmark.circle.fill",
             text: "Do I really need this?",
-            earlyExitAnswer: false  // "No" → early exit
+            earlyExitAnswer: false // "No" → early exit
         ),
         Question(
             icon: "clock.fill",
             text: "Can I wait 24 hours?",
-            earlyExitAnswer: true   // "Yes" → early exit
+            earlyExitAnswer: true // "Yes" → early exit
         ),
         Question(
             icon: "banknote.fill",
@@ -131,7 +137,7 @@ struct ImpulseChecklistScreen: View {
                     .frame(width: 120, height: 120)
 
                 Image(systemName: question.icon)
-                    .font(.system(size: 52))
+                    .font(Font.adaptiveDisplay(size: 52, isRegular: isRegular))
                     .foregroundStyle(.noBuyGreen)
                     .shadow(color: .noBuyGreen.opacity(0.3), radius: 6, x: 0, y: 3)
             }
@@ -139,7 +145,7 @@ struct ImpulseChecklistScreen: View {
 
             // Question text
             Text(question.text)
-                .font(.system(size: 22, weight: .bold, design: .rounded))
+                .font(Font.adaptiveDisplay(size: 22, weight: .bold, design: .rounded, isRegular: isRegular))
                 .multilineTextAlignment(.center)
                 .padding(.horizontal, DS.Spacing.xxl)
                 .id("text-\(currentIndex)")
@@ -201,7 +207,7 @@ struct ImpulseChecklistScreen: View {
 
     private var progressDots: some View {
         HStack(spacing: DS.Spacing.sm) {
-            ForEach(0..<questions.count, id: \.self) { index in
+            ForEach(0 ..< questions.count, id: \.self) { index in
                 Circle()
                     .fill(dotColor(for: index))
                     .frame(width: index == currentIndex ? 12 : 8,
@@ -216,11 +222,11 @@ struct ImpulseChecklistScreen: View {
 
     private func dotColor(for index: Int) -> Color {
         if index < currentIndex {
-            return .noBuyGreen
+            .noBuyGreen
         } else if index == currentIndex {
-            return .noBuyGreen
+            .noBuyGreen
         } else {
-            return .textTertiary.opacity(0.3)
+            .textTertiary.opacity(0.3)
         }
     }
 
@@ -286,14 +292,14 @@ struct ImpulseChecklistScreen: View {
                     .frame(width: 140, height: 140)
 
                 Image(systemName: "hand.raised.fill")
-                    .font(.system(size: 64))
+                    .font(Font.adaptiveDisplay(size: 64, isRegular: isRegular))
                     .foregroundStyle(.noBuyGreen)
                     .shadow(color: .noBuyGreen.opacity(0.3), radius: 8, x: 0, y: 4)
             }
 
             VStack(spacing: DS.Spacing.md) {
                 Text("Great! Consider holding off on this purchase.")
-                    .font(.system(size: 22, weight: .bold, design: .rounded))
+                    .font(Font.adaptiveDisplay(size: 22, weight: .bold, design: .rounded, isRegular: isRegular))
                     .multilineTextAlignment(.center)
                     .padding(.horizontal, DS.Spacing.xxl)
                     .accessibilityAddTraits(.isHeader)
@@ -394,7 +400,7 @@ struct ImpulseChecklistScreen: View {
                     .frame(width: 140, height: 140)
 
                 Image(systemName: shouldNotBuy ? "trophy.fill" : "exclamationmark.triangle.fill")
-                    .font(.system(size: 64))
+                    .font(Font.adaptiveDisplay(size: 64, isRegular: isRegular))
                     .foregroundStyle(shouldNotBuy ? .noBuyGreen : .mandatoryAmber)
                     .shadow(color: (shouldNotBuy ? Color.noBuyGreen : .mandatoryAmber).opacity(0.3), radius: 8, x: 0, y: 4)
             }
@@ -402,9 +408,9 @@ struct ImpulseChecklistScreen: View {
             // Result text
             VStack(spacing: DS.Spacing.md) {
                 Text(shouldNotBuy
-                     ? "You strengthened your willpower!"
-                     : "You're still not sure")
-                    .font(.system(size: 24, weight: .bold, design: .rounded))
+                    ? "You strengthened your willpower!"
+                    : "You're still not sure")
+                    .font(Font.adaptiveDisplay(size: 24, weight: .bold, design: .rounded, isRegular: isRegular))
                     .multilineTextAlignment(.center)
 
                 // Score breakdown
@@ -516,7 +522,7 @@ struct ImpulseChecklistScreen: View {
     private func scorePill(count: Int, total: Int, label: String, color: Color) -> some View {
         VStack(spacing: DS.Spacing.xs) {
             Text("\(count)/\(total)")
-                .font(.system(size: 28, weight: .black, design: .rounded))
+                .font(Font.adaptiveDisplay(size: 28, weight: .black, design: .rounded, isRegular: isRegular))
                 .foregroundStyle(color)
             Text(label)
                 .font(.caption)
@@ -541,10 +547,10 @@ struct ImpulseChecklistScreen: View {
     /// Q5 "No" (nothing else) → buy
     private var buyScore: Int {
         var score = 0
-        if answers[0] == true  { score += 1 } // Yes I need it
+        if answers[0] == true { score += 1 } // Yes I need it
         if answers[1] == false { score += 1 } // No I can't wait
-        if answers[2] == true  { score += 1 } // Yes fits budget
-        if answers[3] == true  { score += 1 } // Yes still want it
+        if answers[2] == true { score += 1 } // Yes fits budget
+        if answers[3] == true { score += 1 } // Yes still want it
         if answers[4] == false { score += 1 } // No nothing else
         return score
     }
@@ -587,7 +593,7 @@ struct ImpulseChecklistScreen: View {
                         )
                         .frame(width: 80, height: 80)
                     Image(systemName: "clock.badge.questionmark")
-                        .font(.system(size: 36))
+                        .font(Font.adaptiveDisplay(size: 36, isRegular: isRegular))
                         .foregroundStyle(.noBuyGreen)
                 }
 
@@ -636,17 +642,17 @@ struct ImpulseChecklistScreen: View {
                                     waitingReminderHours = hours
                                 } label: {
                                     Text(reminderLabel(for: hours))
-                                    .font(.subheadline.weight(.medium))
-                                    .foregroundStyle(waitingReminderHours == hours ? .white : .textSecondary)
-                                    .frame(maxWidth: .infinity)
-                                    .padding(.vertical, DS.Spacing.md)
-                                    .background(
-                                        RoundedRectangle(cornerRadius: DS.Radius.md)
-                                            .fill(waitingReminderHours == hours
-                                                ? AnyShapeStyle(LinearGradient(colors: [.noBuyGreen, .noBuyGreen.opacity(0.8)], startPoint: .top, endPoint: .bottom))
-                                                : AnyShapeStyle(Color.surfaceSecondary))
-                                    )
-                                    .shadow(color: waitingReminderHours == hours ? .noBuyGreen.opacity(0.2) : .black.opacity(0.04), radius: 4, x: 0, y: 2)
+                                        .font(.subheadline.weight(.medium))
+                                        .foregroundStyle(waitingReminderHours == hours ? .white : .textSecondary)
+                                        .frame(maxWidth: .infinity)
+                                        .padding(.vertical, DS.Spacing.md)
+                                        .background(
+                                            RoundedRectangle(cornerRadius: DS.Radius.md)
+                                                .fill(waitingReminderHours == hours
+                                                    ? AnyShapeStyle(LinearGradient(colors: [.noBuyGreen, .noBuyGreen.opacity(0.8)], startPoint: .top, endPoint: .bottom))
+                                                    : AnyShapeStyle(Color.surfaceSecondary))
+                                        )
+                                        .shadow(color: waitingReminderHours == hours ? .noBuyGreen.opacity(0.2) : .black.opacity(0.04), radius: 4, x: 0, y: 2)
                                 }
                                 .buttonStyle(.scale)
                                 .animation(reduceMotion ? nil : .spring(response: 0.3, dampingFraction: 0.7), value: waitingReminderHours)
@@ -669,8 +675,8 @@ struct ImpulseChecklistScreen: View {
                         .background(
                             RoundedRectangle(cornerRadius: DS.Radius.lg)
                                 .fill(waitingItemName.trimmingCharacters(in: .whitespaces).isEmpty
-                                      ? AnyShapeStyle(Color.noBuyGreen.opacity(0.4))
-                                      : AnyShapeStyle(LinearGradient(colors: [.noBuyGreen, .noBuyGreen.opacity(0.8)], startPoint: .leading, endPoint: .trailing)))
+                                    ? AnyShapeStyle(Color.noBuyGreen.opacity(0.4))
+                                    : AnyShapeStyle(LinearGradient(colors: [.noBuyGreen, .noBuyGreen.opacity(0.8)], startPoint: .leading, endPoint: .trailing)))
                         )
                         .shadow(color: waitingItemName.trimmingCharacters(in: .whitespaces).isEmpty ? .clear : .noBuyGreen.opacity(0.3), radius: 10, x: 0, y: 5)
                 }
@@ -718,10 +724,10 @@ struct ImpulseChecklistScreen: View {
 
     private func reminderLabel(for hours: Int) -> String {
         switch hours {
-        case 24: return "24 hours"
-        case 48: return "48 hours"
-        case 72: return "72 hours"
-        default: return "\(hours) hours"
+        case 24: "24 hours"
+        case 48: "48 hours"
+        case 72: "72 hours"
+        default: "\(hours) hours"
         }
     }
 

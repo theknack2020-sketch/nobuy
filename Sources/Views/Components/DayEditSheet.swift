@@ -1,5 +1,5 @@
-import SwiftUI
 import SwiftData
+import SwiftUI
 
 struct DayEditSheet: View {
     @Environment(\.modelContext) private var modelContext
@@ -53,8 +53,8 @@ struct DayEditSheet: View {
                             Image(systemName: record.isNoBuyDay ? "checkmark.circle.fill" : "xmark.circle.fill")
                                 .foregroundStyle(record.isNoBuyDay ? .noBuyGreen : .spendRed)
                             Text(record.isNoBuyDay
-                                 ? "No-spend day"
-                                 : "Spent")
+                                ? "No-spend day"
+                                : "Spent")
                                 .fontWeight(.medium)
                         }
                         .padding(.vertical, DS.Spacing.sm)
@@ -70,7 +70,7 @@ struct DayEditSheet: View {
                         text: $noteText,
                         axis: .vertical
                     )
-                    .lineLimit(2...4)
+                    .lineLimit(2 ... 4)
                     .textFieldStyle(.roundedBorder)
                     .opacity(appeared ? 1 : 0)
                     .offset(y: appeared ? 0 : 15)
@@ -283,7 +283,7 @@ struct DayEditSheet: View {
             get: { saveError != nil },
             set: { if !$0 { saveError = nil } }
         )) {
-            Button("OK", role: .cancel) { }
+            Button("OK", role: .cancel) {}
         } message: {
             Text(saveError ?? "An unexpected error occurred.")
         }
@@ -339,6 +339,7 @@ struct DayEditSheet: View {
 
 #Preview {
     let config = ModelConfiguration(isStoredInMemoryOnly: true)
+    // swiftlint:disable:next force_try
     let container = try! ModelContainer(for: DayRecord.self, configurations: config)
 
     // Seed sample data for preview

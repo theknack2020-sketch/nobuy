@@ -10,6 +10,11 @@ struct ChallengeSetupSheet: View {
     @State private var shakeCustomField = false
     @State private var validationError: String? = nil
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @Environment(\.horizontalSizeClass) private var sizeClass
+
+    private var isRegular: Bool {
+        sizeClass == .regular
+    }
 
     private let presets: [(days: Int, label: String, icon: String)] = [
         (7, "7 Days", "7.circle.fill"),
@@ -37,7 +42,7 @@ struct ChallengeSetupSheet: View {
                             .frame(width: 72, height: 72)
 
                         Image(systemName: "flame.fill")
-                            .font(.system(size: 40))
+                            .font(Font.adaptiveDisplay(size: 40, isRegular: isRegular))
                             .foregroundStyle(
                                 LinearGradient(
                                     colors: [.noBuyGreen, .green.opacity(0.7)],
@@ -48,7 +53,7 @@ struct ChallengeSetupSheet: View {
                     }
 
                     Text("Challenge Duration")
-                        .font(.system(size: 22, weight: .bold, design: .rounded))
+                        .font(Font.adaptiveDisplay(size: 22, weight: .bold, design: .rounded, isRegular: isRegular))
 
                     Text("How many no-spend days are you aiming for?")
                         .font(.subheadline)
@@ -75,7 +80,7 @@ struct ChallengeSetupSheet: View {
                         } label: {
                             VStack(spacing: DS.Spacing.sm) {
                                 Text("\(preset.days)")
-                                    .font(.system(size: 28, weight: .bold, design: .rounded))
+                                    .font(Font.adaptiveDisplay(size: 28, weight: .bold, design: .rounded, isRegular: isRegular))
                                     .foregroundStyle(selectedDuration == preset.days ? .white : .noBuyGreen)
                                 Text("days")
                                     .font(.caption)
@@ -105,7 +110,7 @@ struct ChallengeSetupSheet: View {
                     } label: {
                         VStack(spacing: DS.Spacing.sm) {
                             Image(systemName: "pencil.circle.fill")
-                                .font(.system(size: 24))
+                                .font(Font.adaptiveDisplay(size: 24, isRegular: isRegular))
                                 .foregroundStyle(selectedDuration == -1 ? .white : .noBuyGreen)
                             Text("Custom")
                                 .font(.caption)
@@ -134,7 +139,7 @@ struct ChallengeSetupSheet: View {
                                 text: $customDays
                             )
                             .keyboardType(.numberPad)
-                            .font(.system(size: 20, weight: .semibold, design: .rounded))
+                            .font(Font.adaptiveTitle3(isRegular: isRegular).weight(.semibold))
                             .multilineTextAlignment(.center)
                             .padding(.vertical, DS.Spacing.md)
                             .background(
@@ -177,7 +182,7 @@ struct ChallengeSetupSheet: View {
 
                 // Start button
                 Button {
-                    if selectedDuration == -1 && !validateAndShake() {
+                    if selectedDuration == -1, !validateAndShake() {
                         return
                     }
                     let duration = resolvedDuration

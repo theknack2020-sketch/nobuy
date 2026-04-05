@@ -52,12 +52,12 @@ final class AchievementManager {
     }
 
     #if DEBUG
-    /// Reset all achievements to locked state — for testing only
-    func resetForTesting() {
-        achievements = Achievement.all
-        newlyUnlocked = nil
-        UserDefaults.standard.removeObject(forKey: storageKey)
-    }
+        /// Reset all achievements to locked state — for testing only
+        func resetForTesting() {
+            achievements = Achievement.all
+            newlyUnlocked = nil
+            UserDefaults.standard.removeObject(forKey: storageKey)
+        }
     #endif
 
     private func checkPerfectMonth(records: [DayRecord]) -> Bool {
@@ -66,8 +66,8 @@ final class AchievementManager {
         guard let monthStart = calendar.date(from: calendar.dateComponents([.year, .month], from: today)) else { return false }
         let daysSoFar = calendar.dateComponents([.day], from: monthStart, to: today).day! + 1
         guard daysSoFar >= 28 else { return false } // At least 28 days in the month
-        let noBuyDates = Set(records.filter { $0.isNoBuyDay }.map { calendar.startOfDay(for: $0.date) })
-        for offset in 0..<daysSoFar {
+        let noBuyDates = Set(records.filter(\.isNoBuyDay).map { calendar.startOfDay(for: $0.date) })
+        for offset in 0 ..< daysSoFar {
             guard let date = calendar.date(byAdding: .day, value: offset, to: monthStart) else { return false }
             if !noBuyDates.contains(date) { return false }
         }
@@ -91,7 +91,7 @@ final class AchievementManager {
     }
 
     private func saveUnlocked() {
-        let ids = Dictionary(uniqueKeysWithValues: achievements.filter { $0.isUnlocked }.compactMap { a -> (String, Date)? in
+        let ids = Dictionary(uniqueKeysWithValues: achievements.filter(\.isUnlocked).compactMap { a -> (String, Date)? in
             guard let date = a.unlockedDate else { return nil }
             return (a.id, date)
         })

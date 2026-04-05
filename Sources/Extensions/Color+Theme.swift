@@ -41,30 +41,57 @@ extension Color {
 
     /// Primary theme color — reads from UserSettings
     @MainActor
-    static var themePrimary: Color { UserSettings.shared.currentTheme.primary }
+    static var themePrimary: Color {
+        UserSettings.shared.currentTheme.primary
+    }
 
     /// Secondary theme color — reads from UserSettings
     @MainActor
-    static var themeSecondary: Color { UserSettings.shared.currentTheme.secondary }
+    static var themeSecondary: Color {
+        UserSettings.shared.currentTheme.secondary
+    }
 
     /// Accent theme color — reads from UserSettings
     @MainActor
-    static var themeAccent: Color { UserSettings.shared.currentTheme.accent }
+    static var themeAccent: Color {
+        UserSettings.shared.currentTheme.accent
+    }
 
     /// Light background tint — reads from UserSettings
     @MainActor
-    static var themeBackground: Color { UserSettings.shared.currentTheme.primary.opacity(0.08) }
+    static var themeBackground: Color {
+        UserSettings.shared.currentTheme.primary.opacity(0.08)
+    }
 
     /// Card background tint — reads from UserSettings
     @MainActor
-    static var themeCardBackground: Color { UserSettings.shared.currentTheme.primary.opacity(0.05) }
+    static var themeCardBackground: Color {
+        UserSettings.shared.currentTheme.primary.opacity(0.05)
+    }
 }
 
 extension ShapeStyle where Self == Color {
-    static var noBuyGreen: Color { .noBuyGreen }
-    static var spendRed: Color { .spendRed }
-    static var textPrimary: Color { .textPrimary }
-    static var textSecondary: Color { .textSecondary }
-    static var textTertiary: Color { .textTertiary }
-    static var mandatoryAmber: Color { .mandatoryAmber }
+    static var noBuyGreen: Color {
+        .noBuyGreen
+    }
+
+    static var spendRed: Color {
+        .spendRed
+    }
+
+    static var textPrimary: Color {
+        .textPrimary
+    }
+
+    static var textSecondary: Color {
+        .textSecondary
+    }
+
+    static var textTertiary: Color {
+        .textTertiary
+    }
+
+    static var mandatoryAmber: Color {
+        .mandatoryAmber
+    }
 }

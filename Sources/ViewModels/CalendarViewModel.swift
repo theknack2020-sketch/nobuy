@@ -1,8 +1,8 @@
 import Foundation
-import SwiftData
-import SwiftUI
 import Observation
 import os
+import SwiftData
+import SwiftUI
 
 @MainActor
 @Observable
@@ -24,8 +24,7 @@ final class CalendarViewModel {
         let calendar = Calendar.current
         let firstWeekday = calendar.firstWeekdayOfMonth(of: currentMonth)
         // Convert to Monday-first (1=Mon, 7=Sun)
-        let mondayBased = firstWeekday == 1 ? 6 : firstWeekday - 2
-        return mondayBased
+        return firstWeekday == 1 ? 6 : firstWeekday - 2
     }
 
     var weekdaySymbols: [String] {
@@ -143,19 +142,19 @@ struct MonthSummaryStats {
 enum DayStatus {
     case noBuy
     case spent
-    case essential  // mandatory-only spending (streak preserved)
+    case essential // mandatory-only spending (streak preserved)
     case frozen
     case unrecorded
     case future
 
     var color: SwiftUI.Color {
         switch self {
-        case .noBuy: return .noBuyGreen
-        case .spent: return .spendRed
-        case .essential: return .mandatoryAmber
-        case .frozen: return .blue.opacity(0.6)
-        case .unrecorded: return .clear
-        case .future: return .clear
+        case .noBuy: .noBuyGreen
+        case .spent: .spendRed
+        case .essential: .mandatoryAmber
+        case .frozen: .blue.opacity(0.6)
+        case .unrecorded: .clear
+        case .future: .clear
         }
     }
 }

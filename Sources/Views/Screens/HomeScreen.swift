@@ -1,5 +1,5 @@
-import SwiftUI
 import SwiftData
+import SwiftUI
 
 struct HomeScreen: View {
     @Environment(\.modelContext) private var modelContext
@@ -21,6 +21,12 @@ struct HomeScreen: View {
     private static let celebrationStreaks: Set<Int> = [1, 3, 7, 14, 30, 60, 100]
 
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @Environment(\.horizontalSizeClass) private var sizeClass
+
+    private var isRegular: Bool {
+        sizeClass == .regular
+    }
+
     @State private var showMilestoneBanner = false
     @State private var milestoneDay = 0
     @State private var showImpulseChecklist = false
@@ -51,6 +57,7 @@ struct HomeScreen: View {
                         Spacer().frame(height: DS.Spacing.lg)
 
                         // MARK: - Streak Section
+
                         if records.isEmpty {
                             emptyStateView
                         } else {
@@ -66,6 +73,7 @@ struct HomeScreen: View {
                             .animation(reduceMotion ? nil : DS.Anim.normal.delay(DS.Anim.stagger * 1), value: sectionsAppeared)
 
                         // MARK: - Action Section
+
                         mainButton
                             .opacity(sectionsAppeared ? 1 : 0)
                             .offset(y: sectionsAppeared ? 0 : 10)
@@ -82,6 +90,7 @@ struct HomeScreen: View {
                         }
 
                         // MARK: - Goals & Progress Section
+
                         if !viewModel.savingsGoal.isEmpty {
                             savingsGoalCard
                         }
@@ -89,7 +98,7 @@ struct HomeScreen: View {
                         challengeSection
 
                         // Milestone-based soft paywall banner
-                        if showMilestoneBanner && !store.isPro {
+                        if showMilestoneBanner, !store.isPro {
                             SoftPaywallBanner(
                                 message: L10n.milestonePaywallMessage(milestoneDay),
                                 onUpgrade: { showPaywall = true },
@@ -101,12 +110,14 @@ struct HomeScreen: View {
                         }
 
                         // MARK: - Stats Section
+
                         monthlySummaryCard
 
                         TipCard()
                             .padding(.top, DS.Spacing.sm)
 
                         // MARK: - Tools Section
+
                         impulseChecklistButton
                     }
                     .padding(.horizontal, DS.Spacing.xl)
@@ -168,7 +179,7 @@ struct HomeScreen: View {
 
                                 if WaitingListManager.shared.activeItems.count > 0 {
                                     Text("\(WaitingListManager.shared.activeItems.count)")
-                                        .font(.system(size: 10, weight: .bold))
+                                        .font(Font.adaptiveBadge(isRegular: isRegular))
                                         .foregroundStyle(.white)
                                         .frame(width: 16, height: 16)
                                         .background(Circle().fill(Color.spendRed))
@@ -219,7 +230,9 @@ struct HomeScreen: View {
                     }
                 }
             }
+
             // MARK: - Confirmation Dialogs
+
             .confirmationDialog(
                 "Reset today's record?",
                 isPresented: $showResetConfirmation,
@@ -228,7 +241,7 @@ struct HomeScreen: View {
                 Button("Reset to No Record", role: .destructive) {
                     resetTodayRecord()
                 }
-                Button(L10n.cancel, role: .cancel) { }
+                Button(L10n.cancel, role: .cancel) {}
             } message: {
                 Text("This will remove today's entry. You can re-log it afterwards.")
             }
@@ -307,7 +320,7 @@ struct HomeScreen: View {
             .presentationDetents([.medium, .large])
             .presentationDragIndicator(.visible)
         }
-        .sheet(isPresented: $showPaywall) {
+        .fullScreenCover(isPresented: $showPaywall) {
             PaywallView(store: store)
         }
         .sheet(isPresented: $showImpulseChecklist) {
@@ -319,7 +332,7 @@ struct HomeScreen: View {
         .sheet(isPresented: $showWaitingList) {
             WaitingListSheet()
         }
-        .sheet(isPresented: softPaywallBinding) {
+        .fullScreenCover(isPresented: softPaywallBinding) {
             PaywallView(store: store)
         }
     }
@@ -386,7 +399,7 @@ struct HomeScreen: View {
 
             // Fade-out confetti
             DispatchQueue.main.asyncAfter(deadline: .now() + 3.0) {
-                withAnimation(.easeOut(duration: 0.5)) {
+                withAnimation(.spring(duration: 0.5, bounce: 0.15)) {
                     showConfetti = false
                 }
             }
@@ -439,7 +452,7 @@ struct HomeScreen: View {
                 }
 
                 Text("\(viewModel.streakInfo.currentStreak)")
-                    .font(.system(size: 80, weight: .black, design: .rounded))
+                    .font(Font.adaptiveDisplay(size: 80, weight: .black, design: .rounded, isRegular: isRegular))
                     .foregroundStyle(viewModel.streakInfo.currentStreak > 0 ? Color.noBuyGreen : Color.textTertiary)
                     .contentTransition(.numericText())
                     .animation(reduceMotion ? nil : .spring(duration: 0.4), value: viewModel.streakInfo.currentStreak)
@@ -471,11 +484,10 @@ struct HomeScreen: View {
 
     // MARK: - Main Button
 
-    @ViewBuilder
     private var mainButton: some View {
         VStack(spacing: 0) {
             Button {
-                if viewModel.isTodayRecorded && viewModel.isTodayNoBuy {
+                if viewModel.isTodayRecorded, viewModel.isTodayNoBuy {
                     viewModel.showSpendOptions = true
                 } else {
                     viewModel.markNoBuy(context: modelContext, allRecords: records)
@@ -484,7 +496,7 @@ struct HomeScreen: View {
             } label: {
                 VStack(spacing: DS.Spacing.md) {
                     Image(systemName: viewModel.isTodayNoBuy ? "checkmark.circle.fill" : "circle")
-                        .font(.system(size: 56))
+                        .font(Font.adaptiveDisplay(size: 56, isRegular: isRegular))
                         .symbolEffect(.bounce, value: viewModel.isTodayNoBuy)
 
                     Text(viewModel.isTodayNoBuy ? L10n.noBuyDone : L10n.noBuyButton)
@@ -641,7 +653,7 @@ struct HomeScreen: View {
 
             HStack(spacing: DS.Spacing.xs) {
                 Text("\(viewModel.streakInfo.noBuyDaysThisMonth)")
-                    .font(.system(size: 32, weight: .black, design: .rounded))
+                    .font(Font.adaptiveDisplay(size: 32, weight: .black, design: .rounded, isRegular: isRegular))
                     .foregroundStyle(.noBuyGreen)
 
                 Text(L10n.monthSummary(viewModel.streakInfo.noBuyDaysThisMonth, viewModel.streakInfo.totalDaysThisMonth))
@@ -687,9 +699,9 @@ struct HomeScreen: View {
                         format: "~$%d saved",
                         Int(viewModel.estimatedSavings)
                     ))
-                        .font(.caption)
-                        .foregroundStyle(.noBuyGreen)
-                        .fontWeight(.medium)
+                    .font(.caption)
+                    .foregroundStyle(.noBuyGreen)
+                    .fontWeight(.medium)
                 }
                 .opacity(summaryAppeared ? 1 : 0)
                 .offset(y: summaryAppeared ? 0 : 10)
@@ -772,7 +784,7 @@ struct HomeScreen: View {
         guard Self.celebrationStreaks.contains(streak) else { return }
 
         // Check achievements and capture newly unlocked
-        let totalNoBuyDays = records.filter { $0.isNoBuyDay }.count
+        let totalNoBuyDays = records.count(where: { $0.isNoBuyDay })
         AchievementManager.shared.checkAchievements(
             currentStreak: streak,
             totalNoBuyDays: totalNoBuyDays,
@@ -790,7 +802,7 @@ struct HomeScreen: View {
             }
             // Fade-out confetti
             DispatchQueue.main.asyncAfter(deadline: .now() + 3.0) {
-                withAnimation(.easeOut(duration: 0.5)) {
+                withAnimation(.spring(duration: 0.5, bounce: 0.15)) {
                     showConfetti = false
                 }
             }
@@ -802,7 +814,7 @@ struct HomeScreen: View {
     private var emptyStateView: some View {
         VStack(spacing: DS.Spacing.lg) {
             Image(systemName: "leaf.circle.fill")
-                .font(.system(size: 64))
+                .font(Font.adaptiveDisplay(size: 64, isRegular: isRegular))
                 .foregroundStyle(.noBuyGreen.opacity(0.6))
                 .symbolEffect(.pulse, options: reduceMotion ? .nonRepeating : .repeating)
                 .accessibilityHidden(true)
@@ -872,7 +884,7 @@ private extension Int {
         switch self {
         case 100...:
             // Rainbow/prismatic for legendary 100+ streaks
-            return [
+            [
                 Color(red: 0.55, green: 0.27, blue: 0.68),
                 Color(red: 0.27, green: 0.50, blue: 0.78),
                 Color(red: 0.27, green: 0.63, blue: 0.45),
@@ -880,14 +892,14 @@ private extension Int {
             ]
         case 30...:
             // Gold gradient for 30+ streaks
-            return [
+            [
                 Color(red: 0.76, green: 0.60, blue: 0.20),
                 Color(red: 0.92, green: 0.78, blue: 0.38),
                 Color(red: 0.76, green: 0.60, blue: 0.20),
             ]
         default:
             // Green gradient for early streaks
-            return [
+            [
                 Color(red: 0.20, green: 0.52, blue: 0.38),
                 Color(red: 0.32, green: 0.72, blue: 0.52),
                 Color(red: 0.20, green: 0.52, blue: 0.38),
@@ -898,20 +910,20 @@ private extension Int {
     var shareCardDarkGradient: [Color] {
         switch self {
         case 100...:
-            return [
+            [
                 Color(red: 0.15, green: 0.10, blue: 0.22),
                 Color(red: 0.10, green: 0.15, blue: 0.25),
                 Color(red: 0.10, green: 0.20, blue: 0.18),
                 Color(red: 0.22, green: 0.18, blue: 0.08),
             ]
         case 30...:
-            return [
+            [
                 Color(red: 0.18, green: 0.14, blue: 0.05),
                 Color(red: 0.25, green: 0.20, blue: 0.08),
                 Color(red: 0.18, green: 0.14, blue: 0.05),
             ]
         default:
-            return [
+            [
                 Color(red: 0.06, green: 0.16, blue: 0.12),
                 Color(red: 0.10, green: 0.22, blue: 0.16),
                 Color(red: 0.06, green: 0.16, blue: 0.12),
@@ -921,12 +933,12 @@ private extension Int {
 
     var shareCardEmoji: String {
         switch self {
-        case 100...: return "💯"
-        case 60...: return "👑"
-        case 30...: return "🏆"
-        case 14...: return "⭐"
-        case 7...: return "🔥"
-        default: return "🌱"
+        case 100...: "💯"
+        case 60...: "👑"
+        case 30...: "🏆"
+        case 14...: "⭐"
+        case 7...: "🔥"
+        default: "🌱"
         }
     }
 }
@@ -955,9 +967,14 @@ private func localizedGoalText(_ goal: String) -> String? {
 struct StreakShareCard: View {
     let streakInfo: StreakInfo
     var savingsGoal: String = ""
-    var firstNoBuyDate: Date? = nil
+    var firstNoBuyDate: Date?
 
     @Environment(\.colorScheme) private var colorScheme
+    @Environment(\.horizontalSizeClass) private var sizeClass
+
+    private var isRegular: Bool {
+        sizeClass == .regular
+    }
 
     private var gradientColors: [Color] {
         colorScheme == .dark
@@ -975,11 +992,11 @@ struct StreakShareCard: View {
 
             // Emoji
             Text(streakInfo.currentStreak.shareCardEmoji)
-                .font(.system(size: 52))
+                .font(Font.adaptiveDisplay(size: 52, isRegular: isRegular))
 
             // Streak number
             Text("\(streakInfo.currentStreak)")
-                .font(.system(size: 80, weight: .black, design: .rounded))
+                .font(Font.adaptiveDisplay(size: 80, weight: .black, design: .rounded, isRegular: isRegular))
                 .foregroundStyle(textColor)
 
             // "DAY STREAK"
@@ -1054,9 +1071,14 @@ struct StreakShareCard: View {
 struct StreakShareCardPro: View {
     let streakInfo: StreakInfo
     var savingsGoal: String = ""
-    var firstNoBuyDate: Date? = nil
+    var firstNoBuyDate: Date?
 
     @Environment(\.colorScheme) private var colorScheme
+    @Environment(\.horizontalSizeClass) private var sizeClass
+
+    private var isRegular: Bool {
+        sizeClass == .regular
+    }
 
     private var gradientColors: [Color] {
         colorScheme == .dark
@@ -1088,11 +1110,11 @@ struct StreakShareCardPro: View {
 
             // Emoji
             Text(streakInfo.currentStreak.shareCardEmoji)
-                .font(.system(size: 52))
+                .font(Font.adaptiveDisplay(size: 52, isRegular: isRegular))
 
             // Streak number
             Text("\(streakInfo.currentStreak)")
-                .font(.system(size: 80, weight: .black, design: .rounded))
+                .font(Font.adaptiveDisplay(size: 80, weight: .black, design: .rounded, isRegular: isRegular))
                 .foregroundStyle(textColor)
 
             // "DAY STREAK"

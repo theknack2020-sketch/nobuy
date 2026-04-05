@@ -1,7 +1,7 @@
 import Foundation
 import Observation
-import UserNotifications
 import os
+import UserNotifications
 
 @Observable
 @MainActor
@@ -12,18 +12,27 @@ final class WaitingListManager {
     private(set) var lastError: String?
     private let storageKey = "waitingListItems"
 
-    private init() { load() }
+    private init() {
+        load()
+    }
 
-    var activeItems: [WaitingItem] { items.filter { !$0.isResolved } }
-    var resolvedItems: [WaitingItem] { items.filter { $0.isResolved } }
+    var activeItems: [WaitingItem] {
+        items.filter { !$0.isResolved }
+    }
+
+    var resolvedItems: [WaitingItem] {
+        items.filter(\.isResolved)
+    }
+
     var savedMoney: Double {
         items
             .filter { $0.isResolved && $0.didBuy == false }
             .compactMap(\.estimatedCost)
             .reduce(0, +)
     }
+
     var resistedCount: Int {
-        items.filter { $0.isResolved && $0.didBuy == false }.count
+        items.count(where: { $0.isResolved && $0.didBuy == false })
     }
 
     func addItem(_ item: WaitingItem) {

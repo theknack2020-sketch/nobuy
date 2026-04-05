@@ -1,9 +1,8 @@
 import Foundation
-import UserNotifications
 import os
+import UserNotifications
 
 final class NotificationManager: Sendable {
-
     // MARK: - Identifiers
 
     private enum ID {
@@ -58,7 +57,7 @@ final class NotificationManager: Sendable {
         let center = UNUserNotificationCenter.current()
         cancelNotifications(withPrefix: ID.dailyReminder)
 
-        for dayOffset in 0..<7 {
+        for dayOffset in 0 ..< 7 {
             let content = UNMutableNotificationContent()
             content.title = "NoBuy"
             content.body = dailyReminderMessages[dayOffset % dailyReminderMessages.count]

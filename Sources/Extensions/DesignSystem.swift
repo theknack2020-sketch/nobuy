@@ -45,7 +45,7 @@ enum DS {
             LinearGradient(
                 colors: [
                     Color.noBuyGreen.opacity(0.08),
-                    Color.noBuyGreen.opacity(0.02)
+                    Color.noBuyGreen.opacity(0.02),
                 ],
                 startPoint: .topLeading,
                 endPoint: .bottomTrailing
@@ -67,7 +67,7 @@ enum DS {
                 colors: [
                     Color.noBuyGreen.opacity(0.20),
                     Color.noBuyGreen.opacity(0.05),
-                    Color.clear
+                    Color.clear,
                 ],
                 center: .center,
                 startRadius: 20,

@@ -13,6 +13,11 @@ struct OnboardingScreen: View {
     @State private var direction: Int = 1 // 1 = forward, -1 = back
     @State private var showPaywall = false
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @Environment(\.horizontalSizeClass) private var sizeClass
+
+    private var isRegular: Bool {
+        sizeClass == .regular
+    }
 
     private let totalPages = 5
 
@@ -23,35 +28,37 @@ struct OnboardingScreen: View {
         case discipline
         case custom
 
-        var id: String { rawValue }
+        var id: String {
+            rawValue
+        }
 
         var label: String {
             switch self {
-            case .emergencyFund: return L10n.goalEmergencyFund
-            case .vacation: return L10n.goalVacation
-            case .debtFree: return L10n.goalDebtFree
-            case .discipline: return L10n.goalDiscipline
-            case .custom: return L10n.goalCustom
+            case .emergencyFund: L10n.goalEmergencyFund
+            case .vacation: L10n.goalVacation
+            case .debtFree: L10n.goalDebtFree
+            case .discipline: L10n.goalDiscipline
+            case .custom: L10n.goalCustom
             }
         }
 
         var icon: String {
             switch self {
-            case .emergencyFund: return "shield.fill"
-            case .vacation: return "airplane"
-            case .debtFree: return "creditcard.trianglebadge.exclamationmark"
-            case .discipline: return "brain.head.profile"
-            case .custom: return "pencil.line"
+            case .emergencyFund: "shield.fill"
+            case .vacation: "airplane"
+            case .debtFree: "creditcard.trianglebadge.exclamationmark"
+            case .discipline: "brain.head.profile"
+            case .custom: "pencil.line"
             }
         }
 
         var color: Color {
             switch self {
-            case .emergencyFund: return .blue
-            case .vacation: return .orange
-            case .debtFree: return .noBuyGreen
-            case .discipline: return .purple
-            case .custom: return .textSecondary
+            case .emergencyFund: .blue
+            case .vacation: .orange
+            case .debtFree: .noBuyGreen
+            case .discipline: .purple
+            case .custom: .textSecondary
             }
         }
     }
@@ -71,7 +78,7 @@ struct OnboardingScreen: View {
 
             // Page indicator
             HStack(spacing: DS.Spacing.sm) {
-                ForEach(0..<totalPages, id: \.self) { index in
+                ForEach(0 ..< totalPages, id: \.self) { index in
                     Capsule()
                         .fill(index == currentPage ? Color.noBuyGreen : Color.textTertiary.opacity(0.4))
                         .frame(width: index == currentPage ? DS.Spacing.xxl : DS.Spacing.sm, height: DS.Spacing.sm)
@@ -142,11 +149,11 @@ struct OnboardingScreen: View {
     private var buttonLabel: String {
         switch currentPage {
         case 4:
-            return notificationPermissionGranted ? L10n.getStarted : L10n.enableNotifications
+            notificationPermissionGranted ? L10n.getStarted : L10n.enableNotifications
         case 3:
-            return L10n.next
+            L10n.next
         default:
-            return currentPage < totalPages - 1 ? L10n.next : L10n.getStarted
+            currentPage < totalPages - 1 ? L10n.next : L10n.getStarted
         }
     }
 
@@ -237,13 +244,13 @@ struct OnboardingScreen: View {
         HStack(spacing: 6) {
             ZStack {
                 Image(systemName: "bag.fill")
-                    .font(.system(size: 14, weight: .medium))
+                    .font(Font.adaptiveDetail(isRegular: isRegular).weight(.medium))
                 Image(systemName: "line.diagonal")
-                    .font(.system(size: 18, weight: .bold))
+                    .font(Font.adaptiveHeadline(isRegular: isRegular).weight(.bold))
             }
             .foregroundStyle(.white.opacity(0.5))
             Text("NoBuy")
-                .font(.system(size: 13, weight: .semibold, design: .rounded))
+                .font(Font.adaptiveCaption(isRegular: isRegular).weight(.semibold))
                 .foregroundStyle(.white.opacity(0.4))
         }
         .accessibilityHidden(true)
@@ -262,7 +269,7 @@ struct OnboardingScreen: View {
                     .frame(width: 160, height: 160)
 
                 Image(systemName: "heart.circle.fill")
-                    .font(.system(size: 80))
+                    .font(Font.adaptiveDisplay(size: 80, isRegular: isRegular))
                     .foregroundStyle(.noBuyGreen)
                     .symbolEffect(.pulse, options: reduceMotion ? .nonRepeating : .repeating)
                     .accessibilityHidden(true)
@@ -270,7 +277,7 @@ struct OnboardingScreen: View {
 
             VStack(spacing: DS.Spacing.md) {
                 Text(L10n.onboardingTitle1)
-                    .font(.system(size: 26, weight: .bold, design: .rounded))
+                    .font(Font.adaptiveDisplay(size: 26, weight: .bold, design: .rounded, isRegular: isRegular))
                     .multilineTextAlignment(.center)
                     .padding(.horizontal, DS.Spacing.lg)
 
@@ -300,7 +307,7 @@ struct OnboardingScreen: View {
                     .frame(width: 160, height: 160)
 
                 Image(systemName: "hand.tap.fill")
-                    .font(.system(size: 80))
+                    .font(Font.adaptiveDisplay(size: 80, isRegular: isRegular))
                     .foregroundStyle(.blue)
                     .symbolEffect(.pulse, options: reduceMotion ? .nonRepeating : .repeating)
                     .accessibilityHidden(true)
@@ -308,7 +315,7 @@ struct OnboardingScreen: View {
 
             VStack(spacing: DS.Spacing.md) {
                 Text(L10n.onboardingTitle2)
-                    .font(.system(size: 26, weight: .bold, design: .rounded))
+                    .font(Font.adaptiveDisplay(size: 26, weight: .bold, design: .rounded, isRegular: isRegular))
                     .multilineTextAlignment(.center)
                     .padding(.horizontal, DS.Spacing.lg)
 
@@ -338,7 +345,7 @@ struct OnboardingScreen: View {
                     .frame(width: 160, height: 160)
 
                 Image(systemName: "flame.fill")
-                    .font(.system(size: 80))
+                    .font(Font.adaptiveDisplay(size: 80, isRegular: isRegular))
                     .foregroundStyle(.orange)
                     .symbolEffect(.pulse, options: reduceMotion ? .nonRepeating : .repeating)
                     .accessibilityHidden(true)
@@ -346,7 +353,7 @@ struct OnboardingScreen: View {
 
             VStack(spacing: DS.Spacing.md) {
                 Text(L10n.onboardingTitle3)
-                    .font(.system(size: 26, weight: .bold, design: .rounded))
+                    .font(Font.adaptiveDisplay(size: 26, weight: .bold, design: .rounded, isRegular: isRegular))
                     .multilineTextAlignment(.center)
                     .padding(.horizontal, DS.Spacing.lg)
 
@@ -377,7 +384,7 @@ struct OnboardingScreen: View {
                 .font(.title3)
                 .foregroundStyle(color)
             Text("\(days)")
-                .font(.system(size: 16, weight: .bold, design: .rounded))
+                .font(Font.adaptiveSubheadline(isRegular: isRegular).weight(.bold))
                 .minimumScaleFactor(0.8)
                 .foregroundStyle(.textPrimary)
             Text(L10n.dayStreak)
@@ -401,12 +408,12 @@ struct OnboardingScreen: View {
                 Spacer().frame(height: DS.Spacing.lg)
 
                 Image(systemName: "target")
-                    .font(.system(size: 48))
+                    .font(Font.adaptiveDisplay(size: 48, isRegular: isRegular))
                     .foregroundStyle(.noBuyGreen)
 
                 VStack(spacing: DS.Spacing.sm) {
                     Text(L10n.onboardingTitle4)
-                        .font(.system(size: 26, weight: .bold, design: .rounded))
+                        .font(Font.adaptiveDisplay(size: 26, weight: .bold, design: .rounded, isRegular: isRegular))
                         .multilineTextAlignment(.center)
 
                     Text(L10n.onboardingDesc4)
@@ -477,7 +484,7 @@ struct OnboardingScreen: View {
 
                     TextField(L10n.dailySpendingPlaceholder, text: $spendingInput)
                         .keyboardType(.decimalPad)
-                        .font(.system(size: 20, weight: .semibold, design: .rounded))
+                        .font(Font.adaptiveTitle3(isRegular: isRegular).weight(.semibold))
                         .multilineTextAlignment(.center)
                         .padding(.vertical, DS.Spacing.md)
                         .background(
@@ -511,13 +518,13 @@ struct OnboardingScreen: View {
                     .frame(width: 160, height: 160)
 
                 Image(systemName: "bell.badge.fill")
-                    .font(.system(size: 80))
+                    .font(Font.adaptiveDisplay(size: 80, isRegular: isRegular))
                     .foregroundStyle(.mandatoryAmber)
             }
 
             VStack(spacing: DS.Spacing.md) {
                 Text(L10n.onboardingTitle5)
-                    .font(.system(size: 26, weight: .bold, design: .rounded))
+                    .font(Font.adaptiveDisplay(size: 26, weight: .bold, design: .rounded, isRegular: isRegular))
                     .multilineTextAlignment(.center)
                     .padding(.horizontal, DS.Spacing.lg)
 
@@ -568,7 +575,7 @@ struct OnboardingScreen: View {
             )
         }
         .buttonStyle(ScaleButtonStyle())
-        .sheet(isPresented: $showPaywall) {
+        .fullScreenCover(isPresented: $showPaywall) {
             PaywallView(store: .shared)
         }
     }
@@ -592,6 +599,7 @@ struct OnboardingScreen: View {
                     .font(.caption)
                     .foregroundStyle(.textSecondary)
                     .lineLimit(1)
+                    .minimumScaleFactor(0.75)
             }
 
             Spacer()

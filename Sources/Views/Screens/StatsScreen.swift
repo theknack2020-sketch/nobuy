@@ -1,6 +1,6 @@
-import SwiftUI
-import SwiftData
 import Charts
+import SwiftData
+import SwiftUI
 
 // MARK: - Chart Data Types
 
@@ -44,16 +44,23 @@ struct StatsScreen: View {
     @State private var appeared = false
     @State private var isLoading = true
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @Environment(\.horizontalSizeClass) private var sizeClass
 
-    private var noBuyRecords: [DayRecord] { records.filter { $0.isNoBuyDay } }
+    private var isRegular: Bool {
+        sizeClass == .regular
+    }
+
+    private var noBuyRecords: [DayRecord] {
+        records.filter(\.isNoBuyDay)
+    }
 
     // MARK: - Computed Chart Data
 
     private var monthlyBarEntries: [MonthlyBarEntry] {
         viewModel.monthlyData.flatMap { item in [
             MonthlyBarEntry(month: item.label, category: "No-Spend", count: item.noBuyCount),
-            MonthlyBarEntry(month: item.label, category: "Spent", count: max(0, item.totalDays - item.noBuyCount))
-        ]}
+            MonthlyBarEntry(month: item.label, category: "Spent", count: max(0, item.totalDays - item.noBuyCount)),
+        ] }
     }
 
     private var weeklyStreakPoints: [WeekStreakPoint] {
@@ -68,7 +75,7 @@ struct StatsScreen: View {
         formatter.dateFormat = "MMM d"
 
         var results: [WeekStreakPoint] = []
-        for weekBack in (0..<12).reversed() {
+        for weekBack in (0 ..< 12).reversed() {
             guard let weekEndDate = calendar.date(byAdding: .day, value: -weekBack * 7, to: today) else { continue }
             let normalizedEnd = calendar.startOfDay(for: weekEndDate)
 
@@ -217,7 +224,7 @@ struct StatsScreen: View {
             .navigationTitle("Statistics")
             .navigationBarTitleDisplayMode(.large)
         }
-        .sheet(isPresented: $showPaywall) {
+        .fullScreenCover(isPresented: $showPaywall) {
             PaywallView(store: store)
         }
         .onAppear {
@@ -248,7 +255,7 @@ struct StatsScreen: View {
         VStack(spacing: DS.Spacing.md) {
             LazyVGrid(columns: [
                 GridItem(.flexible(), spacing: DS.Spacing.md),
-                GridItem(.flexible(), spacing: DS.Spacing.md)
+                GridItem(.flexible(), spacing: DS.Spacing.md),
             ], spacing: DS.Spacing.md) {
                 statCard(
                     title: "Total Days",
@@ -380,7 +387,7 @@ struct StatsScreen: View {
             if dailySpendingEstimate > 0 {
                 VStack(spacing: DS.Spacing.sm) {
                     Text(formattedSavings)
-                        .font(.system(size: 48, weight: .black, design: .rounded))
+                        .font(Font.adaptiveDisplay(size: 48, weight: .black, design: .rounded, isRegular: isRegular))
                         .foregroundStyle(.noBuyGreen)
                         .contentTransition(.numericText())
                         .animation(reduceMotion ? nil : DS.Anim.normal, value: viewModel.estimatedSavings)
@@ -436,7 +443,7 @@ struct StatsScreen: View {
             }
             .chartForegroundStyleScale([
                 "No-Spend": Color.noBuyGreen,
-                "Spent": Color.spendRed
+                "Spent": Color.spendRed,
             ])
             .chartLegend(position: .bottom, alignment: .center, spacing: DS.Spacing.md)
             .chartYAxis {
@@ -604,7 +611,7 @@ struct StatsScreen: View {
                     .chartForegroundStyleScale([
                         "No-Spend": Color.noBuyGreen,
                         "Essential": Color.mandatoryAmber,
-                        "Discretionary": Color.spendRed
+                        "Discretionary": Color.spendRed,
                     ])
                     .chartLegend(.hidden)
                     .frame(width: 140, height: 140)
@@ -640,10 +647,10 @@ struct StatsScreen: View {
 
     private func colorForCategory(_ category: String) -> Color {
         switch category {
-        case "No-Spend": return .noBuyGreen
-        case "Essential": return .mandatoryAmber
-        case "Discretionary": return .spendRed
-        default: return .textTertiary
+        case "No-Spend": .noBuyGreen
+        case "Essential": .mandatoryAmber
+        case "Discretionary": .spendRed
+        default: .textTertiary
         }
     }
 
@@ -700,7 +707,7 @@ struct StatsScreen: View {
                         }
                     }
                 }
-                .chartYScale(domain: 0...100)
+                .chartYScale(domain: 0 ... 100)
                 .chartYAxis {
                     AxisMarks(position: .leading, values: [0, 25, 50, 75, 100]) { value in
                         AxisGridLine(stroke: StrokeStyle(lineWidth: 0.5, dash: [4, 4]))
@@ -887,7 +894,7 @@ struct StatsScreen: View {
             LazyVGrid(columns: [
                 GridItem(.flexible(), spacing: DS.Spacing.md),
                 GridItem(.flexible(), spacing: DS.Spacing.md),
-                GridItem(.flexible(), spacing: DS.Spacing.md)
+                GridItem(.flexible(), spacing: DS.Spacing.md),
             ], spacing: DS.Spacing.md) {
                 ForEach(Array(allAchievements.enumerated()), id: \.element.id) { index, achievement in
                     if store.isPro || index < freeLimit {
@@ -899,7 +906,7 @@ struct StatsScreen: View {
             }
 
             // Upgrade prompt for free users
-            if !store.isPro && allAchievements.count > freeLimit {
+            if !store.isPro, allAchievements.count > freeLimit {
                 Button {
                     HapticManager.impact(.medium)
                     showPaywall = true
@@ -951,8 +958,8 @@ struct StatsScreen: View {
             ZStack {
                 Circle()
                     .fill(achievement.isUnlocked
-                          ? Color.noBuyGreen.opacity(0.15)
-                          : Color.surfaceTertiary)
+                        ? Color.noBuyGreen.opacity(0.15)
+                        : Color.surfaceTertiary)
                     .frame(width: 52, height: 52)
 
                 Image(systemName: achievement.icon)
@@ -1103,7 +1110,7 @@ struct StatsScreen: View {
             VStack(spacing: DS.Spacing.lg) {
                 // Fake stacked bar preview
                 HStack(alignment: .bottom, spacing: DS.Spacing.sm) {
-                    ForEach(0..<6, id: \.self) { i in
+                    ForEach(0 ..< 6, id: \.self) { i in
                         VStack(spacing: 1) {
                             RoundedRectangle(cornerRadius: 2)
                                 .fill(Color.spendRed.opacity(0.35))
@@ -1215,7 +1222,7 @@ struct StatsScreen: View {
             Text(title)
                 .font(.headline)
                 .foregroundStyle(.textPrimary)
-            if showProBadge && store.isPro {
+            if showProBadge, store.isPro {
                 Text(L10n.proFeature)
                     .font(.caption2.bold())
                     .foregroundStyle(.noBuyGreen)
@@ -1233,7 +1240,7 @@ struct StatsScreen: View {
             Spacer().frame(height: DS.Spacing.xl)
 
             Image(systemName: "chart.bar.doc.horizontal")
-                .font(.system(size: 64))
+                .font(Font.adaptiveDisplay(size: 64, isRegular: isRegular))
                 .foregroundStyle(.noBuyGreen.opacity(0.6))
                 .symbolEffect(.pulse, options: reduceMotion ? .nonRepeating : .repeating)
                 .accessibilityHidden(true)

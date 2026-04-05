@@ -2,6 +2,7 @@ import SwiftUI
 import UserNotifications
 
 // MARK: - Urge Surfing View
+
 // 10-minute mindfulness timer to ride out an impulse-buy urge.
 // Accessible from HomeScreen toolbar.
 // Uses Date-based elapsed calculation so backgrounding doesn't lose time.
@@ -10,12 +11,19 @@ struct UrgeSurfingView: View {
     @Environment(\.dismiss) private var dismiss
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @Environment(\.scenePhase) private var scenePhase
+    @Environment(\.horizontalSizeClass) private var sizeClass
+
+    private var isRegular: Bool {
+        sizeClass == .regular
+    }
+
     @AppStorage("savingsGoal") private var savingsGoal: String = ""
 
     private let totalSeconds: Int = 600 // 10 minutes
     private let promptInterval: Int = 120 // rotate every 2 minutes
 
     // MARK: - Timer State (Date-based)
+
     @State private var startTime: Date?
     @State private var pausedElapsed: TimeInterval = 0
     @State private var displayTick: Int = 0 // drives UI updates
@@ -27,6 +35,7 @@ struct UrgeSurfingView: View {
     @State private var promptOpacity: Double = 1.0
 
     // MARK: - Breathing Animation State
+
     @State private var breathPhase: BreathPhase = .inhale
 
     private enum BreathPhase: CaseIterable {
@@ -35,7 +44,7 @@ struct UrgeSurfingView: View {
         var label: String {
             switch self {
             case .inhale: "Breathe in..."
-            case .hold:   "Hold..."
+            case .hold: "Hold..."
             case .exhale: "Breathe out..."
             }
         }
@@ -43,7 +52,7 @@ struct UrgeSurfingView: View {
         var scale: CGFloat {
             switch self {
             case .inhale: 1.0
-            case .hold:   1.0
+            case .hold: 1.0
             case .exhale: 0.6
             }
         }
@@ -51,13 +60,14 @@ struct UrgeSurfingView: View {
         var next: BreathPhase {
             switch self {
             case .inhale: .hold
-            case .hold:   .exhale
+            case .hold: .exhale
             case .exhale: .inhale
             }
         }
     }
 
     // MARK: - Notification Identifier
+
     private static let completionNotificationID = "urge_surfing_completion"
 
     // MARK: - Prompts
@@ -160,7 +170,7 @@ struct UrgeSurfingView: View {
             cancelCompletionNotification()
         }
         .onChange(of: scenePhase) { _, newPhase in
-            if newPhase == .active && isRunning {
+            if newPhase == .active, isRunning {
                 // Force a tick to catch up elapsed time from background
                 displayTick += 1
                 checkCompletion()
@@ -176,7 +186,7 @@ struct UrgeSurfingView: View {
 
             // Title with gradient
             Text("Urge Surfing")
-                .font(.system(size: 22, weight: .bold, design: .rounded))
+                .font(Font.adaptiveDisplay(size: 22, weight: .bold, design: .rounded, isRegular: isRegular))
                 .foregroundStyle(
                     LinearGradient(
                         colors: [.textPrimary, .textSecondary],
@@ -213,7 +223,7 @@ struct UrgeSurfingView: View {
                 // Time display
                 VStack(spacing: DS.Spacing.xs) {
                     Text(timeString)
-                        .font(.system(size: 48, weight: .black, design: .rounded))
+                        .font(Font.adaptiveDisplay(size: 48, weight: .black, design: .rounded, isRegular: isRegular))
                         .foregroundStyle(.noBuyGreen)
                         .contentTransition(.numericText())
                         .animation(reduceMotion ? nil : .linear(duration: 0.3), value: remainingSeconds)
@@ -259,8 +269,8 @@ struct UrgeSurfingView: View {
                     Image(systemName: isRunning ? "pause.fill" : "play.fill")
                         .font(.title3)
                     Text(isRunning
-                         ? "Pause"
-                         : (startTime == nil && pausedElapsed == 0
+                        ? "Pause"
+                        : (startTime == nil && pausedElapsed == 0
                             ? "Start"
                             : "Continue"))
                         .font(.headline)
@@ -288,7 +298,7 @@ struct UrgeSurfingView: View {
             .accessibilityIdentifier("urge_surfing_toggle")
 
             // Reset button (only shown when paused and not at start)
-            if !isRunning && (startTime != nil || pausedElapsed > 0) {
+            if !isRunning, startTime != nil || pausedElapsed > 0 {
                 Button {
                     HapticManager.tap()
                     resetTimer()
@@ -361,7 +371,7 @@ struct UrgeSurfingView: View {
                     .frame(width: 160, height: 160)
 
                 Image(systemName: "medal.fill")
-                    .font(.system(size: 72))
+                    .font(Font.adaptiveDisplay(size: 72, isRegular: isRegular))
                     .foregroundStyle(
                         LinearGradient(
                             colors: [.noBuyGreen, .green.opacity(0.6)],
@@ -374,7 +384,7 @@ struct UrgeSurfingView: View {
 
             VStack(spacing: DS.Spacing.md) {
                 Text("You beat the urge! 🎉")
-                    .font(.system(size: 24, weight: .bold, design: .rounded))
+                    .font(Font.adaptiveDisplay(size: 24, weight: .bold, design: .rounded, isRegular: isRegular))
                     .multilineTextAlignment(.center)
                     .accessibilityAddTraits(.isHeader)
 
@@ -386,17 +396,17 @@ struct UrgeSurfingView: View {
 
                 let survivedCount = UserDefaults.standard.integer(forKey: "urgesSurvivedCount")
                 Text("You've beaten \(survivedCount) urges total")
-                .font(.callout)
-                .fontWeight(.medium)
-                .foregroundStyle(.noBuyGreen)
-                .padding(.top, DS.Spacing.sm)
-                .padding(.horizontal, DS.Spacing.lg)
-                .padding(.vertical, DS.Spacing.sm)
-                .background(
-                    Capsule()
-                        .fill(Color.noBuyGreenLight)
-                )
-                .shadow(color: .noBuyGreen.opacity(0.1), radius: 4, x: 0, y: 2)
+                    .font(.callout)
+                    .fontWeight(.medium)
+                    .foregroundStyle(.noBuyGreen)
+                    .padding(.top, DS.Spacing.sm)
+                    .padding(.horizontal, DS.Spacing.lg)
+                    .padding(.vertical, DS.Spacing.sm)
+                    .background(
+                        Capsule()
+                            .fill(Color.noBuyGreenLight)
+                    )
+                    .shadow(color: .noBuyGreen.opacity(0.1), radius: 4, x: 0, y: 2)
             }
 
             Spacer()

@@ -3,11 +3,11 @@ import UIKit
 
 struct ScaleButtonStyle: ButtonStyle {
     let scale: CGFloat
-    
+
     init(scale: CGFloat = 0.96) {
         self.scale = scale
     }
-    
+
     func makeBody(configuration: Configuration) -> some View {
         let isReduceMotion = UIAccessibility.isReduceMotionEnabled
         configuration.label
@@ -18,8 +18,13 @@ struct ScaleButtonStyle: ButtonStyle {
 }
 
 extension ButtonStyle where Self == ScaleButtonStyle {
-    static var scale: ScaleButtonStyle { ScaleButtonStyle() }
-    static func scale(_ value: CGFloat) -> ScaleButtonStyle { ScaleButtonStyle(scale: value) }
+    static var scale: ScaleButtonStyle {
+        ScaleButtonStyle()
+    }
+
+    static func scale(_ value: CGFloat) -> ScaleButtonStyle {
+        ScaleButtonStyle(scale: value)
+    }
 }
 
 // MARK: - Pressable Modifier for non-Button tappables
@@ -76,8 +81,13 @@ struct HapticButtonStyle: ButtonStyle {
 }
 
 extension ButtonStyle where Self == HapticButtonStyle {
-    static var hapticScale: HapticButtonStyle { HapticButtonStyle() }
-    static func hapticScale(_ value: CGFloat) -> HapticButtonStyle { HapticButtonStyle(scale: value) }
+    static var hapticScale: HapticButtonStyle {
+        HapticButtonStyle()
+    }
+
+    static func hapticScale(_ value: CGFloat) -> HapticButtonStyle {
+        HapticButtonStyle(scale: value)
+    }
 }
 
 // MARK: - Card Shadow Modifier

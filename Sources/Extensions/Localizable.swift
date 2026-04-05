@@ -1,21 +1,25 @@
 import Foundation
 
 // MARK: - Localization Keys
+
 // All user-facing strings — English only
 
 enum L10n {
     // MARK: - Tabs
+
     static let tabToday = "Today"
     static let tabCalendar = "Calendar"
     static let tabStats = "Stats"
     static let tabSettings = "Settings"
 
     // MARK: - Home
+
     static let appTitle = "NoBuy"
     static let dayStreak = "day streak"
     static func longestStreak(_ days: Int) -> String {
         "Best: \(days) days"
     }
+
     static let noBuyButton = "I Didn't Spend Today"
     static let noBuyDone = "No Spending ✓"
     static let spentButton = "I spent today"
@@ -23,11 +27,12 @@ enum L10n {
     static let noBuyToday = "No spending today! 💪"
     static let spentToday = "You spent today"
     static let thisMonth = "This Month"
-    static func monthSummary(_ noBuy: Int, _ total: Int) -> String {
+    static func monthSummary(_: Int, _ total: Int) -> String {
         "/ \(total) days no-spend"
     }
 
     // MARK: - Spend Options
+
     static let spendTypeQuestion = "What kind of spending?"
     static let mandatorySpend = "Essential Only"
     static let mandatoryDesc = "Rent, bills, transport — streak preserved"
@@ -36,6 +41,7 @@ enum L10n {
     static let cancel = "Cancel"
 
     // MARK: - Calendar
+
     static let calendarTitle = "Calendar"
     static let summary = "Summary"
     static let noBuyDays = "No-Spend"
@@ -43,6 +49,7 @@ enum L10n {
     static let unrecordedDays = "Unrecorded"
 
     // MARK: - Settings
+
     static let settingsTitle = "Settings"
     static let mandatoryCategories = "Essential Expenses"
     static let mandatoryCategoriesFooter = "Spending in these categories won't break your streak."
@@ -64,6 +71,7 @@ enum L10n {
     static let rateApp = "Rate This App"
 
     // MARK: - Paywall
+
     static let paywallTitle = "Power Up Your Habit"
     static let paywallSubtitle = "Unlock all features"
     static let paywallPriceAnchor = "Less than one impulse buy"
@@ -73,6 +81,7 @@ enum L10n {
     static func paywallUnlock(_ price: String) -> String {
         "Go Pro — \(price)"
     }
+
     static let paywallRestore = "Restore Purchase"
     static let paywallWelcome = "Welcome to Pro! 🎉"
     static let paywallWelcomeDetail = "All features are now yours"
@@ -83,16 +92,19 @@ enum L10n {
     static let categoryLimitReached = "Free version allows up to 3 categories."
 
     // MARK: - Paywall Errors
+
     static let purchaseErrorGeneric = "Purchase failed. Please try again."
     static let purchaseErrorNetwork = "Check your internet connection and try again."
     static let purchaseErrorNotAllowed = "Purchases not allowed. Check your settings."
 
     // MARK: - Soft Paywall / Milestones
+
     static func milestonePaywallMessage(_ days: Int) -> String {
         "Celebrate your \(days)-day streak — unlock more with Pro!"
     }
 
     // MARK: - Settings Pro
+
     static let proFeaturesSection = "Pro Features"
     static let proFeatureActive = "Active"
     static let exportCSV = "Export Data (CSV)"
@@ -101,6 +113,7 @@ enum L10n {
     static let unlimitedCategories = "Unlimited Categories"
 
     // MARK: - Onboarding
+
     static let onboardingTitle1 = "Take Control of Your Spending"
     static let onboardingDesc1 = "Every impulse buy steals from your dreams. Build mindful spending habits with NoBuy."
     static let onboardingTitle2 = "One Tap, Every Day"
@@ -118,6 +131,7 @@ enum L10n {
     static let maybeLater = "Maybe Later"
 
     // MARK: - Onboarding Goal Options
+
     static let goalQuestion = "What are you saving for?"
     static let goalEmergencyFund = "Emergency Fund"
     static let goalVacation = "Vacation"
@@ -131,6 +145,7 @@ enum L10n {
     static let optional = "optional"
 
     // MARK: - Streak Break (Compassionate)
+
     static let streakBreakTitle = "Streak ended"
     static let streakBreakRestart = "Start New Streak"
     static let streakBreakPrevious = "Last streak"
@@ -145,6 +160,7 @@ enum L10n {
     }
 
     // MARK: - Achievement Titles & Descriptions
+
     static let achievementFirstDay = "First Step"
     static let achievementFirstDayDesc = "Log your first no-spend day"
     static let achievement3Day = "3-Day Warrior"
@@ -171,6 +187,7 @@ enum L10n {
     static let achievementPerfectMonthDesc = "No spending on every day of a month"
 
     // MARK: - Milestone Celebrations
+
     static let milestoneDaysStreak = "day streak"
     static let milestoneContinue = "Continue"
     static let milestone1Title = "First Step!"
@@ -188,9 +205,11 @@ enum L10n {
     static func milestoneGenericTitle(_ days: Int) -> String {
         "\(days) Days!"
     }
+
     static let milestoneGenericDesc = "Incredible achievement! Keep going."
 
     // MARK: - Notification Text
+
     static let notifStreakDaySuffix = "Days!"
     static let notifStreak1 = "Your first no-spend day — great start!"
     static let notifStreak3 = "3 days in a row! A habit is forming."
@@ -221,6 +240,7 @@ enum L10n {
     static let notifLapsed3 = "Great day to come back. We're waiting 🌱"
 
     // MARK: - Data Export
+
     static let exportTitle = "Data Export"
     static let exportSuccess = "Data exported successfully."
     static let exportFailed = "Export failed. Please try again."
@@ -232,6 +252,7 @@ enum L10n {
     static let exportColumnNote = "Note"
 
     // MARK: - Tips / Facts (rotating daily)
+
     static let tip1 = "The average person makes 12 impulse purchases per month."
     static let tip2 = "The 24-hour rule: Wait 24 hours before buying something you want."
     static let tip3 = "Shopping with a list reduces spending by 23%."
@@ -254,16 +275,19 @@ enum L10n {
     static let tip20 = "Boredom isn't a reason to shop. Find a free hobby instead."
 
     // MARK: - Share Card
+
     static let shareStreakDays = "DAY STREAK"
     static func shareSince(_ date: String) -> String {
         "Since \(date)"
     }
+
     static let shareThisMonth = "This Month"
     static let shareLongest = "Best"
     static let shareNoBuy = "NoBuy — Mindful Spending"
     static let shareJoinMe = "Join me!"
 
     // MARK: - Empty States
+
     static let emptyHomeTitle = "No records yet"
     static let emptyHomeDesc = "Tap the button to log your first no-spend day."
     static let emptyCalendarTitle = "Calendar is empty"
@@ -274,6 +298,7 @@ enum L10n {
     static let emptyStreakDesc = "Log your first no-spend day to start your streak!"
 
     // MARK: - Settings Extra
+
     static let settingsAppIcon = "App Icon"
     static let settingsCurrentIcon = "Default"
     static let settingsMoreIconsSoon = "New icons coming soon!"
@@ -282,28 +307,34 @@ enum L10n {
     static let settingsBuild = "Build"
 
     // MARK: - Privacy & Legal
+
     static let privacyLegalSection = "Privacy & Legal"
     static let privacyPolicy = "Privacy Policy"
     static let termsOfUse = "Terms of Use"
 
     // MARK: - Stats Pro Badge
+
     static let proFeature = "PRO"
 
     // MARK: - Spend Amount
+
     static let spendAmountPlaceholder = "Amount (optional)"
 
     // MARK: - Mandatory Categories (localized defaults)
+
     static let categoryRent = "Rent"
     static let categoryBills = "Bills"
     static let categoryTransport = "Transport"
     static let categoryGroceries = "Groceries"
 
     // MARK: - Delete Confirmation
+
     static let deleteConfirmTitle = "Are you sure?"
     static let deleteConfirmMessage = "All data will be permanently deleted. This cannot be undone."
     static let deleteConfirmButton = "Delete"
 
     // MARK: - Error Messages
+
     static let errorGenericTitle = "Something Went Wrong"
     static let errorGenericMessage = "Please try again. If the problem persists, restart the app."
     static let errorSaveTitle = "Couldn't Save"
@@ -316,12 +347,14 @@ enum L10n {
     static let errorRetry = "Retry"
 
     // MARK: - Form Validation
+
     static let validationRequired = "This field is required"
     static let validationMinDays = "Minimum 1 day"
     static let validationMaxDays = "Maximum 365 days"
     static let validationNumberOnly = "Enter a valid number"
 
     // MARK: - Empty State Micro-Copy
+
     static let emptyWaitingListTitle = "Your Waiting List is Empty"
     static let emptyWaitingListDesc = "Next time you want to buy something, add it here first. Most impulses fade within 24 hours."
     static let emptyWaitingListCTA = "Add First Item"

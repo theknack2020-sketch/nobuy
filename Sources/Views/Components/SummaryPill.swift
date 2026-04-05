@@ -7,6 +7,11 @@ struct SummaryPill: View {
     let color: Color
     @State private var appeared = false
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @Environment(\.horizontalSizeClass) private var sizeClass
+
+    private var isRegular: Bool {
+        sizeClass == .regular
+    }
 
     var body: some View {
         VStack(spacing: DS.Spacing.sm) {
@@ -15,7 +20,7 @@ struct SummaryPill: View {
                 .foregroundStyle(color)
 
             Text("\(count)")
-                .font(.system(size: 24, weight: .black, design: .rounded))
+                .font(Font.adaptiveDisplay(size: 24, weight: .black, design: .rounded, isRegular: isRegular))
                 .foregroundStyle(.textPrimary)
                 .contentTransition(.numericText())
                 .animation(reduceMotion ? nil : DS.Anim.normal, value: count)
@@ -24,6 +29,7 @@ struct SummaryPill: View {
                 .font(.caption2)
                 .foregroundStyle(.textSecondary)
                 .lineLimit(1)
+                .minimumScaleFactor(0.75)
         }
         .frame(maxWidth: .infinity)
         .padding(.vertical, DS.Spacing.md)

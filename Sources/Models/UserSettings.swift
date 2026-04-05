@@ -7,7 +7,7 @@ import SwiftUI
 final class UserSettings {
     static let shared = UserSettings()
 
-    // Theme stored as raw string in UserDefaults
+    /// Theme stored as raw string in UserDefaults
     var selectedThemeRaw: String {
         get {
             access(keyPath: \.selectedThemeRaw)

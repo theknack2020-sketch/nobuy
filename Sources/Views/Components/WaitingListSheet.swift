@@ -4,6 +4,11 @@ struct WaitingListSheet: View {
     @Environment(\.dismiss) private var dismiss
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @Environment(StoreService.self) private var store
+    @Environment(\.horizontalSizeClass) private var sizeClass
+
+    private var isRegular: Bool {
+        sizeClass == .regular
+    }
 
     private var manager = WaitingListManager.shared
 
@@ -21,7 +26,7 @@ struct WaitingListSheet: View {
             ZStack {
                 Color.surfacePrimary.ignoresSafeArea()
 
-                if manager.activeItems.isEmpty && manager.resolvedItems.isEmpty {
+                if manager.activeItems.isEmpty, manager.resolvedItems.isEmpty {
                     emptyState
                 } else {
                     listContent
@@ -39,7 +44,7 @@ struct WaitingListSheet: View {
                 }
                 ToolbarItem(placement: .primaryAction) {
                     HStack(spacing: DS.Spacing.xs) {
-                        if !store.isPro && manager.activeItems.count >= 3 {
+                        if !store.isPro, manager.activeItems.count >= 3 {
                             Text("PRO")
                                 .font(.caption2.bold())
                                 .foregroundStyle(.noBuyGreen)
@@ -48,7 +53,7 @@ struct WaitingListSheet: View {
                                 .background(Capsule().fill(Color.noBuyGreenLight))
                         }
                         Button {
-                            if !store.isPro && manager.activeItems.count >= 3 {
+                            if !store.isPro, manager.activeItems.count >= 3 {
                                 showPaywall = true
                             } else {
                                 HapticManager.tap()
@@ -68,7 +73,7 @@ struct WaitingListSheet: View {
             .sheet(isPresented: $showAddForm) {
                 addItemSheet
             }
-            .sheet(isPresented: $showPaywall) {
+            .fullScreenCover(isPresented: $showPaywall) {
                 PaywallView(store: store)
             }
         }
@@ -134,7 +139,7 @@ struct WaitingListSheet: View {
                     .font(.caption)
                     .foregroundStyle(.textSecondary)
                 Text(formattedSavedMoney)
-                    .font(.system(size: 24, weight: .black, design: .rounded))
+                    .font(Font.adaptiveDisplay(size: 24, weight: .black, design: .rounded, isRegular: isRegular))
                     .foregroundStyle(
                         LinearGradient(
                             colors: [.noBuyGreen, .green.opacity(0.7)],
@@ -195,8 +200,8 @@ struct WaitingListSheet: View {
                         .font(.caption)
                         .foregroundStyle(manager.activeItems.count >= 3 ? .mandatoryAmber : .textTertiary)
                     Text(manager.activeItems.count >= 3
-                         ? "Free limit reached (3/3). Upgrade to Pro for unlimited items."
-                         : "\(manager.activeItems.count)/3 free slots used")
+                        ? "Free limit reached (3/3). Upgrade to Pro for unlimited items."
+                        : "\(manager.activeItems.count)/3 free slots used")
                         .font(.caption)
                         .foregroundStyle(manager.activeItems.count >= 3 ? .mandatoryAmber : .textTertiary)
                     Spacer()
@@ -356,8 +361,8 @@ struct WaitingListSheet: View {
             Spacer()
 
             Text(item.didBuy == true
-                 ? "Bought"
-                 : "Resisted")
+                ? "Bought"
+                : "Resisted")
                 .font(.caption2.weight(.medium))
                 .foregroundStyle(item.didBuy == true ? .spendRed : .noBuyGreen)
         }
@@ -388,7 +393,7 @@ struct WaitingListSheet: View {
                     )
                     .frame(width: 120, height: 120)
                 Image(systemName: "clock.badge.checkmark")
-                    .font(.system(size: 52))
+                    .font(Font.adaptiveDisplay(size: 52, isRegular: isRegular))
                     .foregroundStyle(.noBuyGreen.opacity(0.6))
                     .symbolEffect(.pulse, options: .repeating)
                     .accessibilityHidden(true)
@@ -458,7 +463,7 @@ struct WaitingListSheet: View {
                         )
                         .frame(width: 80, height: 80)
                     Image(systemName: "clock.badge.questionmark")
-                        .font(.system(size: 36))
+                        .font(Font.adaptiveDisplay(size: 36, isRegular: isRegular))
                         .foregroundStyle(.noBuyGreen)
                 }
 
@@ -503,17 +508,17 @@ struct WaitingListSheet: View {
                                     selectedHours = hours
                                 } label: {
                                     Text(reminderLabel(for: hours))
-                                    .font(.subheadline.weight(.medium))
-                                    .foregroundStyle(selectedHours == hours ? .white : .textSecondary)
-                                    .frame(maxWidth: .infinity)
-                                    .padding(.vertical, DS.Spacing.md)
-                                    .background(
-                                        RoundedRectangle(cornerRadius: DS.Radius.md)
-                                            .fill(selectedHours == hours
-                                                ? AnyShapeStyle(LinearGradient(colors: [.noBuyGreen, .noBuyGreen.opacity(0.8)], startPoint: .top, endPoint: .bottom))
-                                                : AnyShapeStyle(Color.surfaceSecondary))
-                                    )
-                                    .shadow(color: selectedHours == hours ? .noBuyGreen.opacity(0.2) : .black.opacity(0.04), radius: 4, x: 0, y: 2)
+                                        .font(.subheadline.weight(.medium))
+                                        .foregroundStyle(selectedHours == hours ? .white : .textSecondary)
+                                        .frame(maxWidth: .infinity)
+                                        .padding(.vertical, DS.Spacing.md)
+                                        .background(
+                                            RoundedRectangle(cornerRadius: DS.Radius.md)
+                                                .fill(selectedHours == hours
+                                                    ? AnyShapeStyle(LinearGradient(colors: [.noBuyGreen, .noBuyGreen.opacity(0.8)], startPoint: .top, endPoint: .bottom))
+                                                    : AnyShapeStyle(Color.surfaceSecondary))
+                                        )
+                                        .shadow(color: selectedHours == hours ? .noBuyGreen.opacity(0.2) : .black.opacity(0.04), radius: 4, x: 0, y: 2)
                                 }
                                 .buttonStyle(.scale)
                                 .animation(reduceMotion ? nil : .spring(response: 0.3, dampingFraction: 0.7), value: selectedHours)
@@ -537,8 +542,8 @@ struct WaitingListSheet: View {
                         .background(
                             RoundedRectangle(cornerRadius: DS.Radius.lg)
                                 .fill(newItemName.trimmingCharacters(in: .whitespaces).isEmpty
-                                      ? AnyShapeStyle(Color.noBuyGreen.opacity(0.4))
-                                      : AnyShapeStyle(LinearGradient(colors: [.noBuyGreen, .noBuyGreen.opacity(0.8)], startPoint: .leading, endPoint: .trailing)))
+                                    ? AnyShapeStyle(Color.noBuyGreen.opacity(0.4))
+                                    : AnyShapeStyle(LinearGradient(colors: [.noBuyGreen, .noBuyGreen.opacity(0.8)], startPoint: .leading, endPoint: .trailing)))
                         )
                         .shadow(color: newItemName.trimmingCharacters(in: .whitespaces).isEmpty ? .clear : .noBuyGreen.opacity(0.3), radius: 10, x: 0, y: 5)
                 }
@@ -604,10 +609,10 @@ struct WaitingListSheet: View {
 
     private func reminderLabel(for hours: Int) -> String {
         switch hours {
-        case 24: return "24 hours"
-        case 48: return "48 hours"
-        case 72: return "72 hours"
-        default: return "\(hours) hours"
+        case 24: "24 hours"
+        case 48: "48 hours"
+        case 72: "72 hours"
+        default: "\(hours) hours"
         }
     }
 }

@@ -34,3 +34,6 @@ fastlane/api_key.json
 .bg-shell
 fastlane/metadata/tr/
 fastlane/metadata/review_information/
+
+# App Store screenshots (large PNGs, don't track in git)
+fastlane/screenshots/

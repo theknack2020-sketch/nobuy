@@ -18,7 +18,7 @@ struct MonthlyData: Identifiable {
 
 struct WeekdayData: Identifiable {
     let id = UUID()
-    let weekday: Int          // 1 = Monday … 7 = Sunday
+    let weekday: Int // 1 = Monday … 7 = Sunday
     let label: String
     let noBuyCount: Int
     let totalRecorded: Int
@@ -32,7 +32,7 @@ struct HeatmapDay: Identifiable {
     let id = UUID()
     let date: Date
     let weekOfYear: Int
-    let weekday: Int          // 1 = Monday … 7 = Sunday
+    let weekday: Int // 1 = Monday … 7 = Sunday
     let status: HeatmapStatus
 }
 
@@ -51,8 +51,13 @@ struct TrendComparison {
     let lastMonthNoBuy: Int
     let lastMonthTotal: Int
 
-    var delta: Double { thisMonthPercentage - lastMonthPercentage }
-    var isImproving: Bool { delta >= 0 }
+    var delta: Double {
+        thisMonthPercentage - lastMonthPercentage
+    }
+
+    var isImproving: Bool {
+        delta >= 0
+    }
 }
 
 // MARK: - ViewModel
@@ -60,7 +65,6 @@ struct TrendComparison {
 @MainActor
 @Observable
 final class StatsViewModel {
-
     private(set) var monthlyData: [MonthlyData] = []
     private(set) var weekdayData: [WeekdayData] = []
     private(set) var trendComparison: TrendComparison?
@@ -110,7 +114,7 @@ final class StatsViewModel {
         weekdayData = computeWeekdayData(noBuyDates: noBuyDates, allDates: allDates)
         trendComparison = computeTrend(noBuyDates: noBuyDates, allDates: allDates)
         heatmapDays = computeHeatmap(noBuyDates: noBuyDates, allDates: allDates)
-        
+
         // Clear any previous error on success
         lastError = nil
     }
@@ -127,21 +131,21 @@ final class StatsViewModel {
 
     // MARK: - Monthly Data (last 6 months)
 
-    private func computeMonthlyData(noBuyDates: Set<Date>, allDates: Set<Date>) -> [MonthlyData] {
+    private func computeMonthlyData(noBuyDates: Set<Date>, allDates _: Set<Date>) -> [MonthlyData] {
         let today = calendar.startOfDay(for: .now)
         let formatter = DateFormatter()
         formatter.locale = Locale.current
         formatter.dateFormat = "MMM"
 
-        return (0..<6).reversed().compactMap { monthsBack -> MonthlyData? in
+        return (0 ..< 6).reversed().compactMap { monthsBack -> MonthlyData? in
             guard let monthStart = calendar.date(byAdding: .month, value: -monthsBack, to: today.startOfMonth) else { return nil }
-            let range = calendar.range(of: .day, in: .month, for: monthStart) ?? 1..<31
+            let range = calendar.range(of: .day, in: .month, for: monthStart) ?? 1 ..< 31
             let daysInMonth = monthsBack == 0
                 ? (calendar.dateComponents([.day], from: monthStart, to: today).day ?? 0) + 1
                 : range.count
 
             var noBuyCount = 0
-            for dayOffset in 0..<daysInMonth {
+            for dayOffset in 0 ..< daysInMonth {
                 guard let date = calendar.date(byAdding: .day, value: dayOffset, to: monthStart) else { continue }
                 let normalized = calendar.startOfDay(for: date)
                 if noBuyDates.contains(normalized) {
@@ -183,7 +187,7 @@ final class StatsViewModel {
             }
         }
 
-        return (1...7).map { day in
+        return (1 ... 7).map { day in
             WeekdayData(
                 weekday: day,
                 label: symbols[day - 1].capitalized,
@@ -195,7 +199,7 @@ final class StatsViewModel {
 
     // MARK: - Month-over-Month Trend
 
-    private func computeTrend(noBuyDates: Set<Date>, allDates: Set<Date>) -> TrendComparison? {
+    private func computeTrend(noBuyDates: Set<Date>, allDates _: Set<Date>) -> TrendComparison? {
         let today = calendar.startOfDay(for: .now)
         let thisMonthStart = today.startOfMonth
 
@@ -222,7 +226,7 @@ final class StatsViewModel {
 
     private func countNoBuyDays(in monthStart: Date, dayCount: Int, noBuyDates: Set<Date>) -> Int {
         var count = 0
-        for offset in 0..<dayCount {
+        for offset in 0 ..< dayCount {
             guard let date = calendar.date(byAdding: .day, value: offset, to: monthStart) else { continue }
             if noBuyDates.contains(calendar.startOfDay(for: date)) {
                 count += 1
@@ -259,15 +263,14 @@ final class StatsViewModel {
             let wd = calendar.component(.weekday, from: current)
             let mondayBasedWd = wd == 1 ? 7 : wd - 1
 
-            let status: HeatmapStatus
-            if current > today {
-                status = .future
+            let status: HeatmapStatus = if current > today {
+                .future
             } else if noBuyDates.contains(current) {
-                status = .noBuy
+                .noBuy
             } else if allDates.contains(current) {
-                status = .spent
+                .spent
             } else {
-                status = .unrecorded
+                .unrecorded
             }
 
             days.append(HeatmapDay(

@@ -24,7 +24,7 @@ final class SoftPaywallTracker {
         let count = actionCount + 1
         UserDefaults.standard.set(count, forKey: actionCountKey)
 
-        if count >= triggerThreshold && !hasShown {
+        if count >= triggerThreshold, !hasShown {
             shouldShowPaywall = true
             UserDefaults.standard.set(true, forKey: hasShownKey)
         }

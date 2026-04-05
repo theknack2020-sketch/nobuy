@@ -7,7 +7,7 @@ struct WaitingItem: Identifiable, Codable, Equatable {
     var dateAdded: Date
     var reminderDate: Date
     var isResolved: Bool = false
-    var didBuy: Bool? = nil  // nil = not yet decided, true = bought, false = decided not to
+    var didBuy: Bool? = nil // nil = not yet decided, true = bought, false = decided not to
 
     init(name: String, estimatedCost: Double? = nil, reminderHours: Int = 24) {
         self.id = UUID()
