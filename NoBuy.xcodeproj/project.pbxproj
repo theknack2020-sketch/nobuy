@@ -41,8 +41,10 @@
 		5ADF5AAD5558B12F65DE76E4 /* ImpulseChecklistScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 787BEE9DABE3AD53B607C28E /* ImpulseChecklistScreen.swift */; };
 		62DB15ADA7305C1F76D95CA8 /* StatsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21C0F9C053D7218F95E7D708 /* StatsViewModel.swift */; };
 		6D18FFAEB3193D308466D049 /* MilestoneModal.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD4C3429E75A51A454863FE7 /* MilestoneModal.swift */; };
+		70BBC7F522218E12B051C04D /* TelemetryService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A65B70A22487242A47D058D /* TelemetryService.swift */; };
 		715E6F3C840686DC5725B9FA /* DesignSystem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 150DCA9F119DBA633DF41680 /* DesignSystem.swift */; };
 		71735C518A52C71E651084D8 /* AchievementManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F78D0BC0EC3BA261DEF3FE91 /* AchievementManager.swift */; };
+		719076A762C48CF5D0F2E173 /* TelemetryDeck in Frameworks */ = {isa = PBXBuildFile; productRef = 459BFC2A1F8E56A305BDB083 /* TelemetryDeck */; };
 		77664C6BC24BE12E027C5872 /* FreezeOfferSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4A85505E485B21A1ACA2615 /* FreezeOfferSheet.swift */; };
 		7910FE32167AC63776EDB139 /* SchemaVersions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91E20848DFFB5EBFEA58CC9D /* SchemaVersions.swift */; };
 		8422996FD48EC227A919D8F7 /* NoBuyApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00CF61C05D4E39A885ECD694 /* NoBuyApp.swift */; };
@@ -139,6 +141,7 @@
 		8231360A22F6DC1ECF17FEE2 /* Localizable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Localizable.swift; sourceTree = "<group>"; };
 		825FB6A90C44C3B734B9E59D /* CheckStreakIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckStreakIntent.swift; sourceTree = "<group>"; };
 		895D433DF2A96D1C43B97CDA /* SavingsGoalCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SavingsGoalCard.swift; sourceTree = "<group>"; };
+		8A65B70A22487242A47D058D /* TelemetryService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TelemetryService.swift; sourceTree = "<group>"; };
 		91E20848DFFB5EBFEA58CC9D /* SchemaVersions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SchemaVersions.swift; sourceTree = "<group>"; };
 		935996357F6A20E03655293D /* DayRecord.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DayRecord.swift; sourceTree = "<group>"; };
 		9627BC33C7F8321DFB2AD363 /* PaywallView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaywallView.swift; sourceTree = "<group>"; };
@@ -173,6 +176,17 @@
 		F78D0BC0EC3BA261DEF3FE91 /* AchievementManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AchievementManager.swift; sourceTree = "<group>"; };
 		FD2DD1F9F785448C5F057A92 /* SoftPaywallBanner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SoftPaywallBanner.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		F7EFADACD03B662EC6D9A7F0 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				719076A762C48CF5D0F2E173 /* TelemetryDeck in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
 		2B54793AC82C6B067037DF58 /* Views */ = {
@@ -354,6 +368,7 @@
 				1E099D05A7A05D298639B1D0 /* SpotlightService.swift */,
 				073618F2DA3B33F2080F6CA9 /* StoreService.swift */,
 				769691C3CBD3B73D2686D364 /* StreakCalculator.swift */,
+				8A65B70A22487242A47D058D /* TelemetryService.swift */,
 				321F25E44F253ABB4235A38D /* WaitingListManager.swift */,
 			);
 			path = Services;
@@ -413,6 +428,7 @@
 			buildPhases = (
 				0B3D4DB56CA9A323001EE247 /* Sources */,
 				A964E78F92BEBCCBD882E923 /* Resources */,
+				F7EFADACD03B662EC6D9A7F0 /* Frameworks */,
 			);
 			buildRules = (
 			);
@@ -420,6 +436,7 @@
 			);
 			name = NoBuy;
 			packageProductDependencies = (
+				459BFC2A1F8E56A305BDB083 /* TelemetryDeck */,
 			);
 			productName = NoBuy;
 			productReference = DEDEC33ADE54A63E94917A26 /* NoBuy.app */;
@@ -455,6 +472,9 @@
 			);
 			mainGroup = 5EECF332A13B34E64D7FD735;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				73377BA282B9CEDC7B16FC18 /* XCRemoteSwiftPackageReference "SwiftSDK" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = BDAF72B629A0D1921C55B0CD /* Products */;
 			projectDirPath = "";
@@ -549,6 +569,7 @@
 				23F442FB556636BB835A3013 /* StreakCalculator.swift in Sources */,
 				50741BC3B6A4B42550FFEF3D /* StreakInfo.swift in Sources */,
 				26F83DDEA9ED92490656DC9F /* SummaryPill.swift in Sources */,
+				70BBC7F522218E12B051C04D /* TelemetryService.swift in Sources */,
 				F84380290297EC3E32C1AAA9 /* TipCard.swift in Sources */,
 				DA7A76E935A4C1059AF05CC7 /* UrgeSurfingView.swift in Sources */,
 				E77AE7F83DAE62661AF1C420 /* UserSettings.swift in Sources */,
@@ -852,6 +873,25 @@
 			defaultConfigurationName = Debug;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		73377BA282B9CEDC7B16FC18 /* XCRemoteSwiftPackageReference "SwiftSDK" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/TelemetryDeck/SwiftSDK";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.0.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		459BFC2A1F8E56A305BDB083 /* TelemetryDeck */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 73377BA282B9CEDC7B16FC18 /* XCRemoteSwiftPackageReference "SwiftSDK" */;
+			productName = TelemetryDeck;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 209EE6F061299699A7A6AD5F /* Project object */;
 }

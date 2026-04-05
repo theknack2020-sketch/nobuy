@@ -440,6 +440,37 @@ struct SettingsScreen: View {
                 } header: {
                     Text(L10n.privacyLegalSection)
                 }
+
+                // MARK: - More Apps
+
+                Section {
+                    moreAppRow(
+                        icon: "💧",
+                        name: "AquaFaste",
+                        subtitle: "Hydration Tracker",
+                        appStoreID: "6760975661"
+                    )
+                    moreAppRow(
+                        icon: "🍽️",
+                        name: "Lumifaste",
+                        subtitle: "Fasting Tracker",
+                        appStoreID: "6760971357"
+                    )
+                    moreAppRow(
+                        icon: "💊",
+                        name: "PillPal",
+                        subtitle: "Medication Reminder",
+                        appStoreID: "6740510337"
+                    )
+                    moreAppRow(
+                        icon: "🐾",
+                        name: "Vettie",
+                        subtitle: "Pet Health Tracker",
+                        appStoreID: "6742715498"
+                    )
+                } header: {
+                    Text("More by TheKnack")
+                }
             }
             .navigationTitle(L10n.settingsTitle)
             .navigationBarTitleDisplayMode(.large)
@@ -831,6 +862,39 @@ private struct ThemeDot: View {
         }
         .buttonStyle(.plain)
         .accessibilityLabel("\(theme.displayName) theme\(isLocked ? ", locked, requires Pro" : "")\(isSelected ? ", selected" : "")")
+    }
+}
+
+// MARK: - More App Row Helper
+
+extension SettingsScreen {
+    func moreAppRow(icon: String, name: String, subtitle: String, appStoreID: String) -> some View {
+        Button {
+            HapticManager.tap()
+            if let url = URL(string: "itms-apps://apple.com/app/id\(appStoreID)") {
+                UIApplication.shared.open(url)
+            }
+        } label: {
+            HStack(spacing: DS.Spacing.md) {
+                Text(icon)
+                    .font(.title3)
+                VStack(alignment: .leading, spacing: 2) {
+                    Text(name)
+                        .font(.subheadline.weight(.semibold))
+                        .foregroundStyle(.primary)
+                    Text(subtitle)
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
+                Spacer()
+                Image(systemName: "arrow.up.right.square")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            }
+        }
+        .buttonStyle(.plain)
+        .accessibilityLabel("\(name), \(subtitle)")
+        .accessibilityHint("Opens in App Store")
     }
 }
 

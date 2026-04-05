@@ -69,6 +69,8 @@ struct NoBuyApp: App {
         } catch {
             fatalError("Could not create ModelContainer: \(error)")
         }
+
+        TelemetryService.initialize()
     }
 
     var body: some Scene {
