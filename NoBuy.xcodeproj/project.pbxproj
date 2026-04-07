@@ -64,6 +64,7 @@
 		B35705093CD897F249420F77 /* DayRecord.swift in Sources */ = {isa = PBXBuildFile; fileRef = 935996357F6A20E03655293D /* DayRecord.swift */; };
 		B93B88A0CF845519A11CB3BA /* WaitingItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE3BD5F0423C18CC39CA95FC /* WaitingItem.swift */; };
 		BDD821EB786061D1B1CA098B /* ConfettiView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEA58BAD46C5BA137F5AA49B /* ConfettiView.swift */; };
+		C36E2B1F45E14D21FD2C704E /* WhatsNewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E098C8B3C0AEEFEF6D19EB59 /* WhatsNewView.swift */; };
 		C3CC7DED0584CF8D6E87C4BD /* SoundManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A54715F7FA2DA8F6B338C3DF /* SoundManager.swift */; };
 		C7BA2CBF5E18C11E31D2655D /* DayEditSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 017004D0348DAE5AE0254D2D /* DayEditSheet.swift */; };
 		C7FEFF12D8A74B52B8242409 /* ChallengeCelebrationModal.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAA2C1E51EB93CBB60B92A5E /* ChallengeCelebrationModal.swift */; };
@@ -74,6 +75,7 @@
 		E1B170A6C968079658796A3D /* ChallengeSetupSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51C33FA8AF854E9C6CC0C787 /* ChallengeSetupSheet.swift */; };
 		E77AE7F83DAE62661AF1C420 /* UserSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12DBEFAE75C4D6C989D0A59A /* UserSettings.swift */; };
 		E7B5A97AF1830923895B0DE4 /* MandatoryCategory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80E515F34D14802B57156DB7 /* MandatoryCategory.swift */; };
+		F0A0AFAEBD8E91CB77613035 /* AppTips.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8120A875118CBAAB6BAB29BA /* AppTips.swift */; };
 		F42142672E380FD821C97526 /* Date+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = E47D84A71F84546C202C8559 /* Date+Extensions.swift */; };
 		F4FE8D155A8C11C21EADFB9C /* ScreenshotTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B98AAAB567B25324B95F3A8B /* ScreenshotTests.swift */; };
 		F84380290297EC3E32C1AAA9 /* TipCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3586FDAD117B002C0D0197C /* TipCard.swift */; };
@@ -138,6 +140,7 @@
 		7E4CB158D19362AE35D8FE6D /* StatsViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatsViewModelTests.swift; sourceTree = "<group>"; };
 		806C944FDAC4C58F58E6792A /* SettingsScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsScreen.swift; sourceTree = "<group>"; };
 		80E515F34D14802B57156DB7 /* MandatoryCategory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MandatoryCategory.swift; sourceTree = "<group>"; };
+		8120A875118CBAAB6BAB29BA /* AppTips.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppTips.swift; sourceTree = "<group>"; };
 		8231360A22F6DC1ECF17FEE2 /* Localizable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Localizable.swift; sourceTree = "<group>"; };
 		825FB6A90C44C3B734B9E59D /* CheckStreakIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckStreakIntent.swift; sourceTree = "<group>"; };
 		895D433DF2A96D1C43B97CDA /* SavingsGoalCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SavingsGoalCard.swift; sourceTree = "<group>"; };
@@ -165,6 +168,7 @@
 		DD4C3429E75A51A454863FE7 /* MilestoneModal.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MilestoneModal.swift; sourceTree = "<group>"; };
 		DEA58BAD46C5BA137F5AA49B /* ConfettiView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConfettiView.swift; sourceTree = "<group>"; };
 		DEDEC33ADE54A63E94917A26 /* NoBuy.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = NoBuy.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		E098C8B3C0AEEFEF6D19EB59 /* WhatsNewView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WhatsNewView.swift; sourceTree = "<group>"; };
 		E47D84A71F84546C202C8559 /* Date+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Date+Extensions.swift"; sourceTree = "<group>"; };
 		E49B3042AD68191FFFFD4BD7 /* NoBuyTests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = NoBuyTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		E7E8173966314EF253C97AEC /* Color+Theme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Color+Theme.swift"; sourceTree = "<group>"; };
@@ -210,6 +214,7 @@
 				806C944FDAC4C58F58E6792A /* SettingsScreen.swift */,
 				9CE8F3FD2E726A14220C18A0 /* StatsScreen.swift */,
 				38FBE1E743F1A7C058B5E2F1 /* UrgeSurfingView.swift */,
+				E098C8B3C0AEEFEF6D19EB59 /* WhatsNewView.swift */,
 			);
 			path = Screens;
 			sourceTree = "<group>";
@@ -360,6 +365,7 @@
 			children = (
 				F78D0BC0EC3BA261DEF3FE91 /* AchievementManager.swift */,
 				F69CD1FD3DC606DD0622AF40 /* AppLogger.swift */,
+				8120A875118CBAAB6BAB29BA /* AppTips.swift */,
 				605A01D20671D8F91187B224 /* DataExportService.swift */,
 				27CA5830D6F66BF20FD36B83 /* HapticManager.swift */,
 				30D0AC1EDE4126A69F717A77 /* NotificationManager.swift */,
@@ -524,6 +530,7 @@
 				912EC60AE87D2ACC58C64C60 /* AdaptiveLayout.swift in Sources */,
 				05F8B7247358BE0D72485DA0 /* AppLogger.swift in Sources */,
 				A81F7806C9F8550F6ED73109 /* AppTheme.swift in Sources */,
+				F0A0AFAEBD8E91CB77613035 /* AppTips.swift in Sources */,
 				FF4A5BE4D0BE991DE56E5169 /* CalendarDayCell.swift in Sources */,
 				1276058968C16BF7E3C0DE3D /* CalendarScreen.swift in Sources */,
 				3108B1519528891825EEB552 /* CalendarViewModel.swift in Sources */,
@@ -576,6 +583,7 @@
 				B93B88A0CF845519A11CB3BA /* WaitingItem.swift in Sources */,
 				1A22E47C343FFF9E423FC437 /* WaitingListManager.swift in Sources */,
 				3D7F4ED92BAAA88A9062552E /* WaitingListSheet.swift in Sources */,
+				C36E2B1F45E14D21FD2C704E /* WhatsNewView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

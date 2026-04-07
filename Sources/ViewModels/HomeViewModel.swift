@@ -2,6 +2,7 @@ import Foundation
 import Observation
 import os
 import SwiftData
+import TipKit
 
 @MainActor
 @Observable
@@ -291,6 +292,7 @@ final class HomeViewModel {
         }
         HapticManager.noBuySuccess()
         SoundManager.playIfEnabled(.success)
+        ImpulseChecklistTip.hasLoggedDay = true
         SoftPaywallTracker.shared.trackAction()
 
         var updated = allRecords.filter { calendar.startOfDay(for: $0.date) != today }

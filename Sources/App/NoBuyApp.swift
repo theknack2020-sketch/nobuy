@@ -1,6 +1,7 @@
 import CoreSpotlight
 import SwiftData
 import SwiftUI
+import TipKit
 
 // MARK: - Quick Action Types
 
@@ -48,6 +49,8 @@ final class AppDelegate: NSObject, UIApplicationDelegate {
 struct NoBuyApp: App {
     @UIApplicationDelegateAdaptor(AppDelegate.self) private var appDelegate
     @AppStorage("hasCompletedOnboarding") private var hasCompletedOnboarding = false
+    @AppStorage("lastSeenVersion") private var lastSeenVersion = ""
+    @State private var showWhatsNew = false
     @State private var store = StoreService.shared
     @State private var achievementManager = AchievementManager.shared
     @State private var quickActionHandler = QuickActionHandler()
@@ -71,6 +74,10 @@ struct NoBuyApp: App {
         }
 
         TelemetryService.initialize()
+
+        try? Tips.configure([
+            .displayFrequency(.daily)
+        ])
     }
 
     var body: some Scene {
@@ -100,6 +107,13 @@ struct NoBuyApp: App {
             .onContinueUserActivity(CSSearchableItemActionType) { activity in
                 handleSpotlightActivity(activity)
             }
+            .onAppear {
+                checkWhatsNew()
+            }
+            .sheet(isPresented: $showWhatsNew) {
+                WhatsNewView()
+                    .interactiveDismissDisabled(false)
+            }
         }
         .modelContainer(modelContainer)
     }
@@ -115,6 +129,20 @@ struct NoBuyApp: App {
         default:
             break
         }
+    }
+
+    private func checkWhatsNew() {
+        let currentVersion = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? ""
+        guard hasCompletedOnboarding,
+              !currentVersion.isEmpty,
+              lastSeenVersion != currentVersion else { return }
+        // Don't show on fresh install (lastSeenVersion is empty and onboarding just completed)
+        guard !lastSeenVersion.isEmpty else {
+            lastSeenVersion = currentVersion
+            return
+        }
+        lastSeenVersion = currentVersion
+        showWhatsNew = true
     }
 
     private func handleSpotlightActivity(_ activity: NSUserActivity) {

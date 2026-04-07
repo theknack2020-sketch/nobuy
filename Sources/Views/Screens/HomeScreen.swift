@@ -1,5 +1,6 @@
 import SwiftData
 import SwiftUI
+import TipKit
 
 struct HomeScreen: View {
     @Environment(\.modelContext) private var modelContext
@@ -17,6 +18,8 @@ struct HomeScreen: View {
     @State private var showErrorBanner = false
     @State private var isLoading = true
     @State private var sectionsAppeared = false
+
+    private let streakTip = StreakTip()
 
     private static let celebrationStreaks: Set<Int> = [1, 3, 7, 14, 30, 60, 100]
 
@@ -78,6 +81,11 @@ struct HomeScreen: View {
                             .opacity(sectionsAppeared ? 1 : 0)
                             .offset(y: sectionsAppeared ? 0 : 10)
                             .animation(reduceMotion ? nil : DS.Anim.normal.delay(DS.Anim.stagger * 2), value: sectionsAppeared)
+
+                        TipView(streakTip)
+                            .tipBackground(Color.surfaceSecondary)
+                            .padding(.horizontal, DS.Spacing.xl)
+
                         todayStatus
                             .transition(.asymmetric(insertion: .scale.combined(with: .opacity), removal: .opacity))
                             .opacity(sectionsAppeared ? 1 : 0)
@@ -117,6 +125,9 @@ struct HomeScreen: View {
                             .padding(.top, DS.Spacing.sm)
 
                         // MARK: - Tools Section
+
+                        TipView(ImpulseChecklistTip())
+                            .tipBackground(Color.surfaceSecondary)
 
                         impulseChecklistButton
                     }
