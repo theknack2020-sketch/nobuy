@@ -5,7 +5,10 @@ import TelemetryDeck
 private let logger = Logger(subsystem: "com.ufukozdemir.nobuy", category: "Telemetry")
 
 /// Centralized analytics — privacy-first, no personal data.
+@MainActor
 enum TelemetryService {
+    private nonisolated(unsafe) static var isConfigured = false
+
     private static let appID: String = {
         if let envID = ProcessInfo.processInfo.environment["NOBUY_TELEMETRY_APP_ID"], !envID.isEmpty {
             return envID
@@ -20,14 +23,17 @@ enum TelemetryService {
         }
         let config = TelemetryDeck.Config(appID: appID)
         TelemetryDeck.initialize(config: config)
+        isConfigured = true
         logger.info("TelemetryDeck initialized")
     }
 
     static func trackScreen(_ name: String) {
+        guard isConfigured else { return }
         TelemetryDeck.signal("screen_viewed", parameters: ["screen": name])
     }
 
     static func trackEvent(_ name: String, properties: [String: String] = [:]) {
+        guard isConfigured else { return }
         TelemetryDeck.signal(name, parameters: properties)
     }
 
