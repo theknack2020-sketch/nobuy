@@ -47,6 +47,7 @@ struct DayEditSheet: View {
                                     )
                                 )
                         )
+                        .shadow(DS.Shadow.card)
 
                     if let record = existingRecord {
                         HStack {
@@ -257,6 +258,7 @@ struct DayEditSheet: View {
                 .padding(.horizontal, DS.Spacing.xl)
             }
             .scrollDismissesKeyboard(.interactively)
+            .background(DS.Gradient.glow.opacity(0.3).ignoresSafeArea())
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     Button(L10n.cancel) {

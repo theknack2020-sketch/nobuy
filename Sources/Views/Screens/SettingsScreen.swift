@@ -478,6 +478,12 @@ struct SettingsScreen: View {
                         subtitle: "Pet Health Tracker",
                         appStoreID: "6742715498"
                     )
+                    moreAppRow(
+                        icon: "♈",
+                        name: "AriesAI",
+                        subtitle: "AI Astrology",
+                        appStoreID: "6760838054"
+                    )
                 } header: {
                     Text("More by TheKnack")
                 }
@@ -534,6 +540,7 @@ struct SettingsScreen: View {
                 .presentationDragIndicator(.visible)
             }
             .onAppear {
+                TelemetryService.trackScreen("settings")
                 if !hasSeededDefaults {
                     seedDefaultsIfNeeded()
                 }

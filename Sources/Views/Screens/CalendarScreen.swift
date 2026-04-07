@@ -53,6 +53,7 @@ struct CalendarScreen: View {
                 PaywallView(store: store)
             }
             .onAppear {
+                TelemetryService.trackScreen("calendar")
                 if isLoading {
                     DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
                         withAnimation { isLoading = false }
@@ -90,6 +91,10 @@ struct CalendarScreen: View {
             Spacer().frame(height: DS.Spacing.xxxl)
         }
         .frame(maxWidth: .infinity)
+        .padding(DS.Spacing.lg)
+        .background(DS.Gradient.card, in: RoundedRectangle(cornerRadius: DS.Radius.lg))
+        .background(Color.surfaceSecondary, in: RoundedRectangle(cornerRadius: DS.Radius.lg))
+        .shadow(DS.Shadow.card)
     }
 
     // MARK: - Month Header
@@ -104,7 +109,7 @@ struct CalendarScreen: View {
                         showPaywall = true
                     } else {
                         monthTransitionDirection = .leading
-                        withAnimation(reduceMotion ? nil : DS.Anim.normal) {
+                        withAnimation(reduceMotion ? nil : DS.Anim.slow) {
                             viewModel.goToPreviousMonth()
                         }
                     }
@@ -133,7 +138,7 @@ struct CalendarScreen: View {
                 Button {
                     HapticManager.impact(.light)
                     monthTransitionDirection = .trailing
-                    withAnimation(reduceMotion ? nil : DS.Anim.normal) {
+                    withAnimation(reduceMotion ? nil : DS.Anim.slow) {
                         viewModel.goToNextMonth()
                     }
                 } label: {
@@ -162,6 +167,10 @@ struct CalendarScreen: View {
                 .frame(height: 3)
                 .padding(.horizontal, DS.Spacing.xl)
         }
+        .padding(DS.Spacing.lg)
+        .background(DS.Gradient.card, in: RoundedRectangle(cornerRadius: DS.Radius.lg))
+        .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: DS.Radius.lg))
+        .shadow(DS.Shadow.card)
     }
 
     // MARK: - Calendar Grid
@@ -198,12 +207,13 @@ struct CalendarScreen: View {
             .transition(.push(from: monthTransitionDirection == .leading ? .leading : .trailing))
         }
         .padding(DS.Spacing.lg)
+        .background(DS.Gradient.card, in: RoundedRectangle(cornerRadius: DS.Radius.lg))
         .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: DS.Radius.lg))
         .background(
             RoundedRectangle(cornerRadius: DS.Radius.lg)
                 .fill(Color.surfaceSecondary)
         )
-        .shadow(color: .black.opacity(0.06), radius: 8, y: 4)
+        .shadow(DS.Shadow.card)
         .gesture(
             DragGesture(minimumDistance: 50, coordinateSpace: .local)
                 .onEnded { value in
@@ -213,14 +223,14 @@ struct CalendarScreen: View {
                             showPaywall = true
                         } else {
                             monthTransitionDirection = .leading
-                            withAnimation(reduceMotion ? nil : DS.Anim.normal) {
+                            withAnimation(reduceMotion ? nil : DS.Anim.slow) {
                                 viewModel.goToPreviousMonth()
                             }
                         }
                     } else if value.translation.width < -50, viewModel.canGoForward {
                         HapticManager.impact(.light)
                         monthTransitionDirection = .trailing
-                        withAnimation(reduceMotion ? nil : DS.Anim.normal) {
+                        withAnimation(reduceMotion ? nil : DS.Anim.slow) {
                             viewModel.goToNextMonth()
                         }
                     }
@@ -322,12 +332,13 @@ struct CalendarScreen: View {
             }
         }
         .padding(DS.Spacing.xl)
+        .background(DS.Gradient.card, in: RoundedRectangle(cornerRadius: DS.Radius.lg))
         .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: DS.Radius.lg))
         .background(
             RoundedRectangle(cornerRadius: DS.Radius.lg)
                 .fill(Color.surfaceSecondary)
         )
-        .shadow(color: .black.opacity(0.06), radius: 8, y: 4)
+        .shadow(DS.Shadow.card)
         .onAppear {
             if reduceMotion {
                 summaryAppeared = true

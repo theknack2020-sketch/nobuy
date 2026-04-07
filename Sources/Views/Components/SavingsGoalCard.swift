@@ -141,6 +141,7 @@ struct SavingsGoalCard: View {
             RoundedRectangle(cornerRadius: DS.Radius.lg)
                 .fill(Color.surfaceSecondary)
         )
+        .shadow(color: .black.opacity(0.06), radius: 6, x: 0, y: 3)
         .opacity(appeared ? 1 : 0)
         .offset(y: appeared ? 0 : (reduceMotion ? 0 : 10))
         .onAppear {
@@ -161,6 +162,7 @@ struct SavingsGoalCard: View {
                 progressAnimationValue = progressFraction
             }
         }
+        .pressable()
         .accessibilityElement(children: .combine)
         .accessibilityLabel("Savings Goal: \(goalLabel). \(dailyEstimate > 0 ? "Estimated savings: \(estimatedSavings)." : "") \(targetAmount > 0 ? "\(Int(progressFraction * 100)) percent complete." : "")")
     }

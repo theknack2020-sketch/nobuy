@@ -25,6 +25,7 @@ struct WaitingListSheet: View {
         NavigationStack {
             ZStack {
                 Color.surfacePrimary.ignoresSafeArea()
+                DS.Gradient.glow.opacity(0.5).ignoresSafeArea()
 
                 if manager.activeItems.isEmpty, manager.resolvedItems.isEmpty {
                     emptyState
@@ -372,7 +373,7 @@ struct WaitingListSheet: View {
             RoundedRectangle(cornerRadius: DS.Radius.sm)
                 .fill(Color.surfaceSecondary.opacity(0.6))
         )
-        .shadow(color: .black.opacity(0.03), radius: 2, x: 0, y: 1)
+        .shadow(DS.Shadow.card)
     }
 
     // MARK: - Empty State

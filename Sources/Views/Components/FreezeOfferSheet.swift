@@ -41,6 +41,9 @@ struct FreezeOfferSheet: View {
                     .shadow(color: .noBuyGreen.opacity(0.3), radius: 6, x: 0, y: 3)
                     .accessibilityHidden(true)
             }
+            .scaleEffect(appeared ? 1.0 : (reduceMotion ? 1.0 : 0.5))
+            .opacity(appeared ? 1 : 0)
+            .animation(reduceMotion ? nil : DS.Anim.normal, value: appeared)
 
             VStack(spacing: DS.Spacing.sm) {
                 Text("Protect Your Streak")
@@ -52,6 +55,9 @@ struct FreezeOfferSheet: View {
                     .multilineTextAlignment(.center)
                     .padding(.horizontal, DS.Spacing.xl)
             }
+            .opacity(appeared ? 1 : 0)
+            .offset(y: appeared ? 0 : 12)
+            .animation(reduceMotion ? nil : DS.Anim.normal.delay(DS.Anim.stagger), value: appeared)
 
             // Freeze count indicator
             HStack(spacing: DS.Spacing.sm) {
@@ -66,7 +72,10 @@ struct FreezeOfferSheet: View {
             .background(
                 Capsule().fill(Color.noBuyGreenLight)
             )
-            .shadow(color: .black.opacity(0.05), radius: 4, x: 0, y: 2)
+            .shadow(DS.Shadow.card)
+            .opacity(appeared ? 1 : 0)
+            .offset(y: appeared ? 0 : 10)
+            .animation(reduceMotion ? nil : DS.Anim.normal.delay(DS.Anim.stagger * 2), value: appeared)
 
             VStack(spacing: DS.Spacing.md) {
                 // Use freeze

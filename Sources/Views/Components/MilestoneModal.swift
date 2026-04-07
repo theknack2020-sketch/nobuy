@@ -71,6 +71,8 @@ struct MilestoneModal: View {
                     .foregroundStyle(.secondary)
                     .textCase(.uppercase)
                     .tracking(2)
+                    .opacity(appear ? 1 : 0)
+                    .animation(reduceMotion ? nil : DS.Anim.normal.delay(DS.Anim.stagger * 2), value: appear)
 
                 Button {
                     HapticManager.tap()
@@ -102,6 +104,10 @@ struct MilestoneModal: View {
             .background(
                 RoundedRectangle(cornerRadius: DS.Radius.xl)
                     .fill(Color.surfacePrimary)
+                    .overlay(
+                        RoundedRectangle(cornerRadius: DS.Radius.xl)
+                            .fill(DS.Gradient.card)
+                    )
                     .shadow(color: .black.opacity(0.15), radius: 30, y: 10)
             )
             .padding(.horizontal, DS.Spacing.xxl)

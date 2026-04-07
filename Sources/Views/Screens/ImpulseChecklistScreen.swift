@@ -110,6 +110,9 @@ struct ImpulseChecklistScreen: View {
         .sheet(isPresented: $showWaitingListOffer) {
             waitingListOfferSheet
         }
+        .onAppear {
+            TelemetryService.trackScreen("impulse_checklist")
+        }
     }
 
     // MARK: - Question View

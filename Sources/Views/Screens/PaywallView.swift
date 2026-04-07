@@ -538,6 +538,7 @@ struct PaywallView: View {
     // MARK: - Actions
 
     private func onAppearSetup() {
+        TelemetryService.trackScreen("paywall")
         store.trackPaywallShown()
 
         // Reset purchase state on re-open

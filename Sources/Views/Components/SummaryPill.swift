@@ -36,8 +36,19 @@ struct SummaryPill: View {
         .padding(.vertical, DS.Spacing.md)
         .background(
             RoundedRectangle(cornerRadius: DS.Radius.md)
-                .fill(color.opacity(0.1))
+                .fill(
+                    LinearGradient(
+                        colors: [color.opacity(0.12), color.opacity(0.05)],
+                        startPoint: .top,
+                        endPoint: .bottom
+                    )
+                )
+                .overlay(
+                    RoundedRectangle(cornerRadius: DS.Radius.md)
+                        .stroke(color.opacity(0.08), lineWidth: 0.5)
+                )
         )
+        .shadow(color: .black.opacity(0.06), radius: 6, x: 0, y: 3)
         .scaleEffect(appeared ? 1.0 : (reduceMotion ? 1.0 : 0.8))
         .opacity(appeared ? 1.0 : 0)
         .onAppear {

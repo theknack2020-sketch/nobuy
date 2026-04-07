@@ -228,6 +228,7 @@ struct StatsScreen: View {
             PaywallView(store: store)
         }
         .onAppear {
+            TelemetryService.trackScreen("stats")
             refreshStats()
             if reduceMotion {
                 appeared = true
@@ -369,9 +370,10 @@ struct StatsScreen: View {
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding(DS.Spacing.lg)
+        .background(DS.Gradient.card, in: RoundedRectangle(cornerRadius: DS.Radius.md))
         .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: DS.Radius.md))
         .background(Color.surfaceSecondary, in: RoundedRectangle(cornerRadius: DS.Radius.md))
-        .shadow(color: .black.opacity(0.06), radius: 8, y: 4)
+        .shadow(DS.Shadow.card)
     }
 
     // MARK: - Savings Estimate Card (Pro)
@@ -962,6 +964,12 @@ struct StatsScreen: View {
                         ? Color.noBuyGreen.opacity(0.15)
                         : Color.surfaceTertiary)
                     .frame(width: 52, height: 52)
+                    .shadow(
+                        color: achievement.isUnlocked ? .noBuyGreen.opacity(0.25) : .clear,
+                        radius: achievement.isUnlocked ? 6 : 0,
+                        x: 0,
+                        y: achievement.isUnlocked ? 2 : 0
+                    )
 
                 Image(systemName: achievement.icon)
                     .font(.title3)
@@ -975,6 +983,18 @@ struct StatsScreen: View {
                 .lineLimit(2)
                 .fixedSize(horizontal: false, vertical: true)
         }
+        .padding(.vertical, DS.Spacing.sm)
+        .padding(.horizontal, DS.Spacing.xs)
+        .background(
+            RoundedRectangle(cornerRadius: DS.Radius.sm)
+                .fill(achievement.isUnlocked ? Color.surfaceSecondary : .clear)
+        )
+        .shadow(
+            color: achievement.isUnlocked ? .black.opacity(0.06) : .clear,
+            radius: achievement.isUnlocked ? 4 : 0,
+            x: 0,
+            y: achievement.isUnlocked ? 2 : 0
+        )
         .opacity(achievement.isUnlocked ? 1 : 0.5)
         .grayscale(achievement.isUnlocked ? 0 : 0.8)
     }
@@ -1264,7 +1284,9 @@ struct StatsScreen: View {
         }
         .frame(maxWidth: .infinity)
         .padding(DS.Spacing.lg)
+        .background(DS.Gradient.card, in: RoundedRectangle(cornerRadius: DS.Radius.lg))
         .background(Color.surfaceSecondary, in: RoundedRectangle(cornerRadius: DS.Radius.lg))
+        .shadow(DS.Shadow.card)
     }
 }
 
@@ -1274,9 +1296,10 @@ private extension View {
     func sectionCard() -> some View {
         self
             .padding(DS.Spacing.lg)
+            .background(DS.Gradient.card, in: RoundedRectangle(cornerRadius: DS.Radius.lg))
             .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: DS.Radius.lg))
             .background(Color.surfaceSecondary, in: RoundedRectangle(cornerRadius: DS.Radius.lg))
-            .shadow(color: .black.opacity(0.06), radius: 8, y: 4)
+            .shadow(DS.Shadow.card)
     }
 }
 

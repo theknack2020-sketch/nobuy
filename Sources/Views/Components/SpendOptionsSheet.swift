@@ -159,6 +159,7 @@ struct SpendOptionsSheet: View {
                                 .stroke(Color.textTertiary.opacity(0.2), lineWidth: 1)
                         )
                 )
+                .shadow(DS.Shadow.card)
                 .opacity(appeared ? 1 : 0)
                 .offset(y: appeared ? 0 : 10)
                 .animation(reduceMotion ? nil : .spring(response: 0.4, dampingFraction: 0.7).delay(0.15), value: appeared)
@@ -192,6 +193,7 @@ struct SpendOptionsSheet: View {
                 Spacer()
             }
             .padding(.horizontal, DS.Spacing.xl)
+            .background(DS.Gradient.glow.opacity(0.3).ignoresSafeArea())
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     Button(L10n.cancel) {

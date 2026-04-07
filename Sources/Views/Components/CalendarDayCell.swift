@@ -52,11 +52,27 @@ struct CalendarDayCell: View {
             .background(
                 RoundedRectangle(cornerRadius: 10)
                     .fill(backgroundColor)
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 10)
+                            .fill(
+                                LinearGradient(
+                                    colors: [.white.opacity(0.15), .clear],
+                                    startPoint: .top,
+                                    endPoint: .bottom
+                                )
+                            )
+                    )
                     .shadow(color: statusShadowColor, radius: status == .unrecorded || status == .future ? 0 : 3, x: 0, y: 2)
             )
             .overlay(
                 RoundedRectangle(cornerRadius: 10)
                     .strokeBorder(todayBorderColor, lineWidth: isToday ? 2.5 : 0)
+            )
+            .shadow(
+                color: isToday ? .noBuyGreen.opacity(0.35) : .clear,
+                radius: isToday ? 6 : 0,
+                x: 0,
+                y: isToday ? 2 : 0
             )
         }
         .buttonStyle(.scale(0.9))

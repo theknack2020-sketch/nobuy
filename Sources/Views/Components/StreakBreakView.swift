@@ -41,6 +41,9 @@ struct StreakBreakView: View {
                     .shadow(color: .spendRed.opacity(0.2), radius: 6, x: 0, y: 3)
                     .accessibilityHidden(true)
             }
+            .scaleEffect(appear ? 1.0 : (reduceMotion ? 1.0 : 0.5))
+            .opacity(appear ? 1 : 0)
+            .animation(reduceMotion ? nil : DS.Anim.normal, value: appear)
 
             Text("Streak ended")
                 .font(Font.adaptiveDisplay(size: 22, weight: .bold, design: .rounded, isRegular: isRegular))
@@ -87,7 +90,9 @@ struct StreakBreakView: View {
                     .accessibilityElement(children: .combine)
                     .accessibilityLabel("Best streak: \(longestStreak) days")
                 }
-                .animation(reduceMotion ? nil : .spring(response: 0.5, dampingFraction: 0.7), value: appear)
+                .opacity(appear ? 1 : 0)
+                .offset(y: appear ? 0 : 16)
+                .animation(reduceMotion ? nil : DS.Anim.normal.delay(DS.Anim.stagger * 3), value: appear)
             }
 
             Button {
@@ -119,6 +124,7 @@ struct StreakBreakView: View {
             .accessibilityIdentifier("start_new_streak")
         }
         .padding(DS.Spacing.xxxl)
+        .background(DS.Gradient.glow.opacity(0.3))
         .onAppear {
             HapticManager.streakBreak()
             SoundManager.playIfEnabled(.streakBreak)
