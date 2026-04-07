@@ -78,6 +78,7 @@ struct FreezeOfferSheet: View {
                     HStack {
                         Image(systemName: "shield.checkered")
                             .font(.title3)
+                            .accessibilityHidden(true)
                         Text("Use Freeze")
                             .fontWeight(.semibold)
                     }

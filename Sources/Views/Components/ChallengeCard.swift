@@ -203,6 +203,7 @@ struct ChallengeCard: View {
             HStack(spacing: DS.Spacing.md) {
                 Image(systemName: "flame.fill")
                     .foregroundStyle(.noBuyGreen)
+                    .accessibilityHidden(true)
                 VStack(alignment: .leading, spacing: 2) {
                     Text("Start Challenge")
                         .font(.subheadline)

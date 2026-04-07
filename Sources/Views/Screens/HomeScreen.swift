@@ -602,6 +602,7 @@ struct HomeScreen: View {
                 HStack(spacing: DS.Spacing.md) {
                     Image(systemName: "flame.fill")
                         .foregroundStyle(.noBuyGreen.opacity(0.5))
+                        .accessibilityHidden(true)
                     VStack(alignment: .leading, spacing: 2) {
                         HStack(spacing: DS.Spacing.xs) {
                             Text("Challenges")
@@ -1017,6 +1018,7 @@ struct StreakShareCard: View {
                 HStack(spacing: DS.Spacing.xs) {
                     Image(systemName: "target")
                         .font(.caption2)
+                        .accessibilityHidden(true)
                     Text(goalText)
                         .font(.caption)
                         .fontWeight(.medium)
@@ -1135,6 +1137,7 @@ struct StreakShareCardPro: View {
                 HStack(spacing: DS.Spacing.xs) {
                     Image(systemName: "target")
                         .font(.caption2)
+                        .accessibilityHidden(true)
                     Text(goalText)
                         .font(.caption)
                         .fontWeight(.medium)

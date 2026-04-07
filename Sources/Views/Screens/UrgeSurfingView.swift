@@ -380,6 +380,7 @@ struct UrgeSurfingView: View {
                         )
                     )
                     .shadow(color: .noBuyGreen.opacity(0.4), radius: 10, x: 0, y: 5)
+                    .accessibilityHidden(true)
             }
 
             VStack(spacing: DS.Spacing.md) {

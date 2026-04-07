@@ -46,6 +46,7 @@ struct ChallengeCelebrationModal: View {
 
                     Image(systemName: "trophy.fill")
                         .font(Font.adaptiveDisplay(size: 56, isRegular: isRegular))
+                        .accessibilityHidden(true)
                         .foregroundStyle(
                             LinearGradient(
                                 colors: [.mandatoryAmber, .orange],

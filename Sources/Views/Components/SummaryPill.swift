@@ -18,6 +18,7 @@ struct SummaryPill: View {
             Image(systemName: icon)
                 .font(.title3)
                 .foregroundStyle(color)
+                .accessibilityHidden(true)
 
             Text("\(count)")
                 .font(Font.adaptiveDisplay(size: 24, weight: .black, design: .rounded, isRegular: isRegular))

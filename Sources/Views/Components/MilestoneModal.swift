@@ -38,6 +38,7 @@ struct MilestoneModal: View {
                         .foregroundStyle(milestoneColor)
                         .symbolEffect(.bounce, value: reduceMotion ? false : appear)
                         .shadow(color: milestoneColor.opacity(0.4), radius: 8, x: 0, y: 4)
+                        .accessibilityHidden(true)
                 }
 
                 VStack(spacing: DS.Spacing.sm) {

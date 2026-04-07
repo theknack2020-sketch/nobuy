@@ -56,6 +56,7 @@ struct SpendOptionsSheet: View {
                             Image(systemName: "building.columns.fill")
                                 .font(.title3)
                                 .foregroundStyle(.mandatoryAmber)
+                                .accessibilityHidden(true)
                         }
 
                         VStack(alignment: .leading, spacing: DS.Spacing.xs) {

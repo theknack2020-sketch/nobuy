@@ -52,6 +52,7 @@ struct DayEditSheet: View {
                         HStack {
                             Image(systemName: record.isNoBuyDay ? "checkmark.circle.fill" : "xmark.circle.fill")
                                 .foregroundStyle(record.isNoBuyDay ? .noBuyGreen : .spendRed)
+                                .accessibilityHidden(true)
                             Text(record.isNoBuyDay
                                 ? "No-spend day"
                                 : "Spent")
@@ -219,6 +220,7 @@ struct DayEditSheet: View {
                         } label: {
                             HStack {
                                 Image(systemName: "trash")
+                                    .accessibilityHidden(true)
                                 Text("Delete Record")
                             }
                             .font(.subheadline)

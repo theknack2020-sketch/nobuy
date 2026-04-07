@@ -75,21 +75,25 @@ struct CalendarDayCell: View {
                 .font(Font.adaptiveBadge(isRegular: isRegular))
                 .foregroundStyle(.white)
                 .shadow(color: .noBuyGreen.opacity(0.5), radius: 1, x: 0, y: 1)
+                .accessibilityHidden(true)
         case .spent:
             Image(systemName: "xmark.circle.fill")
                 .font(Font.adaptiveBadge(isRegular: isRegular))
                 .foregroundStyle(.white)
                 .shadow(color: .spendRed.opacity(0.5), radius: 1, x: 0, y: 1)
+                .accessibilityHidden(true)
         case .essential:
             Image(systemName: "building.columns.circle.fill")
                 .font(Font.adaptiveBadge(isRegular: isRegular))
                 .foregroundStyle(.white)
                 .shadow(color: .mandatoryAmber.opacity(0.5), radius: 1, x: 0, y: 1)
+                .accessibilityHidden(true)
         case .frozen:
             Image(systemName: "shield.fill")
                 .font(Font.adaptiveBadge(isRegular: isRegular))
                 .foregroundStyle(.white)
                 .shadow(color: .blue.opacity(0.5), radius: 1, x: 0, y: 1)
+                .accessibilityHidden(true)
         case .unrecorded, .future:
             EmptyView()
         }

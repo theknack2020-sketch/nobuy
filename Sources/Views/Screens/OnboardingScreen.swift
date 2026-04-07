@@ -383,6 +383,7 @@ struct OnboardingScreen: View {
             Image(systemName: icon)
                 .font(.title3)
                 .foregroundStyle(color)
+                .accessibilityHidden(true)
             Text("\(days)")
                 .font(Font.adaptiveSubheadline(isRegular: isRegular).weight(.bold))
                 .minimumScaleFactor(0.8)
@@ -558,6 +559,7 @@ struct OnboardingScreen: View {
                 Image(systemName: "crown.fill")
                     .font(.caption)
                     .foregroundStyle(.noBuyGreen)
+                    .accessibilityHidden(true)
 
                 Text("Unlock all features with Pro")
                     .font(.caption)

@@ -18,7 +18,7 @@ struct PaywallView: View {
     @State private var tableAppeared = false
     @State private var ctaAppeared = false
     @State private var isLoadingProduct = true
-    @State private var socialProofCount = 2847 // Simulated social proof
+    @State private var socialProofCount = 0 // Real download count (hidden if 0)
 
     // MARK: - Feature Row Model
 
@@ -89,9 +89,11 @@ struct PaywallView: View {
                         priceAnchorPill
                             .padding(.top, DS.Spacing.lg)
 
-                        // Social proof
-                        socialProof
-                            .padding(.top, DS.Spacing.md)
+                        // Social proof — hidden until real count available
+                        if socialProofCount > 0 {
+                            socialProof
+                                .padding(.top, DS.Spacing.md)
+                        }
 
                         // Feature comparison table
                         comparisonTable
@@ -290,6 +292,7 @@ struct PaywallView: View {
                                 .font(.caption)
                                 .foregroundStyle(feature.freeValue.isAvailable ? .white.opacity(0.6) : .noBuyGreen)
                                 .frame(width: 18)
+                                .accessibilityHidden(true)
 
                             Text(feature.name)
                                 .font(.subheadline)
@@ -483,6 +486,15 @@ struct PaywallView: View {
                     .foregroundStyle(.white.opacity(0.4))
                     .transition(.opacity)
             }
+
+            // Legal links — required by App Store
+            HStack(spacing: DS.Spacing.lg) {
+                Link("Terms of Use", destination: URL(string: "https://theknack2020-sketch.github.io/nobuy/terms/")!)
+                Link("Privacy Policy", destination: URL(string: "https://theknack2020-sketch.github.io/nobuy/privacy/")!)
+            }
+            .font(.caption2)
+            .foregroundStyle(.white.opacity(0.3))
+            .padding(.top, DS.Spacing.sm)
         }
     }
 

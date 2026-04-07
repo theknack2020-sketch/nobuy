@@ -914,6 +914,7 @@ struct StatsScreen: View {
                     HStack(spacing: DS.Spacing.sm) {
                         Image(systemName: "lock.fill")
                             .font(.caption)
+                            .accessibilityHidden(true)
                         Text("Unlock all \(totalCount) achievements with Pro")
                             .font(.caption.weight(.medium))
                     }
@@ -1219,6 +1220,7 @@ struct StatsScreen: View {
             Image(systemName: icon)
                 .font(.subheadline)
                 .foregroundStyle(.noBuyGreen)
+                .accessibilityHidden(true)
             Text(title)
                 .font(.headline)
                 .foregroundStyle(.textPrimary)

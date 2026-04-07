@@ -112,6 +112,7 @@ struct ChallengeSetupSheet: View {
                             Image(systemName: "pencil.circle.fill")
                                 .font(Font.adaptiveDisplay(size: 24, isRegular: isRegular))
                                 .foregroundStyle(selectedDuration == -1 ? .white : .noBuyGreen)
+                                .accessibilityHidden(true)
                             Text("Custom")
                                 .font(.caption)
                                 .foregroundStyle(selectedDuration == -1 ? .white.opacity(0.8) : .textSecondary)

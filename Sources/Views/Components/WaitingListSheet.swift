@@ -465,6 +465,7 @@ struct WaitingListSheet: View {
                     Image(systemName: "clock.badge.questionmark")
                         .font(Font.adaptiveDisplay(size: 36, isRegular: isRegular))
                         .foregroundStyle(.noBuyGreen)
+                        .accessibilityHidden(true)
                 }
 
                 VStack(spacing: DS.Spacing.lg) {

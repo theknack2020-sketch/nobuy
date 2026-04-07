@@ -142,6 +142,7 @@ struct CalendarScreen: View {
                         .fontWeight(.semibold)
                         .foregroundStyle(viewModel.canGoForward ? .textPrimary : .textTertiary)
                         .frame(width: 44, height: 44)
+                        .accessibilityHidden(true)
                 }
                 .buttonStyle(.scale)
                 .disabled(!viewModel.canGoForward)

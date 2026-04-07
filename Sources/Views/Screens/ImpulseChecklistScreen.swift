@@ -140,6 +140,7 @@ struct ImpulseChecklistScreen: View {
                     .font(Font.adaptiveDisplay(size: 52, isRegular: isRegular))
                     .foregroundStyle(.noBuyGreen)
                     .shadow(color: .noBuyGreen.opacity(0.3), radius: 6, x: 0, y: 3)
+                    .accessibilityHidden(true)
             }
             .id("icon-\(currentIndex)")
 
@@ -323,6 +324,7 @@ struct ImpulseChecklistScreen: View {
                     HStack(spacing: DS.Spacing.sm) {
                         Image(systemName: "clock.badge.questionmark")
                             .font(.title3)
+                            .accessibilityHidden(true)
                         Text("Add to Waiting List")
                             .fontWeight(.semibold)
                     }
@@ -444,6 +446,7 @@ struct ImpulseChecklistScreen: View {
                         HStack(spacing: DS.Spacing.sm) {
                             Image(systemName: "clock.badge.questionmark")
                                 .font(.title3)
+                                .accessibilityHidden(true)
                             Text("Add to Waiting List")
                                 .fontWeight(.semibold)
                         }
@@ -484,6 +487,7 @@ struct ImpulseChecklistScreen: View {
                         HStack(spacing: DS.Spacing.sm) {
                             Image(systemName: "clock.badge.questionmark")
                                 .font(.title3)
+                                .accessibilityHidden(true)
                             Text("Wait & Add to List")
                                 .fontWeight(.semibold)
                         }
@@ -595,6 +599,7 @@ struct ImpulseChecklistScreen: View {
                     Image(systemName: "clock.badge.questionmark")
                         .font(Font.adaptiveDisplay(size: 36, isRegular: isRegular))
                         .foregroundStyle(.noBuyGreen)
+                        .accessibilityHidden(true)
                 }
 
                 Text("Set a reminder to prevent impulse purchases")

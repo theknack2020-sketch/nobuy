@@ -59,8 +59,10 @@ struct SettingsScreen: View {
                                     ZStack {
                                         Image(systemName: "bag.fill")
                                             .font(Font.adaptiveDisplay(size: 32, weight: .medium, isRegular: isRegular))
+                                            .accessibilityHidden(true)
                                         Image(systemName: "line.diagonal")
                                             .font(Font.adaptiveDisplay(size: 40, isRegular: isRegular))
+                                            .accessibilityHidden(true)
                                     }
                                     .foregroundStyle(.textSecondary)
                                 }
@@ -117,6 +119,7 @@ struct SettingsScreen: View {
                             Image(systemName: category.icon)
                                 .foregroundStyle(.mandatoryAmber)
                                 .frame(width: 28)
+                                .accessibilityHidden(true)
                             Text(category.name)
                         }
                     }
@@ -156,6 +159,7 @@ struct SettingsScreen: View {
                         Image(systemName: "shield.fill")
                             .foregroundStyle(.noBuyGreen)
                             .frame(width: 28)
+                            .accessibilityHidden(true)
                         VStack(alignment: .leading, spacing: 2) {
                             Text("Streak Freeze")
                                 .font(.body)
@@ -174,6 +178,7 @@ struct SettingsScreen: View {
                         Image(systemName: "snowflake")
                             .foregroundStyle(.blue)
                             .frame(width: 28)
+                            .accessibilityHidden(true)
                         Text("Monthly Freeze Allowance")
                         Spacer()
                         Text(store.isPro
@@ -202,6 +207,7 @@ struct SettingsScreen: View {
                             Image(systemName: isCompleted ? "trophy.fill" : "flame.fill")
                                 .foregroundStyle(isCompleted ? .mandatoryAmber : .noBuyGreen)
                                 .frame(width: 28)
+                                .accessibilityHidden(true)
                             VStack(alignment: .leading, spacing: 2) {
                                 Text("\(challengeDuration)-Day Challenge")
                                     .font(.body)
@@ -230,6 +236,7 @@ struct SettingsScreen: View {
                             Image(systemName: "plus.circle.fill")
                                 .foregroundStyle(.noBuyGreen)
                                 .frame(width: 28)
+                                .accessibilityHidden(true)
                             Text(challengeDuration > 0
                                 ? "Start New Challenge"
                                 : "Start Challenge")
@@ -288,6 +295,7 @@ struct SettingsScreen: View {
                             Image(systemName: "arrow.down.doc")
                                 .foregroundStyle(.noBuyGreen)
                                 .frame(width: 28)
+                                .accessibilityHidden(true)
                             Text(L10n.exportCSV)
                             Spacer()
                             if !store.isPro {
@@ -328,6 +336,7 @@ struct SettingsScreen: View {
                         Image(systemName: "app.fill")
                             .foregroundStyle(.noBuyGreen)
                             .frame(width: 28)
+                            .accessibilityHidden(true)
                         Text(L10n.settingsAppIcon)
                         Spacer()
                         HStack(spacing: DS.Spacing.xs) {
@@ -391,6 +400,7 @@ struct SettingsScreen: View {
                         Image(systemName: "lock.shield.fill")
                             .foregroundStyle(.noBuyGreen)
                             .frame(width: 28)
+                            .accessibilityHidden(true)
                         VStack(alignment: .leading, spacing: DS.Spacing.xs) {
                             Text(L10n.settingsPrivacy)
                                 .font(.body)
@@ -471,6 +481,22 @@ struct SettingsScreen: View {
                 } header: {
                     Text("More by TheKnack")
                 }
+
+                // MARK: - Footer
+
+                Section {} footer: {
+                    VStack(spacing: DS.Spacing.xs) {
+                        Text("© 2026 TheKnack. All rights reserved.")
+                            .font(.caption2)
+                            .foregroundStyle(.textTertiary)
+                        Text("Version \(Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "1.0") (\(Bundle.main.infoDictionary?["CFBundleVersion"] as? String ?? "1"))")
+                            .font(.caption2)
+                            .foregroundStyle(.textTertiary)
+                    }
+                    .frame(maxWidth: .infinity)
+                    .padding(.top, DS.Spacing.md)
+                    .accessibilityElement(children: .combine)
+                }
             }
             .navigationTitle(L10n.settingsTitle)
             .navigationBarTitleDisplayMode(.large)
@@ -536,7 +562,7 @@ struct SettingsScreen: View {
 
     private func proFeatureRow(icon: String, title: String) -> some View {
         HStack(spacing: 12) {
-            Image(systemName: icon).foregroundStyle(.noBuyGreen).frame(width: 28)
+            Image(systemName: icon).foregroundStyle(.noBuyGreen).frame(width: 28).accessibilityHidden(true)
             Text(title).font(.body)
             Spacer()
             Text(L10n.proFeatureActive).font(.caption).foregroundStyle(.noBuyGreen)
@@ -820,6 +846,7 @@ private struct ThemeDot: View {
                         Image(systemName: "checkmark")
                             .font(Font.adaptiveDetail(isRegular: isRegular).weight(.bold))
                             .foregroundStyle(.white)
+                            .accessibilityHidden(true)
                     }
 
                     // Lock + PRO badge for locked themes
@@ -831,6 +858,7 @@ private struct ThemeDot: View {
                         Image(systemName: "lock.fill")
                             .font(Font.adaptiveCaption(isRegular: isRegular).weight(.semibold))
                             .foregroundStyle(.white)
+                            .accessibilityHidden(true)
                     }
                 }
 

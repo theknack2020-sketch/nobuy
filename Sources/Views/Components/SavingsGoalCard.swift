@@ -70,6 +70,7 @@ struct SavingsGoalCard: View {
                         Image(systemName: goalIcon)
                             .font(Font.adaptiveTitle3(isRegular: isRegular))
                             .foregroundStyle(.noBuyGreen)
+                            .accessibilityHidden(true)
                     }
                 }
                 .accessibilityLabel(targetAmount > 0 ? "\(Int(progressFraction * 100)) percent progress toward savings goal" : "Savings goal icon")

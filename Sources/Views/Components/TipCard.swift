@@ -59,6 +59,7 @@ struct TipCard: View {
                         )
                     )
                     .shadow(color: currentTip.tint.opacity(0.3), radius: 3, x: 0, y: 1)
+                    .accessibilityHidden(true)
             }
 
             VStack(alignment: .leading, spacing: DS.Spacing.xs) {
