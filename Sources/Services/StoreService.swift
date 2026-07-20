@@ -164,6 +164,11 @@ final class StoreService {
     // MARK: - Entitlements
 
     func checkEntitlements() async {
+        // Screenshot runs show Pro value unlocked — never the price wall.
+        if DemoMode.isActive {
+            isPro = true
+            return
+        }
         for await result in Transaction.currentEntitlements {
             if let transaction = try? checkVerified(result),
                transaction.productID == productID

@@ -17,8 +17,10 @@
 		145F72FB4471FDE99C42403E /* StatsViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E4CB158D19362AE35D8FE6D /* StatsViewModelTests.swift */; };
 		147C00B8DE39D19FF8064A7F /* Color+Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7E8173966314EF253C97AEC /* Color+Theme.swift */; };
 		1A22E47C343FFF9E423FC437 /* WaitingListManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 321F25E44F253ABB4235A38D /* WaitingListManager.swift */; };
+		1B594B9C93043C0AACA3D861 /* DemoSeeder.swift in Sources */ = {isa = PBXBuildFile; fileRef = FFDC9FC9BFF1C9131DB61295 /* DemoSeeder.swift */; };
 		1C7F8AA81C79D547A231C633 /* PaywallView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9627BC33C7F8321DFB2AD363 /* PaywallView.swift */; };
 		20976C1E7D299E1FF82C9749 /* DataExportService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 605A01D20671D8F91187B224 /* DataExportService.swift */; };
+		238C500A9A995694A5F68B2F /* DemoMode.swift in Sources */ = {isa = PBXBuildFile; fileRef = A497C5376BB4FB07D6A88B02 /* DemoMode.swift */; };
 		2397219E3DBC113B25F717CF /* WalkthroughTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25F24BA776462F687A61BE29 /* WalkthroughTest.swift */; };
 		23F442FB556636BB835A3013 /* StreakCalculator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 769691C3CBD3B73D2686D364 /* StreakCalculator.swift */; };
 		26F83DDEA9ED92490656DC9F /* SummaryPill.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A4C67FA13CD673C09FFBDAC /* SummaryPill.swift */; };
@@ -65,6 +67,7 @@
 		B35705093CD897F249420F77 /* DayRecord.swift in Sources */ = {isa = PBXBuildFile; fileRef = 935996357F6A20E03655293D /* DayRecord.swift */; };
 		B93B88A0CF845519A11CB3BA /* WaitingItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE3BD5F0423C18CC39CA95FC /* WaitingItem.swift */; };
 		BDD821EB786061D1B1CA098B /* ConfettiView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEA58BAD46C5BA137F5AA49B /* ConfettiView.swift */; };
+		C2646557F67729D76E0D19A2 /* DemoSeederTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB99C06E80E0F77FE3C835DC /* DemoSeederTests.swift */; };
 		C36E2B1F45E14D21FD2C704E /* WhatsNewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E098C8B3C0AEEFEF6D19EB59 /* WhatsNewView.swift */; };
 		C3CC7DED0584CF8D6E87C4BD /* SoundManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A54715F7FA2DA8F6B338C3DF /* SoundManager.swift */; };
 		C7BA2CBF5E18C11E31D2655D /* DayEditSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 017004D0348DAE5AE0254D2D /* DayEditSheet.swift */; };
@@ -153,6 +156,7 @@
 		9DC4311D4101DF8B7F4FE2A1 /* ScaleButtonStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScaleButtonStyle.swift; sourceTree = "<group>"; };
 		9FBF1251FCE54D6654B340B2 /* OnboardingScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingScreen.swift; sourceTree = "<group>"; };
 		A47A034E36700A34D9F40F6E /* app-icon-1024.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "app-icon-1024.png"; sourceTree = "<group>"; };
+		A497C5376BB4FB07D6A88B02 /* DemoMode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DemoMode.swift; sourceTree = "<group>"; };
 		A54715F7FA2DA8F6B338C3DF /* SoundManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SoundManager.swift; sourceTree = "<group>"; };
 		AC9FDA46ED6299CE2D10F04F /* NoBuyUITests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = NoBuyUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		ADA66F580FD7232B2371424D /* CalendarScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarScreen.swift; sourceTree = "<group>"; };
@@ -181,7 +185,9 @@
 		F69CD1FD3DC606DD0622AF40 /* AppLogger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppLogger.swift; sourceTree = "<group>"; };
 		F78D0BC0EC3BA261DEF3FE91 /* AchievementManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AchievementManager.swift; sourceTree = "<group>"; };
 		FB605AB3AAB6F2E2979184E5 /* RatingPromptCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RatingPromptCard.swift; sourceTree = "<group>"; };
+		FB99C06E80E0F77FE3C835DC /* DemoSeederTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DemoSeederTests.swift; sourceTree = "<group>"; };
 		FD2DD1F9F785448C5F057A92 /* SoftPaywallBanner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SoftPaywallBanner.swift; sourceTree = "<group>"; };
+		FFDC9FC9BFF1C9131DB61295 /* DemoSeeder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DemoSeeder.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXGroup section */
@@ -308,6 +314,7 @@
 			isa = PBXGroup;
 			children = (
 				4438F4E037918B95EE3128F7 /* AchievementManagerTests.swift */,
+				FB99C06E80E0F77FE3C835DC /* DemoSeederTests.swift */,
 				2B0D1037D6D3A2A501580EB3 /* HomeViewModelTests.swift */,
 				020F7AD8BF558A6813591E25 /* RatingPromptTests.swift */,
 				7E4CB158D19362AE35D8FE6D /* StatsViewModelTests.swift */,
@@ -361,6 +368,8 @@
 				F69CD1FD3DC606DD0622AF40 /* AppLogger.swift */,
 				8120A875118CBAAB6BAB29BA /* AppTips.swift */,
 				605A01D20671D8F91187B224 /* DataExportService.swift */,
+				A497C5376BB4FB07D6A88B02 /* DemoMode.swift */,
+				FFDC9FC9BFF1C9131DB61295 /* DemoSeeder.swift */,
 				27CA5830D6F66BF20FD36B83 /* HapticManager.swift */,
 				30D0AC1EDE4126A69F717A77 /* NotificationManager.swift */,
 				E5FE9CFB00370FB78D978E65 /* RatingPrompt.swift */,
@@ -533,6 +542,8 @@
 				F42142672E380FD821C97526 /* Date+Extensions.swift in Sources */,
 				C7BA2CBF5E18C11E31D2655D /* DayEditSheet.swift in Sources */,
 				B35705093CD897F249420F77 /* DayRecord.swift in Sources */,
+				238C500A9A995694A5F68B2F /* DemoMode.swift in Sources */,
+				1B594B9C93043C0AACA3D861 /* DemoSeeder.swift in Sources */,
 				715E6F3C840686DC5725B9FA /* DesignSystem.swift in Sources */,
 				77664C6BC24BE12E027C5872 /* FreezeOfferSheet.swift in Sources */,
 				0B629BEBE8BD66EB530F624A /* HapticManager.swift in Sources */,
@@ -582,6 +593,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				932B9CE833DB084193EC6C2C /* AchievementManagerTests.swift in Sources */,
+				C2646557F67729D76E0D19A2 /* DemoSeederTests.swift in Sources */,
 				F90E169CF4EE5040534746C9 /* HomeViewModelTests.swift in Sources */,
 				4A5E9C547E32E9228A9CFB8F /* RatingPromptTests.swift in Sources */,
 				145F72FB4471FDE99C42403E /* StatsViewModelTests.swift in Sources */,

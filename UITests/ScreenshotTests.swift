@@ -19,22 +19,18 @@ final class ScreenshotTests: XCTestCase {
             "-screenshotMode", "YES"
         ]
         app.launch()
+        sleep(2)
 
-        // SS1: Home — tap no-buy to show streak
-        let noBuyButton = app.buttons.matching(
-            NSPredicate(format: "label CONTAINS[c] %@", "Didn't Spend")
-        ).firstMatch
-        if noBuyButton.waitForExistence(timeout: 5) {
-            noBuyButton.tap()
-            sleep(2)
-        }
+        // Demo data (23-day streak, savings, challenge 23/30, Pro unlocked)
+        // is seeded by DemoMode/DemoSeeder via -screenshotMode.
 
+        // SS1: Home hero — streak glow + savings + challenge card
         let ss1 = XCTAttachment(screenshot: app.screenshot())
         ss1.name = "01_Home_EN"
         ss1.lifetime = .keepAlways
         add(ss1)
 
-        // SS2: Calendar
+        // SS2: Calendar — a mostly-green month with credible accents
         let calendarTab = app.tabBars.buttons["Calendar"]
         calendarTab.tap()
         sleep(2)
@@ -44,7 +40,7 @@ final class ScreenshotTests: XCTestCase {
         ss2.lifetime = .keepAlways
         add(ss2)
 
-        // SS3: Stats
+        // SS3: Stats top — savings estimate + achievements
         let statsTab = app.tabBars.buttons["Stats"]
         statsTab.tap()
         sleep(2)
@@ -54,22 +50,22 @@ final class ScreenshotTests: XCTestCase {
         ss3.lifetime = .keepAlways
         add(ss3)
 
-        // SS4: Settings
+        // SS4: Stats scrolled — the unlocked Pro charts (Pro-value frame)
+        app.swipeUp()
+        sleep(1)
+
+        let ss4 = XCTAttachment(screenshot: app.screenshot())
+        ss4.name = "04_Stats_Pro_Charts_EN"
+        ss4.lifetime = .keepAlways
+        add(ss4)
+
+        // SS5: Settings
         let settingsTab = app.tabBars.buttons["Settings"]
         settingsTab.tap()
         sleep(2)
 
-        let ss4 = XCTAttachment(screenshot: app.screenshot())
-        ss4.name = "04_Settings_EN"
-        ss4.lifetime = .keepAlways
-        add(ss4)
-
-        // SS5: Settings scroll
-        app.swipeUp()
-        sleep(1)
-
         let ss5 = XCTAttachment(screenshot: app.screenshot())
-        ss5.name = "05_Settings_About_EN"
+        ss5.name = "05_Settings_EN"
         ss5.lifetime = .keepAlways
         add(ss5)
     }

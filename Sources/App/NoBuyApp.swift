@@ -62,7 +62,9 @@ struct NoBuyApp: App {
             DayRecord.self,
             MandatoryCategory.self,
         ])
-        let config = ModelConfiguration(schema: schema, isStoredInMemoryOnly: false)
+        // Demo runs use a throwaway in-memory store so a developer's real
+        // records can never be touched by a screenshot session.
+        let config = ModelConfiguration(schema: schema, isStoredInMemoryOnly: DemoMode.isActive)
         do {
             modelContainer = try ModelContainer(
                 for: schema,
@@ -72,6 +74,13 @@ struct NoBuyApp: App {
         } catch {
             fatalError("Could not create ModelContainer: \(error)")
         }
+
+        #if DEBUG
+            if DemoMode.isActive {
+                DemoSeeder.seed(into: modelContainer)
+                Tips.hideAllTipsForTesting()
+            }
+        #endif
 
         try? Tips.configure([
             .displayFrequency(.daily)

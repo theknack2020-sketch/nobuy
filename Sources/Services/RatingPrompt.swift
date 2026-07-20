@@ -53,6 +53,7 @@ final class RatingPrompt {
     /// ⛔ Only ever call this after something the person will feel good about.
     /// Never after an error, a cancel, or any friction.
     func noteMilestone(currentStreak: Int) {
+        guard !DemoMode.isActive else { return }
         let raw = defaults.double(forKey: Self.lastPromptKey)
         let lastPrompt = raw > 0 ? Date(timeIntervalSince1970: raw) : nil
         guard Self.shouldShowPrePrompt(currentStreak: currentStreak, lastPrompt: lastPrompt)
