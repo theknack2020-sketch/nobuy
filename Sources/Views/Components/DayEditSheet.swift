@@ -301,6 +301,7 @@ struct DayEditSheet: View {
         let trimmedNote = noteText.trimmingCharacters(in: .whitespacesAndNewlines)
         let parsedAmount = Double(amountText.replacingOccurrences(of: ",", with: "."))
 
+        let savedRecord: DayRecord
         if let existing = existingRecord {
             existing.didSpend = didSpend
             existing.isMandatoryOnly = mandatoryOnly
@@ -308,6 +309,7 @@ struct DayEditSheet: View {
             existing.amount = didSpend ? parsedAmount : nil
             // Apply freeze toggle for spending days
             existing.isFrozen = didSpend && !mandatoryOnly && isFrozen
+            savedRecord = existing
         } else {
             let record = DayRecord(
                 date: normalizedDate,
@@ -317,6 +319,7 @@ struct DayEditSheet: View {
                 amount: didSpend ? parsedAmount : nil
             )
             modelContext.insert(record)
+            savedRecord = record
         }
 
         do {
@@ -326,18 +329,22 @@ struct DayEditSheet: View {
             return
         }
 
-        // Check achievements with updated record set
-        let streakInfo = StreakCalculator.calculate(from: allRecords)
-        let totalNoBuyDays = allRecords.filter(\.isNoBuyDay).count
+        // Check achievements over the saved set: a brand-new record may not yet
+        // be in the @Query snapshot, so include it explicitly.
+        var updatedRecords = allRecords.filter { calendar.startOfDay(for: $0.date) != normalizedDate }
+        updatedRecords.append(savedRecord)
+        let streakInfo = StreakCalculator.calculate(from: updatedRecords)
+        let totalNoBuyDays = updatedRecords.filter(\.isNoBuyDay).count
         AchievementManager.shared.checkAchievements(
             currentStreak: streakInfo.currentStreak,
             totalNoBuyDays: totalNoBuyDays,
-            records: allRecords
+            records: updatedRecords
         )
 
         // Genuine positive moment: a no-spend day that lands on a streak milestone.
+        // Arms the pre-prompt card; CalendarScreen surfaces it once this sheet closes.
         if !didSpend, !mandatoryOnly {
-            RatingPrompt.requestAfterNoSpendDay(currentStreak: streakInfo.currentStreak)
+            RatingPrompt.shared.noteMilestone(currentStreak: streakInfo.currentStreak)
         }
 
         dismiss()

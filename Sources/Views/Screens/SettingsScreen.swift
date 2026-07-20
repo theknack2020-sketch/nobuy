@@ -1,5 +1,4 @@
 import os
-import StoreKit
 import SwiftData
 import SwiftUI
 import UniformTypeIdentifiers
@@ -19,7 +18,6 @@ struct SettingsScreen: View {
     @State private var showChallengeSetup = false
     @AppStorage("hasSeededDefaults") private var hasSeededDefaults = false
     @AppStorage("launchCount") private var launchCount = 0
-    @AppStorage("lastRatingPromptDate") private var lastRatingPromptDate: Double = 0
     @AppStorage("streakFreezeCount") private var streakFreezeCount = 1
     @AppStorage("challengeDuration") private var challengeDuration = 0
     @AppStorage("challengeStartDate") private var challengeStartDate: Double = 0
@@ -376,9 +374,10 @@ struct SettingsScreen: View {
                             .foregroundStyle(.textSecondary)
                     }
 
-                    Button {
-                        requestReview()
-                    } label: {
+                    // User-initiated ask: deep-link straight to the App Store
+                    // review form — the native prompt API is rate-limited and
+                    // can silently no-op on an explicit tap.
+                    Link(destination: URL(string: "https://apps.apple.com/app/id6760716822?action=write-review")!) {
                         HStack {
                             Image(systemName: "star.fill")
                                 .foregroundStyle(.yellow)
@@ -539,7 +538,6 @@ struct SettingsScreen: View {
                     seedDefaultsIfNeeded()
                 }
                 trackLaunch()
-                checkRatingPrompt()
             }
         }
     }
@@ -583,23 +581,6 @@ struct SettingsScreen: View {
         }
     }
 
-    // MARK: - Rating Prompt
-
-    /// Automatically prompts for review when streak >= 7 and at least 60 days since last prompt.
-    private func checkRatingPrompt() {
-        let sixtyDaysInSeconds: TimeInterval = 60 * 24 * 60 * 60
-        let lastPrompt = Date(timeIntervalSince1970: lastRatingPromptDate)
-        guard Date.now.timeIntervalSince(lastPrompt) >= sixtyDaysInSeconds else { return }
-
-        let streakInfo = StreakCalculator.calculate(from: records)
-        guard streakInfo.currentStreak >= 7 else { return }
-
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
-            requestReview()
-            lastRatingPromptDate = Date.now.timeIntervalSince1970
-        }
-    }
-
     private func deleteCategories(at offsets: IndexSet) {
         for index in offsets {
             modelContext.delete(mandatoryCategories[index])
@@ -627,14 +608,6 @@ struct SettingsScreen: View {
 
     private func trackLaunch() {
         launchCount += 1
-    }
-
-    private func requestReview() {
-        if let scene = UIApplication.shared.connectedScenes
-            .first(where: { $0.activationState == .foregroundActive }) as? UIWindowScene
-        {
-            SKStoreReviewController.requestReview(in: scene)
-        }
     }
 }
 

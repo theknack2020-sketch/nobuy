@@ -12,6 +12,7 @@ struct HomeScreen: View {
     @State private var showShareSheet = false
     @State private var showMilestoneModal = false
     @State private var showConfetti = false
+    @State private var showRatingCard = false
     @State private var summaryAppeared = false
     @State private var showChallengeSetup = false
     @State private var celebrationAchievement: Achievement?
@@ -143,6 +144,10 @@ struct HomeScreen: View {
                         showMilestoneModal = false
                         AchievementManager.shared.clearNewlyUnlocked()
                         celebrationAchievement = nil
+                        // Celebration first, honest review ask second.
+                        if RatingPrompt.shared.pendingPrePrompt {
+                            showRatingCard = true
+                        }
                     }
                     .transition(.opacity)
                     .zIndex(10)
@@ -344,6 +349,13 @@ struct HomeScreen: View {
         .sheet(isPresented: $showWaitingList) {
             WaitingListSheet()
         }
+        .sheet(isPresented: $showRatingCard, onDismiss: {
+            RatingPrompt.shared.dismissed()
+        }) {
+            RatingPromptCard(streak: RatingPrompt.shared.milestoneStreak)
+                .presentationDetents([.height(340)])
+                .presentationDragIndicator(.visible)
+        }
         .fullScreenCover(isPresented: softPaywallBinding) {
             PaywallView(store: store)
         }
@@ -504,6 +516,7 @@ struct HomeScreen: View {
                 } else {
                     viewModel.markNoBuy(context: modelContext, allRecords: records)
                     checkCelebration()
+                    RatingPrompt.shared.noteMilestone(currentStreak: viewModel.streakInfo.currentStreak)
                 }
             } label: {
                 VStack(spacing: DS.Spacing.md) {
@@ -788,6 +801,7 @@ struct HomeScreen: View {
         guard !viewModel.isTodayRecorded else { return }
         viewModel.markNoBuy(context: modelContext, allRecords: records)
         checkCelebration()
+        RatingPrompt.shared.noteMilestone(currentStreak: viewModel.streakInfo.currentStreak)
     }
 
     // MARK: - Celebration Check

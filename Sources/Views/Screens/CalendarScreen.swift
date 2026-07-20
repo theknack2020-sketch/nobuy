@@ -8,6 +8,7 @@ struct CalendarScreen: View {
     @State private var selectedDateForEdit: IdentifiableDate?
     @State private var monthTransitionDirection: Edge = .trailing
     @State private var showPaywall = false
+    @State private var showRatingCard = false
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @Environment(\.horizontalSizeClass) private var sizeClass
 
@@ -41,12 +42,23 @@ struct CalendarScreen: View {
             .background(Color.surfacePrimary)
             .navigationTitle(L10n.calendarTitle)
             .navigationBarTitleDisplayMode(.large)
-            .sheet(item: $selectedDateForEdit) { item in
+            .sheet(item: $selectedDateForEdit, onDismiss: {
+                if RatingPrompt.shared.pendingPrePrompt {
+                    showRatingCard = true
+                }
+            }) { item in
                 let calendar = Calendar.current
                 let normalized = calendar.startOfDay(for: item.date)
                 let existing = records.first { calendar.startOfDay(for: $0.date) == normalized }
                 DayEditSheet(date: item.date, existingRecord: existing)
                     .presentationDetents([.medium])
+                    .presentationDragIndicator(.visible)
+            }
+            .sheet(isPresented: $showRatingCard, onDismiss: {
+                RatingPrompt.shared.dismissed()
+            }) {
+                RatingPromptCard(streak: RatingPrompt.shared.milestoneStreak)
+                    .presentationDetents([.height(340)])
                     .presentationDragIndicator(.visible)
             }
             .fullScreenCover(isPresented: $showPaywall) {
