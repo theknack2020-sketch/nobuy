@@ -266,11 +266,17 @@ struct HomeScreen: View {
             #if DEBUG
                 // Store-shots tour: present the requested tool sheet without
                 // animation so the capture never catches a mid-slide frame.
-                withTransaction(\.disablesAnimations, true) {
-                    switch ScreenshotTour.state {
-                    case .urge: showUrgeSurfing = true
-                    case .checklist: showImpulseChecklist = true
-                    default: break
+                // Slight delay: presenting the instant onAppear fires is flaky
+                // on iPad's split-view cold start (sheet silently no-ops).
+                if ScreenshotTour.state == .urge || ScreenshotTour.state == .checklist {
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.8) {
+                        withTransaction(\.disablesAnimations, true) {
+                            switch ScreenshotTour.state {
+                            case .urge: showUrgeSurfing = true
+                            case .checklist: showImpulseChecklist = true
+                            default: break
+                            }
+                        }
                     }
                 }
             #endif
