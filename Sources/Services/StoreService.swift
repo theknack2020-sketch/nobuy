@@ -163,6 +163,14 @@ final class StoreService {
 
     // MARK: - Entitlements
 
+    #if DEBUG
+        /// Store-shots demo runs force Pro so panels show unlocked value
+        /// without waiting on a StoreKit product load.
+        func forceProForDemo() {
+            isPro = true
+        }
+    #endif
+
     func checkEntitlements() async {
         // Screenshot runs show Pro value unlocked — never the price wall.
         if DemoMode.isActive {

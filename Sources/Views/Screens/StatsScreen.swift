@@ -244,6 +244,15 @@ struct StatsScreen: View {
         }
         .onAppear {
             refreshStats()
+            #if DEBUG
+                // Store-shots tour: no skeleton, no entrance animation — the
+                // capture must be deterministic regardless of settle time.
+                if DemoMode.isActive {
+                    isLoading = false
+                    appeared = true
+                    return
+                }
+            #endif
             if reduceMotion {
                 appeared = true
             } else {

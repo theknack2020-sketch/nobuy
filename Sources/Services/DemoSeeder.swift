@@ -88,6 +88,11 @@ import SwiftData
             defaults.set(version, forKey: "lastSeenVersion")
             defaults.set(Date.now.timeIntervalSince1970, forKey: "lastRatingPromptDate")
 
+            // Pro immediately and deterministically — checkEntitlements is gated
+            // behind a StoreKit product load that can take seconds on a cold
+            // simctl launch, and screenshot panels must show unlocked value.
+            StoreService.shared.forceProForDemo()
+
             // Derive achievement unlocks organically, then clear the celebration
             // so no modal fires on launch.
             let manager = AchievementManager.shared

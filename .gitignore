@@ -37,3 +37,5 @@ fastlane/metadata/review_information/
 
 # App Store screenshots (large PNGs, don't track in git)
 fastlane/screenshots/
+.asc/shots/raw/
+.asc/shots/final/

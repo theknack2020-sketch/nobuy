@@ -1,0 +1,55 @@
+{
+  "panels": [
+    {
+      "id": "01-hero",
+      "caption": "Break impulse buying",
+      "sub": "One tap a day. No budgets, no bank logins.",
+      "uiState": "today",
+      "bgVariant": "mint-light",
+      "accent": "halo",
+      "settle": 6
+    },
+    {
+      "id": "02-urge",
+      "caption": "Beat the urge in minutes",
+      "sub": "10-minute urge-surfing timer for impulse moments",
+      "uiState": "urge",
+      "bgVariant": "forest-dark",
+      "settle": 5,
+      "deviceOverrides": { "ipad": { "dev_w_frac": 0.96, "dev_top_frac": 0.24 } }
+    },
+    {
+      "id": "03-calendar",
+      "caption": "Your month at a glance",
+      "sub": "Color-coded no-spend calendar with streaks and freezes",
+      "uiState": "calendar",
+      "bgVariant": "ocean",
+      "settle": 4
+    },
+    {
+      "id": "04-stats",
+      "caption": "Watch real savings grow",
+      "sub": "Savings estimate, achievements, monthly progress",
+      "uiState": "stats",
+      "bgVariant": "sunset",
+      "settle": 4
+    },
+    {
+      "id": "05-pro",
+      "caption": "Pro insights keep you going",
+      "sub": "Trends, weekday patterns, streak history — pay once",
+      "uiState": "statsCharts",
+      "bgVariant": "forest-dark",
+      "settle": 6
+    },
+    {
+      "id": "06-checklist",
+      "caption": "Think before you buy",
+      "sub": "Honest checklist and a 24-hour waiting list",
+      "uiState": "checklist",
+      "bgVariant": "mint-light",
+      "settle": 5,
+      "deviceOverrides": { "ipad": { "dev_w_frac": 0.96, "dev_top_frac": 0.24 } }
+    }
+  ]
+}
