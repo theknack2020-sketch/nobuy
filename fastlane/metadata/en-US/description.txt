@@ -1,54 +1,59 @@
-Take control of your money — one day at a time. NoBuy is the simplest no-spend tracker that helps you break impulse buying habits, build saving streaks, and become more intentional with every purchase decision.
+Take control of your money — one day at a time.
 
-Join thousands who are embracing the no-buy challenge and underconsumption trend. Track each day with a single tap, watch your streak grow, and see real progress toward financial freedom.
+NoBuy is the simplest no-spend tracker that helps you break impulse buying habits, build saving streaks, and become more intentional with every purchase decision. No subscriptions, no bank connections, no complicated budgets — just one tap per day. Now with full iPad support.
 
-HOW IT WORKS
+Join the no-buy challenge and underconsumption movement. Track each day with a single tap, watch your streak grow, and see real progress toward financial freedom.
 
-Tap "No Spend Today" at the end of each day
-Log if you made a discretionary purchase
-Mark mandatory expenses (rent, bills) — they don't break your streak
+▸ HOW IT WORKS
 
-FEATURES
+Tap "No Spend Today" at the end of each day. Log discretionary purchases honestly. Mark mandatory expenses (rent, bills, groceries) — they never break your streak.
 
-Streak Tracker — Build consecutive no-spend day streaks and celebrate milestones
-Calendar View — See your month at a glance with color-coded days
-Monthly Stats — Track your no-spend percentage and monthly progress
-Achievements — Unlock badges at 3, 7, 14, 30, 60, and 100-day milestones
-Mandatory Expenses — Separate rent, bills, and groceries so they never break your streak
-Smart Reminders — Evening notifications to log your day and protect your streak
-Streak Freeze — Had to spend? Use a freeze to protect your streak for one day
-Urge Surfing Timer — Feeling the urge to buy? Start a 10-minute mindfulness countdown and let the impulse pass
-Impulse Buy Checklist — Answer "Should I buy this?" questions before any purchase to make smarter decisions
-Custom Challenges — Set your own no-spend goals (7 days, 30 days, or any duration you choose)
-Data Export — Download your history as CSV (Pro)
-Daily Tips — Research-backed spending awareness tips to stay motivated
+▸ STREAK TRACKER
 
-PERFECT FOR
+Build consecutive no-spend day streaks and celebrate milestones at 3, 7, 14, 30, 60, and 100 days. Unlock achievement badges. Use Streak Freeze to protect your progress when life happens.
+
+▸ BEHAVIORAL TOOLS — UNIQUE TO NOBUY
+
+• Urge Surfing Timer — Feeling the impulse? Start a 10-minute mindfulness countdown. Most urges pass within minutes.
+• Impulse Buy Checklist — Answer honest questions before any purchase. Make decisions, not impulses.
+• Waiting List — Add items and revisit them later. 80% of impulse buys feel unnecessary after 24 hours.
+
+▸ TRACK YOUR PROGRESS
+
+• Calendar View — See your month at a glance with color-coded days
+• Monthly Stats — Track your no-spend percentage and savings estimate
+• Custom Challenges — Set 7-day, 30-day, or any duration goal
+• Daily Tips — Research-backed insights to stay motivated
+
+▸ DESIGNED FOR YOUR JOURNEY
 
 • No-Buy Challenge & No-Spend Challenge participants
-• Low-Buy Year followers
+• Low-Buy Year and underconsumption followers
 • Minimalist and frugal living enthusiasts
 • Anyone saving for a goal — vacation, emergency fund, debt freedom
 • People breaking impulse shopping and stress spending habits
 
-WHY NOBUY WORKS
+▸ WHY ONE TAP WORKS
 
-Unlike complex budget apps, NoBuy asks one powerful question each day: Did you make an unnecessary purchase today?
+Unlike complex budget apps, NoBuy asks one powerful question each day: Did you make an unnecessary purchase?
 
-Research shows that spending awareness alone can increase savings by up to 20%. NoBuy turns that awareness into a daily habit with streaks, milestones, and achievements that keep you motivated.
+Research shows spending awareness alone can increase savings by up to 20%. NoBuy turns that awareness into a daily habit with streaks, milestones, and achievements that keep you motivated.
 
-No spreadsheets. No bank connections. No complicated categories. Just one tap, every day.
+▸ PRIVACY FIRST
 
-PRIVACY FIRST
+Your data stays on your device — always. No account required. No tracking. No analytics. No data collection. Your financial habits are your business.
 
-Your data stays on your device — always
-No account required
-No tracking, no analytics, no data collection
-Your financial habits are your business
+▸ WHAT'S INCLUDED FREE
+
+Daily logging, streak tracking, calendar view, basic stats, 3 essential expense categories, smart reminders, urge surfing, impulse checklist, and daily tips.
+
+▸ GO PRO (ONE-TIME PURCHASE — NO SUBSCRIPTION)
+
+Unlock unlimited categories, CSV export, enhanced sharing cards, unlimited streak freezes, challenges, and all premium themes. Pay once, own forever.
 
 Download NoBuy today and start your first no-spend streak. Your future self will thank you.
 
-Privacy Policy: https://theknack2020-sketch.github.io/nobuy/privacy
-Terms of Use: https://theknack2020-sketch.github.io/nobuy/terms
-Support: https://theknack2020-sketch.github.io/nobuy/support
 Questions or feedback? theknack2020@gmail.com
+
+Terms of Use: https://theknack2020-sketch.github.io/nobuy/terms/
+Privacy Policy: https://theknack2020-sketch.github.io/nobuy/privacy/
