@@ -39,3 +39,4 @@ fastlane/metadata/review_information/
 fastlane/screenshots/
 .asc/shots/raw/
 .asc/shots/final/
+.asc/shots/upload/
