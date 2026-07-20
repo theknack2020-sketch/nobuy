@@ -73,8 +73,6 @@ struct NoBuyApp: App {
             fatalError("Could not create ModelContainer: \(error)")
         }
 
-        TelemetryService.initialize()
-
         try? Tips.configure([
             .displayFrequency(.daily)
         ])

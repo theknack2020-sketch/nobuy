@@ -533,7 +533,6 @@ struct SettingsScreen: View {
                 .presentationDragIndicator(.visible)
             }
             .onAppear {
-                TelemetryService.trackScreen("settings")
                 if !hasSeededDefaults {
                     seedDefaultsIfNeeded()
                 }

@@ -165,9 +165,6 @@ struct UrgeSurfingView: View {
             }
             .navigationBarTitleDisplayMode(.inline)
         }
-        .onAppear {
-            TelemetryService.trackScreen("urge_surfing")
-        }
         .onDisappear {
             stopTimer()
             cancelCompletionNotification()

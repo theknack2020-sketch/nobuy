@@ -228,7 +228,6 @@ struct StatsScreen: View {
             PaywallView(store: store)
         }
         .onAppear {
-            TelemetryService.trackScreen("stats")
             refreshStats()
             if reduceMotion {
                 appeared = true

@@ -65,7 +65,6 @@ struct CalendarScreen: View {
                 PaywallView(store: store)
             }
             .onAppear {
-                TelemetryService.trackScreen("calendar")
                 if isLoading {
                     DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
                         withAnimation { isLoading = false }

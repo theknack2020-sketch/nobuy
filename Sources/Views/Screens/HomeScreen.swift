@@ -263,7 +263,6 @@ struct HomeScreen: View {
             }
         }
         .onAppear {
-            TelemetryService.trackScreen("home")
             viewModel.resetMonthlyFreezeIfNeeded(isPro: store.isPro)
             viewModel.loadToday(records: records)
             checkMilestone()

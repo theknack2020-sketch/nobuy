@@ -142,9 +142,6 @@ struct OnboardingScreen: View {
             .ignoresSafeArea()
         )
         .preferredColorScheme(.dark)
-        .onAppear {
-            TelemetryService.trackScreen("onboarding")
-        }
     }
 
     // MARK: - Button Label

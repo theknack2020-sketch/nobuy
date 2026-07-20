@@ -18,11 +18,6 @@ settings:
     MARKETING_VERSION: "1.1.0"
     CURRENT_PROJECT_VERSION: "10"
 
-packages:
-  TelemetryDeck:
-    url: https://github.com/TelemetryDeck/SwiftSDK
-    from: "2.0.0"
-
 targets:
   NoBuy:
     type: application
@@ -31,8 +26,6 @@ targets:
       - Sources
       - path: Resources
         buildPhase: resources
-    dependencies:
-      - package: TelemetryDeck
     info:
       path: Sources/Info.plist
       properties:
