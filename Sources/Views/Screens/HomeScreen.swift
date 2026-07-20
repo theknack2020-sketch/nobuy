@@ -263,6 +263,17 @@ struct HomeScreen: View {
             }
         }
         .onAppear {
+            #if DEBUG
+                // Store-shots tour: present the requested tool sheet without
+                // animation so the capture never catches a mid-slide frame.
+                withTransaction(\.disablesAnimations, true) {
+                    switch ScreenshotTour.state {
+                    case .urge: showUrgeSurfing = true
+                    case .checklist: showImpulseChecklist = true
+                    default: break
+                    }
+                }
+            #endif
             viewModel.resetMonthlyFreezeIfNeeded(isPro: store.isPro)
             viewModel.loadToday(records: records)
             checkMilestone()

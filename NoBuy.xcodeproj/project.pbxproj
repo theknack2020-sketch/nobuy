@@ -31,6 +31,7 @@
 		386460431127CDA2DCC10A35 /* NotificationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30D0AC1EDE4126A69F717A77 /* NotificationManager.swift */; };
 		39434D0C22D88C7AF20E2EC7 /* MainTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 124F497D2FA87BA978DDAC60 /* MainTabView.swift */; };
 		3B773E15C1BC2CE83200E36A /* OnboardingScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9FBF1251FCE54D6654B340B2 /* OnboardingScreen.swift */; };
+		3D614F5F20C89A024BF517FE /* ScreenshotTour.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2765F876D036C6881BCD1DA0 /* ScreenshotTour.swift */; };
 		3D7F4ED92BAAA88A9062552E /* WaitingListSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5978A9A4D655ADE44FD3E3B5 /* WaitingListSheet.swift */; };
 		3E34C760160F85D805C1381C /* StoreService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 073618F2DA3B33F2080F6CA9 /* StoreService.swift */; };
 		3F42E9103F72272E0B3A260D /* HomeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A5DAE80792AAF08D62E01A0 /* HomeViewModel.swift */; };
@@ -122,6 +123,7 @@
 		21E139A56635556D6FE22DCD /* MarkNoBuyIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarkNoBuyIntent.swift; sourceTree = "<group>"; };
 		247C73A3FC28963EA0B4EAFF /* StreakCalculatorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StreakCalculatorTests.swift; sourceTree = "<group>"; };
 		25F24BA776462F687A61BE29 /* WalkthroughTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalkthroughTest.swift; sourceTree = "<group>"; };
+		2765F876D036C6881BCD1DA0 /* ScreenshotTour.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenshotTour.swift; sourceTree = "<group>"; };
 		27CA5830D6F66BF20FD36B83 /* HapticManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HapticManager.swift; sourceTree = "<group>"; };
 		29650800E154346D6A78123A /* HomeScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeScreen.swift; sourceTree = "<group>"; };
 		2B0D1037D6D3A2A501580EB3 /* HomeViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewModelTests.swift; sourceTree = "<group>"; };
@@ -257,6 +259,7 @@
 			isa = PBXGroup;
 			children = (
 				00CF61C05D4E39A885ECD694 /* NoBuyApp.swift */,
+				2765F876D036C6881BCD1DA0 /* ScreenshotTour.swift */,
 			);
 			path = App;
 			sourceTree = "<group>";
@@ -567,6 +570,7 @@
 				0572022F2501ED74AB47D2A7 /* SavingsGoalCard.swift in Sources */,
 				AA9DFD4B56942F2FE828A584 /* ScaleButtonStyle.swift in Sources */,
 				7910FE32167AC63776EDB139 /* SchemaVersions.swift in Sources */,
+				3D614F5F20C89A024BF517FE /* ScreenshotTour.swift in Sources */,
 				A010EE7BE61CA7366D711327 /* SettingsScreen.swift in Sources */,
 				40483E81643FCE0D8E370241 /* SoftPaywallBanner.swift in Sources */,
 				2F29BC81E91DD0A470CA3A82 /* SoftPaywallTracker.swift in Sources */,

@@ -132,97 +132,112 @@ struct StatsScreen: View {
 
     var body: some View {
         NavigationStack {
-            ScrollView {
-                VStack(spacing: DS.Spacing.xxl) {
-                    if records.isEmpty {
-                        statsEmptyState
-                    } else {
-                        overviewCards
+            ScrollViewReader { proxy in
+                ScrollView {
+                    VStack(spacing: DS.Spacing.xxl) {
+                        if records.isEmpty {
+                            statsEmptyState
+                        } else {
+                            overviewCards
+                        }
+
+                        if store.isPro {
+                            // Savings Estimate (Pro)
+                            savingsEstimateCard
+                                .offset(y: appeared ? 0 : 20)
+                                .opacity(appeared ? 1 : 0)
+                                .animation(reduceMotion ? nil : DS.Anim.normal.delay(DS.Anim.stagger * 4), value: appeared)
+
+                            // Monthly Trend — stacked bar (Pro)
+                            monthlyTrendChart
+                                .id("pro-charts")
+                                .offset(y: appeared ? 0 : 20)
+                                .opacity(appeared ? 1 : 0)
+                                .animation(reduceMotion ? nil : DS.Anim.normal.delay(DS.Anim.stagger * 5), value: appeared)
+
+                            // Weekly Distribution (Pro)
+                            weekdayChart
+                                .offset(y: appeared ? 0 : 20)
+                                .opacity(appeared ? 1 : 0)
+                                .animation(reduceMotion ? nil : DS.Anim.normal.delay(DS.Anim.stagger * 6), value: appeared)
+
+                            // Streak History — line chart (Pro)
+                            streakHistoryChart
+                                .offset(y: appeared ? 0 : 20)
+                                .opacity(appeared ? 1 : 0)
+                                .animation(reduceMotion ? nil : DS.Anim.normal.delay(DS.Anim.stagger * 7), value: appeared)
+
+                            // Category Breakdown — pie chart (Pro)
+                            categoryBreakdownChart
+                                .offset(y: appeared ? 0 : 20)
+                                .opacity(appeared ? 1 : 0)
+                                .animation(reduceMotion ? nil : DS.Anim.normal.delay(DS.Anim.stagger * 8), value: appeared)
+
+                            // No-Spend Rate — area chart (Pro)
+                            noBuyRateChart
+                                .offset(y: appeared ? 0 : 20)
+                                .opacity(appeared ? 1 : 0)
+                                .animation(reduceMotion ? nil : DS.Anim.normal.delay(DS.Anim.stagger * 9), value: appeared)
+
+                            // Trend Comparison (Pro)
+                            trendComparison
+                                .offset(y: appeared ? 0 : 20)
+                                .opacity(appeared ? 1 : 0)
+                                .animation(reduceMotion ? nil : DS.Anim.normal.delay(DS.Anim.stagger * 10), value: appeared)
+
+                            // Calendar Heatmap (Pro)
+                            calendarHeatmap
+                                .offset(y: appeared ? 0 : 20)
+                                .opacity(appeared ? 1 : 0)
+                                .animation(reduceMotion ? nil : DS.Anim.normal.delay(DS.Anim.stagger * 11), value: appeared)
+                        } else {
+                            proTeaser
+                                .offset(y: appeared ? 0 : 20)
+                                .opacity(appeared ? 1 : 0)
+                                .animation(reduceMotion ? nil : DS.Anim.normal.delay(DS.Anim.stagger * 4), value: appeared)
+                        }
+
+                        // Achievements — first 5 free, full list for Pro
+                        achievementsGrid
+                            .offset(y: appeared ? 0 : 20)
+                            .opacity(appeared ? 1 : 0)
+                            .animation(reduceMotion ? nil : DS.Anim.normal.delay(DS.Anim.stagger * 12), value: appeared)
+
+                        // Impulse control stats — visible to ALL users (free + Pro)
+                        impulseControlStats
+                            .offset(y: appeared ? 0 : 20)
+                            .opacity(appeared ? 1 : 0)
+                            .animation(reduceMotion ? nil : DS.Anim.normal.delay(DS.Anim.stagger * 13), value: appeared)
+
+                        // Waiting list stats — visible to ALL users
+                        waitingListStats
+                            .offset(y: appeared ? 0 : 20)
+                            .opacity(appeared ? 1 : 0)
+                            .animation(reduceMotion ? nil : DS.Anim.normal.delay(DS.Anim.stagger * 14), value: appeared)
                     }
-
-                    if store.isPro {
-                        // Savings Estimate (Pro)
-                        savingsEstimateCard
-                            .offset(y: appeared ? 0 : 20)
-                            .opacity(appeared ? 1 : 0)
-                            .animation(reduceMotion ? nil : DS.Anim.normal.delay(DS.Anim.stagger * 4), value: appeared)
-
-                        // Monthly Trend — stacked bar (Pro)
-                        monthlyTrendChart
-                            .offset(y: appeared ? 0 : 20)
-                            .opacity(appeared ? 1 : 0)
-                            .animation(reduceMotion ? nil : DS.Anim.normal.delay(DS.Anim.stagger * 5), value: appeared)
-
-                        // Weekly Distribution (Pro)
-                        weekdayChart
-                            .offset(y: appeared ? 0 : 20)
-                            .opacity(appeared ? 1 : 0)
-                            .animation(reduceMotion ? nil : DS.Anim.normal.delay(DS.Anim.stagger * 6), value: appeared)
-
-                        // Streak History — line chart (Pro)
-                        streakHistoryChart
-                            .offset(y: appeared ? 0 : 20)
-                            .opacity(appeared ? 1 : 0)
-                            .animation(reduceMotion ? nil : DS.Anim.normal.delay(DS.Anim.stagger * 7), value: appeared)
-
-                        // Category Breakdown — pie chart (Pro)
-                        categoryBreakdownChart
-                            .offset(y: appeared ? 0 : 20)
-                            .opacity(appeared ? 1 : 0)
-                            .animation(reduceMotion ? nil : DS.Anim.normal.delay(DS.Anim.stagger * 8), value: appeared)
-
-                        // No-Spend Rate — area chart (Pro)
-                        noBuyRateChart
-                            .offset(y: appeared ? 0 : 20)
-                            .opacity(appeared ? 1 : 0)
-                            .animation(reduceMotion ? nil : DS.Anim.normal.delay(DS.Anim.stagger * 9), value: appeared)
-
-                        // Trend Comparison (Pro)
-                        trendComparison
-                            .offset(y: appeared ? 0 : 20)
-                            .opacity(appeared ? 1 : 0)
-                            .animation(reduceMotion ? nil : DS.Anim.normal.delay(DS.Anim.stagger * 10), value: appeared)
-
-                        // Calendar Heatmap (Pro)
-                        calendarHeatmap
-                            .offset(y: appeared ? 0 : 20)
-                            .opacity(appeared ? 1 : 0)
-                            .animation(reduceMotion ? nil : DS.Anim.normal.delay(DS.Anim.stagger * 11), value: appeared)
-                    } else {
-                        proTeaser
-                            .offset(y: appeared ? 0 : 20)
-                            .opacity(appeared ? 1 : 0)
-                            .animation(reduceMotion ? nil : DS.Anim.normal.delay(DS.Anim.stagger * 4), value: appeared)
-                    }
-
-                    // Achievements — first 5 free, full list for Pro
-                    achievementsGrid
-                        .offset(y: appeared ? 0 : 20)
-                        .opacity(appeared ? 1 : 0)
-                        .animation(reduceMotion ? nil : DS.Anim.normal.delay(DS.Anim.stagger * 12), value: appeared)
-
-                    // Impulse control stats — visible to ALL users (free + Pro)
-                    impulseControlStats
-                        .offset(y: appeared ? 0 : 20)
-                        .opacity(appeared ? 1 : 0)
-                        .animation(reduceMotion ? nil : DS.Anim.normal.delay(DS.Anim.stagger * 13), value: appeared)
-
-                    // Waiting list stats — visible to ALL users
-                    waitingListStats
-                        .offset(y: appeared ? 0 : 20)
-                        .opacity(appeared ? 1 : 0)
-                        .animation(reduceMotion ? nil : DS.Anim.normal.delay(DS.Anim.stagger * 14), value: appeared)
+                    .padding(.horizontal, DS.Spacing.xl)
+                    .padding(.top, DS.Spacing.sm)
+                    .padding(.bottom, DS.Spacing.xxxl)
+                    .redacted(reason: isLoading ? .placeholder : [])
+                    .allowsHitTesting(!isLoading)
                 }
-                .padding(.horizontal, DS.Spacing.xl)
-                .padding(.top, DS.Spacing.sm)
-                .padding(.bottom, DS.Spacing.xxxl)
-                .redacted(reason: isLoading ? .placeholder : [])
-                .allowsHitTesting(!isLoading)
+                .scrollDismissesKeyboard(.interactively)
+                .background(Color.surfacePrimary)
+                .navigationTitle("Statistics")
+                .navigationBarTitleDisplayMode(.large)
+                .onAppear {
+                    #if DEBUG
+                        // Store-shots tour: jump to the Pro charts without animation.
+                        if ScreenshotTour.state == .statsCharts {
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+                                withTransaction(\.disablesAnimations, true) {
+                                    proxy.scrollTo("pro-charts", anchor: .top)
+                                }
+                            }
+                        }
+                    #endif
+                }
             }
-            .scrollDismissesKeyboard(.interactively)
-            .background(Color.surfacePrimary)
-            .navigationTitle("Statistics")
-            .navigationBarTitleDisplayMode(.large)
         }
         .fullScreenCover(isPresented: $showPaywall) {
             PaywallView(store: store)

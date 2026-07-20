@@ -6,6 +6,16 @@ struct MainTabView: View {
     @Environment(\.horizontalSizeClass) private var sizeClass
     var quickActionHandler: QuickActionHandler?
 
+    init(quickActionHandler: QuickActionHandler?) {
+        self.quickActionHandler = quickActionHandler
+        #if DEBUG
+            if let tab = ScreenshotTour.tabIndex {
+                _selectedTab = State(initialValue: tab)
+                _sidebarSelection = State(initialValue: tab)
+            }
+        #endif
+    }
+
     var body: some View {
         if sizeClass == .regular {
             NavigationSplitView {
