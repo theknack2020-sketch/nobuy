@@ -475,7 +475,7 @@ struct SettingsScreen: View {
                         icon: "🐾",
                         name: "Vettie",
                         subtitle: "Pet Health Tracker",
-                        appStoreID: "6742715498"
+                        appStoreID: "6760741400"
                     )
                 } header: {
                     Text("More by TheKnack")

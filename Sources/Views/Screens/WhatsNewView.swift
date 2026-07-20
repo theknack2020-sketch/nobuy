@@ -21,27 +21,27 @@ struct WhatsNewView: View {
 
     private let features: [Feature] = [
         Feature(
-            icon: "sparkles",
-            title: "Premium Polish",
-            description: "Every screen refined with shadows, depth, and smooth animations.",
-            color: .noBuyGreen
-        ),
-        Feature(
-            icon: "hand.raised.fill",
-            title: "Better Accessibility",
-            description: "Full VoiceOver support and improved Dynamic Type across the app.",
+            icon: "ipad.landscape",
+            title: "NoBuy on iPad",
+            description: "Full iPad support with a sidebar layout and every orientation.",
             color: .blue
         ),
         Feature(
-            icon: "lightbulb.fill",
-            title: "Smart Tips",
-            description: "Contextual tips help you discover features at the right moment.",
+            icon: "lock.shield.fill",
+            title: "Private by Design",
+            description: "All analytics code removed. Your data never leaves your device.",
+            color: .noBuyGreen
+        ),
+        Feature(
+            icon: "star.bubble",
+            title: "A Better Way to Give Feedback",
+            description: "Tell us how we're doing — or email us privately, right from the app.",
             color: .mandatoryAmber
         ),
         Feature(
-            icon: "chart.line.uptrend.xyaxis",
-            title: "Screen Insights",
-            description: "Better analytics to improve your experience over time.",
+            icon: "sparkles",
+            title: "Faster & Lighter",
+            description: "Third-party code removed for a quicker launch and a smaller app.",
             color: .purple
         ),
     ]
@@ -64,7 +64,7 @@ struct WhatsNewView: View {
                             .foregroundStyle(.textPrimary)
                             .multilineTextAlignment(.center)
 
-                        Text("Version 1.1")
+                        Text("Version \(Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "")")
                             .font(.subheadline)
                             .foregroundStyle(.textSecondary)
                     }
