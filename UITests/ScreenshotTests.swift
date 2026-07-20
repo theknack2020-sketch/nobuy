@@ -31,8 +31,7 @@ final class ScreenshotTests: XCTestCase {
         add(ss1)
 
         // SS2: Calendar — a mostly-green month with credible accents
-        let calendarTab = app.tabBars.buttons["Calendar"]
-        calendarTab.tap()
+        app.goToSection("Calendar")
         sleep(2)
 
         let ss2 = XCTAttachment(screenshot: app.screenshot())
@@ -41,8 +40,7 @@ final class ScreenshotTests: XCTestCase {
         add(ss2)
 
         // SS3: Stats top — savings estimate + achievements
-        let statsTab = app.tabBars.buttons["Stats"]
-        statsTab.tap()
+        app.goToSection("Stats")
         sleep(2)
 
         let ss3 = XCTAttachment(screenshot: app.screenshot())
@@ -60,8 +58,7 @@ final class ScreenshotTests: XCTestCase {
         add(ss4)
 
         // SS5: Settings
-        let settingsTab = app.tabBars.buttons["Settings"]
-        settingsTab.tap()
+        app.goToSection("Settings")
         sleep(2)
 
         let ss5 = XCTAttachment(screenshot: app.screenshot())
@@ -98,8 +95,7 @@ final class ScreenshotTests: XCTestCase {
         app.launch()
 
         // Navigate to Settings and tap Pro upgrade
-        let settingsTab = app.tabBars.buttons["Settings"]
-        settingsTab.tap()
+        app.goToSection("Settings")
         sleep(1)
 
         let upgradeButton = app.buttons.matching(

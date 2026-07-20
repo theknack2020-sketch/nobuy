@@ -12,22 +12,22 @@ final class WalkthroughTest: XCTestCase {
     func testFullWalkthrough() throws {
         // 1. Home screen loads
         sleep(2)
-        XCTAssertTrue(app.tabBars.buttons["Today"].exists, "Today tab should exist")
+        XCTAssertTrue(app.sectionExists("Today"), "Today section should exist")
 
         // 2. Navigate to Calendar
-        app.tabBars.buttons["Calendar"].tap()
+        app.goToSection("Calendar")
         sleep(1)
 
         // 3. Navigate to Stats
-        app.tabBars.buttons["Stats"].tap()
+        app.goToSection("Stats")
         sleep(1)
 
         // 4. Navigate to Settings
-        app.tabBars.buttons["Settings"].tap()
+        app.goToSection("Settings")
         sleep(1)
 
         // 5. Back to Home
-        app.tabBars.buttons["Today"].tap()
+        app.goToSection("Today")
         sleep(1)
     }
 }

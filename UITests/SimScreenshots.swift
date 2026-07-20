@@ -19,7 +19,7 @@ final class SimScreenshots: XCTestCase {
         add(attachment1)
 
         // Calendar
-        app.tabBars.buttons.element(boundBy: 1).tap()
+        app.goToSection("Calendar")
         sleep(2)
         let screenshot2 = app.screenshot()
         let attachment2 = XCTAttachment(screenshot: screenshot2)
@@ -28,7 +28,7 @@ final class SimScreenshots: XCTestCase {
         add(attachment2)
 
         // Stats
-        app.tabBars.buttons.element(boundBy: 2).tap()
+        app.goToSection("Stats")
         sleep(2)
         let screenshot3 = app.screenshot()
         let attachment3 = XCTAttachment(screenshot: screenshot3)
@@ -37,7 +37,7 @@ final class SimScreenshots: XCTestCase {
         add(attachment3)
 
         // Settings
-        app.tabBars.buttons.element(boundBy: 3).tap()
+        app.goToSection("Settings")
         sleep(2)
         let screenshot4 = app.screenshot()
         let attachment4 = XCTAttachment(screenshot: screenshot4)

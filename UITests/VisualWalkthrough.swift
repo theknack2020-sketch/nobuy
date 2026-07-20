@@ -21,7 +21,7 @@ final class VisualWalkthrough: XCTestCase {
         add(homeAttachment)
 
         // Calendar
-        app.tabBars.buttons["Calendar"].tap()
+        app.goToSection("Calendar")
         sleep(2)
         let calScreenshot = app.screenshot()
         let calAttachment = XCTAttachment(screenshot: calScreenshot)
@@ -30,7 +30,7 @@ final class VisualWalkthrough: XCTestCase {
         add(calAttachment)
 
         // Stats
-        app.tabBars.buttons["Stats"].tap()
+        app.goToSection("Stats")
         sleep(2)
         let statsScreenshot = app.screenshot()
         let statsAttachment = XCTAttachment(screenshot: statsScreenshot)
@@ -39,7 +39,7 @@ final class VisualWalkthrough: XCTestCase {
         add(statsAttachment)
 
         // Settings
-        app.tabBars.buttons["Settings"].tap()
+        app.goToSection("Settings")
         sleep(2)
         let settingsScreenshot = app.screenshot()
         let settingsAttachment = XCTAttachment(screenshot: settingsScreenshot)

@@ -19,7 +19,7 @@ final class ScreenCapture: XCTestCase {
     }
 
     func testCaptureCalendar() throws {
-        app.tabBars.buttons["Calendar"].tap()
+        app.goToSection("Calendar")
         sleep(2)
         let screenshot = app.screenshot()
         let attachment = XCTAttachment(screenshot: screenshot)
@@ -29,7 +29,7 @@ final class ScreenCapture: XCTestCase {
     }
 
     func testCaptureStats() throws {
-        app.tabBars.buttons["Stats"].tap()
+        app.goToSection("Stats")
         sleep(2)
         let screenshot = app.screenshot()
         let attachment = XCTAttachment(screenshot: screenshot)
@@ -39,7 +39,7 @@ final class ScreenCapture: XCTestCase {
     }
 
     func testCaptureSettings() throws {
-        app.tabBars.buttons["Settings"].tap()
+        app.goToSection("Settings")
         sleep(2)
         let screenshot = app.screenshot()
         let attachment = XCTAttachment(screenshot: screenshot)

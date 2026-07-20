@@ -10,24 +10,22 @@ final class NoBuyUITests: XCTestCase {
     }
 
     func testTabBarExists() throws {
-        let todayTab = app.tabBars.buttons["Today"]
-        XCTAssertTrue(todayTab.exists, "Today tab should exist")
+        XCTAssertTrue(app.sectionExists("Today"), "Today tab should exist")
     }
 
     func testNavigateToSettings() throws {
-        let settingsTab = app.tabBars.buttons["Settings"]
-        XCTAssertTrue(settingsTab.exists, "Settings tab should exist")
-        settingsTab.tap()
+        XCTAssertTrue(app.sectionExists("Settings"), "Settings tab should exist")
+        app.goToSection("Settings")
         sleep(1)
     }
 
     func testNavigateToCalendar() throws {
-        app.tabBars.buttons["Calendar"].tap()
+        app.goToSection("Calendar")
         sleep(1)
     }
 
     func testNavigateToStats() throws {
-        app.tabBars.buttons["Stats"].tap()
+        app.goToSection("Stats")
         sleep(1)
     }
 }
