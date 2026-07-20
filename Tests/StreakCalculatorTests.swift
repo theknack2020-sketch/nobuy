@@ -36,6 +36,28 @@ struct StreakCalculatorTests {
         #expect(info.longestStreak == 3)
     }
 
+    @Test("Unlogged today is pending, not broken — streak anchors on yesterday")
+    func unloggedTodayKeepsStreakAlive() {
+        let records = [
+            makeRecord(daysAgo: 1),
+            makeRecord(daysAgo: 2),
+            makeRecord(daysAgo: 3),
+        ]
+        let info = StreakCalculator.calculate(from: records)
+        #expect(info.currentStreak == 3)
+    }
+
+    @Test("A discretionary spend logged today still breaks the streak")
+    func spendTodayBreaksStreak() {
+        let records = [
+            makeRecord(daysAgo: 0, didSpend: true),
+            makeRecord(daysAgo: 1),
+            makeRecord(daysAgo: 2),
+        ]
+        let info = StreakCalculator.calculate(from: records)
+        #expect(info.currentStreak == 0)
+    }
+
     @Test("Streak broken by spend day")
     func brokenStreak() {
         let records = [

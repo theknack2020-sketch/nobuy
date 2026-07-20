@@ -1,7 +1,9 @@
 import os
 import SwiftData
 import SwiftUI
+import UIKit
 import UniformTypeIdentifiers
+import UserNotifications
 
 struct SettingsScreen: View {
     @Environment(\.modelContext) private var modelContext
@@ -629,9 +631,36 @@ struct NotificationSettingsView: View {
 
     @State private var notificationTime = Date()
     @State private var showPaywall = false
+    @State private var notificationsDenied = false
+
+    private func refreshAuthorizationStatus() async {
+        let settings = await UNUserNotificationCenter.current().notificationSettings()
+        notificationsDenied = settings.authorizationStatus == .denied
+    }
 
     var body: some View {
         List {
+            if notificationsDenied {
+                Section {
+                    Link(destination: URL(string: UIApplication.openSettingsURLString)!) {
+                        HStack(spacing: DS.Spacing.md) {
+                            Image(systemName: "bell.slash.fill")
+                                .foregroundStyle(.mandatoryAmber)
+                                .accessibilityHidden(true)
+                            VStack(alignment: .leading, spacing: 2) {
+                                Text("Notifications are off in Settings")
+                                    .font(.subheadline.weight(.medium))
+                                    .foregroundStyle(.textPrimary)
+                                Text("Open Settings to allow reminders")
+                                    .font(.caption)
+                                    .foregroundStyle(.textSecondary)
+                            }
+                        }
+                    }
+                    .accessibilityLabel("Notifications are off. Open Settings to allow reminders")
+                }
+            }
+
             Section {
                 Toggle(L10n.dailyReminder, isOn: $dailyReminderEnabled)
                     .tint(.noBuyGreen)
@@ -640,6 +669,13 @@ struct NotificationSettingsView: View {
                             Task {
                                 let manager = NotificationManager()
                                 await manager.requestAuthorization()
+                                await refreshAuthorizationStatus()
+                                if notificationsDenied {
+                                    // Honest toggle: permission denied means no
+                                    // reminder will ever fire.
+                                    dailyReminderEnabled = false
+                                    return
+                                }
                                 await manager.scheduleDailyReminder(
                                     hour: notificationHour,
                                     minute: notificationMinute
@@ -729,6 +765,9 @@ struct NotificationSettingsView: View {
             if let date = Calendar.current.date(from: components) {
                 notificationTime = date
             }
+        }
+        .task {
+            await refreshAuthorizationStatus()
         }
         .fullScreenCover(isPresented: $showPaywall) {
             PaywallView(store: store)

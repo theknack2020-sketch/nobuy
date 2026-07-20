@@ -295,7 +295,7 @@ struct StatsScreen: View {
                 statCard(
                     title: "Estimated Savings",
                     value: formattedSavings,
-                    icon: "turkishlirasign.circle.fill",
+                    icon: "banknote.fill",
                     color: .noBuyGreen
                 )
                 .accessibilityLabel("Estimated savings: \(formattedSavings)")
@@ -1122,7 +1122,7 @@ struct StatsScreen: View {
                         impulseStatCard(
                             value: formattedWaitingSaved(savedMoney),
                             label: "Saved",
-                            icon: "turkishlirasign.circle.fill",
+                            icon: "banknote.fill",
                             color: .noBuyGreen
                         )
                         impulseStatCard(

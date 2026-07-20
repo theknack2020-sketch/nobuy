@@ -26,6 +26,7 @@ struct HomeScreen: View {
 
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @Environment(\.horizontalSizeClass) private var sizeClass
+    @Environment(\.scenePhase) private var scenePhase
 
     private var isRegular: Bool {
         sizeClass == .regular
@@ -300,6 +301,13 @@ struct HomeScreen: View {
         .onChange(of: records.count) {
             viewModel.loadToday(records: records)
             checkChallengeCelebration()
+        }
+        .onChange(of: scenePhase) { _, newPhase in
+            // Warm resume (possibly across midnight): onAppear does not re-fire,
+            // so refresh today's record and streak when we become active.
+            if newPhase == .active {
+                viewModel.loadToday(records: records)
+            }
         }
         .onChange(of: quickActionHandler.pendingMarkNoBuy) { _, pending in
             if pending {

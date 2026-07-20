@@ -1,11 +1,13 @@
 import SwiftUI
 
 extension Color {
-    /// Muted green for no-buy days — dark mode aware
+    /// Muted green for no-buy days — dark mode aware.
+    /// Deep enough that WHITE text on this fill clears WCAG AA (≥4.5:1) in
+    /// both appearances (calendar day numbers, primary CTA done-state).
     static let noBuyGreen = Color(uiColor: UIColor { traits in
         traits.userInterfaceStyle == .dark
-            ? UIColor(red: 0.35, green: 0.75, blue: 0.55, alpha: 1)
-            : UIColor(red: 0.27, green: 0.63, blue: 0.45, alpha: 1)
+            ? UIColor(red: 0.22, green: 0.52, blue: 0.36, alpha: 1)
+            : UIColor(red: 0.21, green: 0.52, blue: 0.35, alpha: 1)
     })
     /// Lighter green for backgrounds
     static let noBuyGreenLight = Color.noBuyGreen.opacity(0.15)

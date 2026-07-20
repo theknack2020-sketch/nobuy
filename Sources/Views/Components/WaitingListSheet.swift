@@ -241,7 +241,7 @@ struct WaitingListSheet: View {
                                     .font(.caption)
                                     .foregroundStyle(.textSecondary)
                             } icon: {
-                                Image(systemName: "turkishlirasign")
+                                Image(systemName: "banknote")
                                     .font(.caption2)
                                     .foregroundStyle(.textTertiary)
                             }

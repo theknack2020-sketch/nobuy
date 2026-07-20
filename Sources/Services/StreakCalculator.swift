@@ -20,8 +20,17 @@ enum StreakCalculator {
                 .map { calendar.startOfDay(for: $0.date) }
         )
 
-        // Current streak: count backwards from today
-        let currentStreak = countStreak(from: today, noBuyDates: noBuyDates, frozenDates: frozenDates, calendar: calendar)
+        // Current streak: count backwards from today. An UNLOGGED today is
+        // pending, not broken — start from yesterday so an active streak never
+        // reads 0 just because the person hasn't logged yet (a spend record
+        // today still legitimately breaks it).
+        let recordedDates: Set<Date> = Set(records.map { calendar.startOfDay(for: $0.date) })
+        let streakAnchor: Date = if recordedDates.contains(today) {
+            today
+        } else {
+            calendar.date(byAdding: .day, value: -1, to: today) ?? today
+        }
+        let currentStreak = countStreak(from: streakAnchor, noBuyDates: noBuyDates, frozenDates: frozenDates, calendar: calendar)
 
         // Longest streak: scan all time
         let longestStreak = findLongestStreak(noBuyDates: noBuyDates, frozenDates: frozenDates, calendar: calendar)

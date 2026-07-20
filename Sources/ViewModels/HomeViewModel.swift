@@ -273,7 +273,9 @@ final class HomeViewModel {
         let calendar = Calendar.current
         let today = calendar.startOfDay(for: .now)
 
-        if let existing = todayRecord {
+        // Warm resume across midnight: the cached record may be yesterday's —
+        // reuse it only when it really is today's, else insert a fresh one.
+        if let existing = todayRecord, calendar.startOfDay(for: existing.date) == today {
             existing.didSpend = false
             existing.isMandatoryOnly = false
             existing.isFrozen = false
@@ -352,7 +354,8 @@ final class HomeViewModel {
 
         let streakBeforeAction = streakInfo.currentStreak
 
-        if let existing = todayRecord {
+        // Same midnight guard as markNoBuy: never mutate yesterday's record.
+        if let existing = todayRecord, calendar.startOfDay(for: existing.date) == today {
             existing.didSpend = true
             existing.isMandatoryOnly = mandatoryOnly
             existing.isFrozen = useFrozen
