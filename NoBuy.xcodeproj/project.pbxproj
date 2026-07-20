@@ -50,6 +50,7 @@
 		8422996FD48EC227A919D8F7 /* NoBuyApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00CF61C05D4E39A885ECD694 /* NoBuyApp.swift */; };
 		8780C6C19557D4E8E76F0189 /* SpendOptionsSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDA0FD59113F562A13CDDBE6 /* SpendOptionsSheet.swift */; };
 		897BFE74A3383238C3AE68FB /* SimScreenshots.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D8AFB0DCDF4E629719292A7 /* SimScreenshots.swift */; };
+		8CCF1C59DD447CC28A5D0010 /* RatingPrompt.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5FE9CFB00370FB78D978E65 /* RatingPrompt.swift */; };
 		8E2B50E19C7503D11D0864ED /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 50639D6968D64D0929AB5913 /* Assets.xcassets */; };
 		8E9FD91C18F40F723DEE3CA9 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 55601A529B3E75E3419C05A4 /* PrivacyInfo.xcprivacy */; };
 		912EC60AE87D2ACC58C64C60 /* AdaptiveLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6BBBE5C9615FF2A2E7911C90 /* AdaptiveLayout.swift */; };
@@ -171,6 +172,7 @@
 		E098C8B3C0AEEFEF6D19EB59 /* WhatsNewView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WhatsNewView.swift; sourceTree = "<group>"; };
 		E47D84A71F84546C202C8559 /* Date+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Date+Extensions.swift"; sourceTree = "<group>"; };
 		E49B3042AD68191FFFFD4BD7 /* NoBuyTests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = NoBuyTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		E5FE9CFB00370FB78D978E65 /* RatingPrompt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RatingPrompt.swift; sourceTree = "<group>"; };
 		E7E8173966314EF253C97AEC /* Color+Theme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Color+Theme.swift"; sourceTree = "<group>"; };
 		EAA2C1E51EB93CBB60B92A5E /* ChallengeCelebrationModal.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChallengeCelebrationModal.swift; sourceTree = "<group>"; };
 		F26B60366567349951C736E1 /* StreakInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StreakInfo.swift; sourceTree = "<group>"; };
@@ -369,6 +371,7 @@
 				605A01D20671D8F91187B224 /* DataExportService.swift */,
 				27CA5830D6F66BF20FD36B83 /* HapticManager.swift */,
 				30D0AC1EDE4126A69F717A77 /* NotificationManager.swift */,
+				E5FE9CFB00370FB78D978E65 /* RatingPrompt.swift */,
 				BAAB2E3A6745CF0D34F7D145 /* SoftPaywallTracker.swift */,
 				A54715F7FA2DA8F6B338C3DF /* SoundManager.swift */,
 				1E099D05A7A05D298639B1D0 /* SpotlightService.swift */,
@@ -560,6 +563,7 @@
 				386460431127CDA2DCC10A35 /* NotificationManager.swift in Sources */,
 				3B773E15C1BC2CE83200E36A /* OnboardingScreen.swift in Sources */,
 				1C7F8AA81C79D547A231C633 /* PaywallView.swift in Sources */,
+				8CCF1C59DD447CC28A5D0010 /* RatingPrompt.swift in Sources */,
 				0572022F2501ED74AB47D2A7 /* SavingsGoalCard.swift in Sources */,
 				AA9DFD4B56942F2FE828A584 /* ScaleButtonStyle.swift in Sources */,
 				7910FE32167AC63776EDB139 /* SchemaVersions.swift in Sources */,

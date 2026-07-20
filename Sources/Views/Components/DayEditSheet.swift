@@ -335,6 +335,11 @@ struct DayEditSheet: View {
             records: allRecords
         )
 
+        // Genuine positive moment: a no-spend day that lands on a streak milestone.
+        if !didSpend, !mandatoryOnly {
+            RatingPrompt.requestAfterNoSpendDay(currentStreak: streakInfo.currentStreak)
+        }
+
         dismiss()
     }
 }
