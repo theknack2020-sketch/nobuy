@@ -1,12 +1,11 @@
-🆕 Major Update — Complete Redesign!
+What's New in NoBuy 1.2:
 
-🎨 5 beautiful themes (2 free, 3 Pro)
-📊 6 new chart types with detailed analytics
-🧊 Glassmorphism design throughout the app
-♿ 169 accessibility improvements
-📱 iPad support with sidebar navigation
-🎯 Enhanced paywall with feature comparison
-🔔 Day 1-3 onboarding journey notifications
-🛡️ Streak freeze + challenge system improved
-🌍 Now fully English (redesigned from scratch)
-🔒 Improved Pro feature gates and reliability
+- NoBuy on iPad — Full iPad support with a sidebar layout and every orientation.
+
+- Private by Design — All analytics code removed. Your data never leaves your device, period.
+
+- A Better Way to Give Feedback — Tell us how we're doing, or email us privately right from the app.
+
+- Faster & Lighter — Third-party code removed for a quicker launch and a smaller download.
+
+Keep saving, one day at a time!
