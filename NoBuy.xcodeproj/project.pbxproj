@@ -169,7 +169,6 @@
 		CC180D8F7B74C913CD7E9AAE /* ChallengeCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChallengeCard.swift; sourceTree = "<group>"; };
 		CDA0FD59113F562A13CDDBE6 /* SpendOptionsSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpendOptionsSheet.swift; sourceTree = "<group>"; };
 		CE3BD5F0423C18CC39CA95FC /* WaitingItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WaitingItem.swift; sourceTree = "<group>"; };
-		DA3C25D8A531D177BE88825A /* NoBuy.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = NoBuy.entitlements; sourceTree = "<group>"; };
 		DD4C3429E75A51A454863FE7 /* MilestoneModal.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MilestoneModal.swift; sourceTree = "<group>"; };
 		DEA58BAD46C5BA137F5AA49B /* ConfettiView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConfettiView.swift; sourceTree = "<group>"; };
 		DEDEC33ADE54A63E94917A26 /* NoBuy.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = NoBuy.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -327,7 +326,6 @@
 			isa = PBXGroup;
 			children = (
 				025E0CC393B6F7B5409DA0F1 /* Info.plist */,
-				DA3C25D8A531D177BE88825A /* NoBuy.entitlements */,
 				6EBF363C19DCEE68B0536450 /* NoBuy.storekit */,
 				55601A529B3E75E3419C05A4 /* PrivacyInfo.xcprivacy */,
 				5FBA6DD094158B012FC108D6 /* App */,
@@ -797,7 +795,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_ENTITLEMENTS = Sources/NoBuy.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				INFOPLIST_FILE = Sources/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -831,7 +828,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_ENTITLEMENTS = Sources/NoBuy.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				INFOPLIST_FILE = Sources/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (

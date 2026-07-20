@@ -48,10 +48,6 @@ targets:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.ufukozdemir.nobuy
         TARGETED_DEVICE_FAMILY: "1,2"
-    entitlements:
-      path: Sources/NoBuy.entitlements
-      properties:
-        com.apple.security.app-sandbox: true
 
   NoBuyTests:
     type: bundle.unit-test
