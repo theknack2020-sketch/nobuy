@@ -279,6 +279,12 @@ final class HomeViewModel {
 
         // Warm resume across midnight: the cached record may be yesterday's —
         // reuse it only when it really is today's, else insert a fresh one.
+        // Dedup against the live record set too: an App Intent (Siri/Shortcut)
+        // may have written today's record before our cached pointer caught up.
+        let cachedIsToday = todayRecord.map { calendar.startOfDay(for: $0.date) == today } ?? false
+        if !cachedIsToday {
+            todayRecord = allRecords.first { calendar.startOfDay(for: $0.date) == today }
+        }
         if let existing = todayRecord, calendar.startOfDay(for: existing.date) == today {
             existing.didSpend = false
             existing.isMandatoryOnly = false
@@ -358,7 +364,11 @@ final class HomeViewModel {
 
         let streakBeforeAction = streakInfo.currentStreak
 
-        // Same midnight guard as markNoBuy: never mutate yesterday's record.
+        // Same midnight + external-write guards as markNoBuy.
+        let cachedIsToday = todayRecord.map { calendar.startOfDay(for: $0.date) == today } ?? false
+        if !cachedIsToday {
+            todayRecord = allRecords.first { calendar.startOfDay(for: $0.date) == today }
+        }
         if let existing = todayRecord, calendar.startOfDay(for: existing.date) == today {
             existing.didSpend = true
             existing.isMandatoryOnly = mandatoryOnly

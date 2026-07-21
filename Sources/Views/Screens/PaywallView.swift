@@ -50,7 +50,7 @@ struct PaywallView: View {
         FeatureRow(name: "Essential Categories", icon: "folder", freeValue: .text("3"), proValue: .text("∞")),
         FeatureRow(name: "Monthly Chart", icon: "chart.line.uptrend.xyaxis", freeValue: .cross, proValue: .check),
         FeatureRow(name: "Weekly Distribution", icon: "chart.pie", freeValue: .cross, proValue: .check),
-        FeatureRow(name: "Savings Estimate", icon: "dollarsign.circle", freeValue: .cross, proValue: .check),
+        FeatureRow(name: "Savings Estimate", icon: "dollarsign.circle", freeValue: .text("Basic"), proValue: .text("Full")),
         FeatureRow(name: "Streak History", icon: "clock.arrow.circlepath", freeValue: .cross, proValue: .check),
         FeatureRow(name: "CSV Export", icon: "arrow.down.doc", freeValue: .cross, proValue: .check),
         FeatureRow(name: "Enhanced Sharing", icon: "square.and.arrow.up", freeValue: .cross, proValue: .check),
@@ -134,7 +134,7 @@ struct PaywallView: View {
                 ToolbarItem(placement: .cancellationAction) {
                     if showCloseButton, !isPurchasing {
                         Button {
-                            store.trackPaywallDismissed()
+                            store.notePaywallDismissed()
                             dismiss()
                         } label: {
                             Image(systemName: "xmark.circle.fill")
@@ -555,7 +555,7 @@ struct PaywallView: View {
     // MARK: - Actions
 
     private func onAppearSetup() {
-        store.trackPaywallShown()
+        store.notePaywallShown()
 
         // Reset purchase state on re-open
         if case .failed = store.purchaseState {

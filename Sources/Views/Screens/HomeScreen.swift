@@ -116,7 +116,7 @@ struct HomeScreen: View {
                                 onUpgrade: { showPaywall = true },
                                 onDismiss: {
                                     showMilestoneBanner = false
-                                    store.trackPaywallDismissed()
+                                    store.notePaywallDismissed()
                                 }
                             )
                         }
@@ -413,8 +413,15 @@ struct HomeScreen: View {
     // MARK: - Reset Today
 
     private func resetTodayRecord() {
-        guard let record = viewModel.todayRecord else { return }
-        modelContext.delete(record)
+        // Delete every record dated today, not just the cached one — an App
+        // Intent race can leave a duplicate that would otherwise survive.
+        let calendar = Calendar.current
+        let today = calendar.startOfDay(for: .now)
+        let todaysRecords = records.filter { calendar.startOfDay(for: $0.date) == today }
+        guard !todaysRecords.isEmpty else { return }
+        for record in todaysRecords {
+            modelContext.delete(record)
+        }
         do {
             try modelContext.save()
             viewModel.todayRecord = nil

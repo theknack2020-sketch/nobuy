@@ -34,7 +34,7 @@ final class StoreService {
         case failed
     }
 
-    // MARK: - Analytics Tracking
+    // MARK: - Paywall Frequency Cap (local-only UserDefaults state)
 
     @ObservationIgnored
     private let paywallShownCountKey = "paywallShownCount"
@@ -43,7 +43,7 @@ final class StoreService {
     @ObservationIgnored
     private let paywallLastDismissDateKey = "paywallLastDismissDate"
 
-    var purchaseCount: Int {
+    var paywallShownCount: Int {
         get { UserDefaults.standard.integer(forKey: paywallShownCountKey) }
         set { UserDefaults.standard.set(newValue, forKey: paywallShownCountKey) }
     }
@@ -59,13 +59,13 @@ final class StoreService {
     }
 
     /// Track that the paywall was displayed
-    func trackPaywallShown() {
-        purchaseCount += 1
+    func notePaywallShown() {
+        paywallShownCount += 1
         paywallLastShownDate = .now
     }
 
     /// Track that the paywall was dismissed without purchase
-    func trackPaywallDismissed() {
+    func notePaywallDismissed() {
         paywallLastDismissDate = .now
     }
 
