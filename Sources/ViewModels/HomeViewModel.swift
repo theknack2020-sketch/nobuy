@@ -239,7 +239,10 @@ final class HomeViewModel {
 
     /// Resets the monthly freeze counter if we're in a new month
     func resetMonthlyFreezeIfNeeded(isPro: Bool) {
-        let currentMonth = Date.now.formatted(.dateTime.year().month())
+        // Locale-independent period key: a device-language change must never
+        // re-grant a used freeze within the same calendar month.
+        let parts = Calendar.current.dateComponents([.year, .month], from: .now)
+        let currentMonth = String(format: "%04d-%02d", parts.year ?? 0, parts.month ?? 0)
         if lastFreezeMonth != currentMonth {
             lastFreezeMonth = currentMonth
             // Free users get 1 freeze per month; Pro gets unlimited (we reset to a high number)

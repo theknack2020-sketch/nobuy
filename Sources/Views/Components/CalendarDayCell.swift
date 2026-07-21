@@ -33,6 +33,8 @@ struct CalendarDayCell: View {
                 // Day number
                 Text("\(date.dayOfMonth)")
                     .font(.system(.body, design: .rounded, weight: isToday ? .bold : .regular))
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.6)
                     .foregroundStyle(foregroundColor)
 
                 // Status indicator overlay — top-right corner

@@ -330,33 +330,8 @@ struct SettingsScreen: View {
 
                 Section {
                     ThemePickerView(showPaywall: $showPaywall)
-
-                    // App Icon
-                    HStack {
-                        Image(systemName: "app.fill")
-                            .foregroundStyle(.noBuyGreen)
-                            .frame(width: 28)
-                            .accessibilityHidden(true)
-                        Text(L10n.settingsAppIcon)
-                        Spacer()
-                        HStack(spacing: DS.Spacing.xs) {
-                            RoundedRectangle(cornerRadius: DS.Radius.sm)
-                                .fill(Color.noBuyGreen)
-                                .frame(width: 28, height: 28)
-                                .overlay(
-                                    Text("N")
-                                        .font(.caption.bold())
-                                        .foregroundStyle(.white)
-                                )
-                            Text(L10n.settingsCurrentIcon)
-                                .font(.caption)
-                                .foregroundStyle(.textSecondary)
-                        }
-                    }
                 } header: {
                     Text("Appearance")
-                } footer: {
-                    Text(L10n.settingsMoreIconsSoon)
                 }
 
                 // MARK: - About
