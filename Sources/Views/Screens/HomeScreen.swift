@@ -329,6 +329,15 @@ struct HomeScreen: View {
                 viewModel.resetMonthlyFreezeIfNeeded(isPro: true)
             }
         }
+        .onReceive(
+            NotificationCenter.default
+                .publisher(for: .NSCalendarDayChanged)
+                .receive(on: DispatchQueue.main)
+        ) { _ in
+            // App left foregrounded across local midnight: refresh so the
+            // streak and today-status flip without a scene transition.
+            viewModel.loadToday(records: records)
+        }
         .onChange(of: quickActionHandler.pendingMarkNoBuy) { _, pending in
             if pending {
                 consumePendingMarkNoBuy()
