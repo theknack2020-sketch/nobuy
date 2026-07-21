@@ -244,6 +244,10 @@ final class HomeViewModel {
             lastFreezeMonth = currentMonth
             // Free users get 1 freeze per month; Pro gets unlimited (we reset to a high number)
             streakFreezeCount = isPro ? 99 : 1
+        } else if isPro, streakFreezeCount < 99 {
+            // Entitlement-reactive grant: a mid-month upgrader gets unlimited
+            // immediately, not at the next calendar rollover.
+            streakFreezeCount = 99
         }
     }
 

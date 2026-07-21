@@ -27,8 +27,6 @@ struct ConfettiView: View {
                 withAnimation(.spring(response: 2.0, dampingFraction: 0.6)) {
                     isAnimating = true
                 }
-                HapticManager.celebration()
-                SoundManager.playIfEnabled(.celebration)
             }
             .allowsHitTesting(false)
         }

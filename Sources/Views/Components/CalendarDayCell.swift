@@ -133,7 +133,7 @@ struct CalendarDayCell: View {
         case .noBuy: .noBuyGreen
         case .spent: .spendRed
         case .essential: .mandatoryAmber
-        case .frozen: .blue.opacity(0.55)
+        case .frozen: .freezeBlue
         case .unrecorded: .clear
         case .future: .clear
         }

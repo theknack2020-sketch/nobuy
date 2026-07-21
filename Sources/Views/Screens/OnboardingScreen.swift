@@ -214,6 +214,11 @@ struct OnboardingScreen: View {
                         DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
                             completeOnboarding()
                         }
+                    } else {
+                        // Denied (or previously denied — iOS never re-presents
+                        // the alert): the CTA must still move forward, never
+                        // go dead. Reminders can be enabled later in Settings.
+                        completeOnboarding()
                     }
                 }
             } catch {

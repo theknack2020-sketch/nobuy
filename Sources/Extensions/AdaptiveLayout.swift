@@ -1,4 +1,5 @@
 import SwiftUI
+import UIKit
 
 // MARK: - Adaptive Font Extension
 
@@ -45,15 +46,23 @@ extension Font {
         isRegular ? .title : .title2
     }
 
+    /// Dynamic Type scaling for a literal point size: run it through
+    /// UIFontMetrics so headline content set in points still responds to the
+    /// user's text-size setting (the isRegular multiplier is only an iPad
+    /// canvas bump, not accessibility scaling).
+    private static func dynamicTypeScaled(_ size: CGFloat, relativeTo style: UIFont.TextStyle = .title2) -> CGFloat {
+        UIFontMetrics(forTextStyle: style).scaledValue(for: size)
+    }
+
     /// Large display number (timer, progress, stats)
     static func adaptiveDisplay(size: CGFloat, weight: Font.Weight = .bold, design: Font.Design = .rounded, isRegular: Bool) -> Font {
-        let scaledSize = isRegular ? size * 1.25 : size
+        let scaledSize = dynamicTypeScaled(isRegular ? size * 1.25 : size, relativeTo: .largeTitle)
         return .system(size: scaledSize, weight: weight, design: design)
     }
 
     /// Scaled system font for custom sizes
     static func adaptiveSystem(size: CGFloat, weight: Font.Weight = .regular, design: Font.Design = .default, isRegular: Bool) -> Font {
-        let scaledSize = isRegular ? size * 1.2 : size
+        let scaledSize = dynamicTypeScaled(isRegular ? size * 1.2 : size, relativeTo: .body)
         return .system(size: scaledSize, weight: weight, design: design)
     }
 
@@ -67,11 +76,13 @@ extension Font {
         isRegular ? .caption.weight(.semibold) : .system(size: 11, weight: .semibold)
     }
 
-    /// Timer display — extra large for fasting timer
+    /// Timer display — extra large for the urge-surfing timer
     static func timerDisplay(isRegular: Bool) -> Font {
-        isRegular
-            ? .system(size: 72, weight: .light, design: .rounded)
-            : .system(size: 56, weight: .light, design: .rounded)
+        .system(
+            size: dynamicTypeScaled(isRegular ? 72 : 56, relativeTo: .largeTitle),
+            weight: .light,
+            design: .rounded
+        )
     }
 
     /// Section header

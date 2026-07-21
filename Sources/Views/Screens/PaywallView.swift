@@ -56,6 +56,10 @@ struct PaywallView: View {
         FeatureRow(name: "Enhanced Sharing", icon: "square.and.arrow.up", freeValue: .cross, proValue: .check),
         FeatureRow(name: "Unlimited Freezes", icon: "shield", freeValue: .text("1/mo"), proValue: .text("∞")),
         FeatureRow(name: "Challenges", icon: "trophy", freeValue: .cross, proValue: .check),
+        FeatureRow(name: "Achievements", icon: "medal", freeValue: .text("5"), proValue: .text("∞")),
+        FeatureRow(name: "Calendar History", icon: "calendar", freeValue: .text("1 mo"), proValue: .text("∞")),
+        FeatureRow(name: "Waiting List", icon: "clock.badge.questionmark", freeValue: .text("3"), proValue: .text("∞")),
+        FeatureRow(name: "Premium Themes", icon: "paintpalette", freeValue: .cross, proValue: .check),
     ]
 
     var body: some View {
@@ -146,6 +150,10 @@ struct PaywallView: View {
             }
             .toolbarBackground(.hidden, for: .navigationBar)
             .interactiveDismissDisabled(isPurchasing)
+            // The paywall is a dark design with hardcoded white chrome — pin
+            // the scheme (like OnboardingScreen) so Light Mode can't composite
+            // the translucent gradient over a white backdrop and wash it out.
+            .preferredColorScheme(.dark)
             .onAppear { onAppearSetup() }
             .onChange(of: store.purchaseState) { _, newValue in
                 if case .purchased = newValue {
@@ -471,6 +479,15 @@ struct PaywallView: View {
                 Text(message)
                     .font(.caption)
                     .foregroundStyle(.spendRed)
+                    .transition(.opacity)
+            }
+
+            // Ask to Buy / deferred approval — explicit, not a silent cancel
+            if store.purchaseState == .pending {
+                Text("Waiting for approval — Pro unlocks automatically as soon as the purchase is approved.")
+                    .font(.caption)
+                    .foregroundStyle(.noBuyGreen)
+                    .multilineTextAlignment(.center)
                     .transition(.opacity)
             }
 

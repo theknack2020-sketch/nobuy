@@ -55,13 +55,13 @@ struct NoBuyApp: App {
     @State private var achievementManager = AchievementManager.shared
     @State private var quickActionHandler = QuickActionHandler()
     @State private var userSettings = UserSettings.shared
+    @State private var storeOpenFailed = false
     let modelContainer: ModelContainer
 
     init() {
-        let schema = Schema([
-            DayRecord.self,
-            MandatoryCategory.self,
-        ])
+        // Bind the schema to its versioned declaration so the migration plan
+        // is anchored before the first real V2 change.
+        let schema = Schema(versionedSchema: NoBuySchema.self)
         // Demo runs use a throwaway in-memory store so a developer's real
         // records can never be touched by a screenshot session.
         let config = ModelConfiguration(schema: schema, isStoredInMemoryOnly: DemoMode.isActive)
@@ -72,7 +72,17 @@ struct NoBuyApp: App {
                 configurations: [config]
             )
         } catch {
-            fatalError("Could not create ModelContainer: \(error)")
+            // Never crash-loop at launch (2.1(a)): fall back to a throwaway
+            // in-memory store and tell the user, leaving the on-disk store
+            // untouched for the next launch.
+            AppLogger.data.error("Could not open persistent store: \(error.localizedDescription)")
+            let fallback = ModelConfiguration(schema: schema, isStoredInMemoryOnly: true)
+            do {
+                modelContainer = try ModelContainer(for: schema, configurations: [fallback])
+                _storeOpenFailed = State(initialValue: true)
+            } catch {
+                fatalError("Could not create even an in-memory ModelContainer: \(error)")
+            }
         }
 
         #if DEBUG
@@ -100,6 +110,11 @@ struct NoBuyApp: App {
             .environment(achievementManager)
             .environment(quickActionHandler)
             .environment(userSettings)
+            .alert("Couldn't open your data", isPresented: $storeOpenFailed) {
+                Button("OK", role: .cancel) {}
+            } message: {
+                Text("NoBuy couldn't open its database this time, so nothing you log right now will be kept. Your saved data is untouched — please quit and reopen the app.")
+            }
             .task {
                 appDelegate.quickActionHandler = quickActionHandler
                 await store.loadProducts()

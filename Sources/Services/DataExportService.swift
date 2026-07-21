@@ -36,13 +36,15 @@ enum DataExportService {
 
         let header = "Date,Spent,Essential Only,Freeze,Amount,Note\n"
         let rows = records.sorted(by: { $0.date < $1.date }).map { record in
-            let dateStr = record.date.formatted(date: .abbreviated, time: .omitted)
-            let spent = record.didSpend ? "Yes" : "No"
-            let mandatory = record.isMandatoryOnly ? "Yes" : "No"
-            let frozen = record.isFrozen ? "Yes" : "No"
-            let amount = record.amount.map { String(format: "%.2f", $0) } ?? ""
-            let note = (record.note ?? "").replacingOccurrences(of: ",", with: ";")
-            return "\(dateStr),\(spent),\(mandatory),\(frozen),\(amount),\(note)"
+            let fields = [
+                record.date.formatted(date: .abbreviated, time: .omitted),
+                record.didSpend ? "Yes" : "No",
+                record.isMandatoryOnly ? "Yes" : "No",
+                record.isFrozen ? "Yes" : "No",
+                record.amount.map { String(format: "%.2f", $0) } ?? "",
+                record.note ?? "",
+            ]
+            return fields.map(csvEscaped).joined(separator: ",")
         }.joined(separator: "\n")
 
         let csv = header + rows
@@ -60,5 +62,11 @@ enum DataExportService {
             AppLogger.data.error("CSV export failed: \(error.localizedDescription)")
             throw DataExportError.writeFailed(error)
         }
+    }
+
+    /// RFC-4180 field escaping: wrap in double quotes and double embedded
+    /// quotes, so commas, quotes and newlines in notes stay legal CSV.
+    static func csvEscaped(_ field: String) -> String {
+        "\"" + field.replacingOccurrences(of: "\"", with: "\"\"") + "\""
     }
 }

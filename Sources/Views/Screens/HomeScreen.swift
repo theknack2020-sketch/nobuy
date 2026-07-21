@@ -13,6 +13,8 @@ struct HomeScreen: View {
     @State private var showMilestoneModal = false
     @State private var showConfetti = false
     @State private var showRatingCard = false
+    @State private var shareCardImage: UIImage?
+    @State private var showShareCardSheet = false
     @State private var summaryAppeared = false
     @State private var showChallengeSetup = false
     @State private var celebrationAchievement: Achievement?
@@ -231,18 +233,30 @@ struct HomeScreen: View {
                             .accessibilityIdentifier("toolbar_pro_badge")
                         }
 
-                        // Share button — basic share for all, enhanced for Pro
+                        // Share button — text share for free, rendered card for Pro
                         if viewModel.streakInfo.currentStreak > 0 {
-                            ShareLink(
-                                item: store.isPro ? viewModel.shareText : "I'm on a \(viewModel.streakInfo.currentStreak)-day no-spend streak! 🔥 #NoBuy",
-                                subject: Text("My NoBuy Streak"),
-                                message: Text(store.isPro ? viewModel.shareText : "I'm on a \(viewModel.streakInfo.currentStreak)-day no-spend streak!")
-                            ) {
-                                Image(systemName: "square.and.arrow.up")
-                                    .foregroundStyle(.noBuyGreen)
+                            if store.isPro {
+                                Button {
+                                    shareEnhancedCard()
+                                } label: {
+                                    Image(systemName: "square.and.arrow.up")
+                                        .foregroundStyle(.noBuyGreen)
+                                }
+                                .buttonStyle(.scale)
+                                .accessibilityLabel("Share enhanced streak card")
+                                .accessibilityHint("Double tap to share your streak card image")
+                            } else {
+                                ShareLink(
+                                    item: "I'm on a \(viewModel.streakInfo.currentStreak)-day no-spend streak! 🔥 #NoBuy",
+                                    subject: Text("My NoBuy Streak"),
+                                    message: Text("I'm on a \(viewModel.streakInfo.currentStreak)-day no-spend streak!")
+                                ) {
+                                    Image(systemName: "square.and.arrow.up")
+                                        .foregroundStyle(.noBuyGreen)
+                                }
+                                .accessibilityLabel("Share your streak")
+                                .accessibilityHint("Double tap to share your no-spend streak")
                             }
-                            .accessibilityLabel(store.isPro ? "Share enhanced streak card" : "Share your streak")
-                            .accessibilityHint("Double tap to share your no-spend streak")
                         }
                     }
                 }
@@ -307,6 +321,12 @@ struct HomeScreen: View {
             // so refresh today's record and streak when we become active.
             if newPhase == .active {
                 viewModel.loadToday(records: records)
+            }
+        }
+        .onChange(of: store.isPro) { _, isPro in
+            // Mid-month upgrade: grant unlimited freezes the moment Pro lands.
+            if isPro {
+                viewModel.resetMonthlyFreezeIfNeeded(isPro: true)
             }
         }
         .onChange(of: quickActionHandler.pendingMarkNoBuy) { _, pending in
@@ -379,6 +399,11 @@ struct HomeScreen: View {
             RatingPromptCard(streak: RatingPrompt.shared.milestoneStreak)
                 .presentationDetents([.height(340)])
                 .presentationDragIndicator(.visible)
+        }
+        .sheet(isPresented: $showShareCardSheet) {
+            if let shareCardImage {
+                ShareSheet(items: [shareCardImage, viewModel.shareText])
+            }
         }
         .fullScreenCover(isPresented: softPaywallBinding) {
             PaywallView(store: store)
@@ -826,6 +851,25 @@ struct HomeScreen: View {
         viewModel.markNoBuy(context: modelContext, allRecords: records)
         checkCelebration()
         RatingPrompt.shared.noteMilestone(currentStreak: viewModel.streakInfo.currentStreak)
+    }
+
+    // MARK: - Enhanced Share Card (Pro)
+
+    /// Render the branded streak card and hand it to the share sheet — the
+    /// shipped UI behind the paywall's "Enhanced Sharing" promise.
+    private func shareEnhancedCard() {
+        HapticManager.tap()
+        let firstNoBuyDate = records.filter(\.isNoBuyDay).map(\.date).min()
+        let renderer = ImageRenderer(content: StreakShareCardPro(
+            streakInfo: viewModel.streakInfo,
+            savingsGoal: viewModel.savingsGoal,
+            firstNoBuyDate: firstNoBuyDate
+        ))
+        renderer.scale = 3
+        if let image = renderer.uiImage {
+            shareCardImage = image
+            showShareCardSheet = true
+        }
     }
 
     // MARK: - Celebration Check

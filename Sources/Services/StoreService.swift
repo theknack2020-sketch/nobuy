@@ -23,6 +23,8 @@ final class StoreService {
         case idle
         case purchasing
         case purchased
+        /// Ask to Buy / deferred approval — not a cancel, not a failure.
+        case pending
         case failed(String)
     }
 
@@ -138,7 +140,7 @@ final class StoreService {
             case .userCancelled:
                 purchaseState = .idle
             case .pending:
-                purchaseState = .idle
+                purchaseState = .pending
             @unknown default:
                 purchaseState = .idle
             }

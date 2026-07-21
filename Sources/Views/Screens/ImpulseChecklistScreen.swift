@@ -21,6 +21,9 @@ struct ImpulseChecklistScreen: View {
     @State private var showWaitingListOffer = false
     @State private var waitingItemName = ""
     @State private var waitingItemCost = ""
+
+    private enum OfferField { case name, price }
+    @FocusState private var offerFieldFocus: OfferField?
     @State private var waitingReminderHours = 24
 
     /// Callback when the user completes the checklist and decides NOT to buy
@@ -40,33 +43,41 @@ struct ImpulseChecklistScreen: View {
         /// If the user picks this answer, trigger an early "don't buy" exit.
         /// `nil` means no early exit for either answer.
         let earlyExitAnswer: Bool?
+        /// The answer that walks away from the purchase — the only one that
+        /// earns the brand green, so red/green keep their calendar meaning.
+        let frugalAnswer: Bool
     }
 
     private let questions: [Question] = [
         Question(
             icon: "questionmark.circle.fill",
             text: "Do I really need this?",
-            earlyExitAnswer: false // "No" → early exit
+            earlyExitAnswer: false, // "No" → early exit
+            frugalAnswer: false
         ),
         Question(
             icon: "clock.fill",
             text: "Can I wait 24 hours?",
-            earlyExitAnswer: true // "Yes" → early exit
+            earlyExitAnswer: true, // "Yes" → early exit
+            frugalAnswer: true
         ),
         Question(
             icon: "banknote.fill",
             text: "Does this fit my budget?",
-            earlyExitAnswer: nil
+            earlyExitAnswer: nil,
+            frugalAnswer: false
         ),
         Question(
             icon: "calendar.badge.clock",
             text: "Will I still want this in a week?",
-            earlyExitAnswer: nil
+            earlyExitAnswer: nil,
+            frugalAnswer: false
         ),
         Question(
             icon: "arrow.triangle.branch",
-            text: "What else could I spend this money on?",
-            earlyExitAnswer: nil
+            text: "Is there something better I want this money for?",
+            earlyExitAnswer: nil,
+            frugalAnswer: true
         ),
     ]
 
@@ -117,11 +128,17 @@ struct ImpulseChecklistScreen: View {
     private var questionView: some View {
         let question = questions[currentIndex]
 
-        return VStack(spacing: DS.Spacing.xxxl) {
-            Spacer()
+        return VStack(spacing: DS.Spacing.xxl) {
+            Spacer().frame(height: DS.Spacing.md)
 
             // Progress
             progressDots
+
+            Text("Question \(currentIndex + 1) of \(questions.count)")
+                .font(.footnote.weight(.semibold))
+                .foregroundStyle(.textSecondary)
+                .textCase(.uppercase)
+                .tracking(1.5)
 
             // Icon
             ZStack {
@@ -151,27 +168,63 @@ struct ImpulseChecklistScreen: View {
                 .padding(.horizontal, DS.Spacing.xxl)
                 .id("text-\(currentIndex)")
 
+            if currentIndex + 1 < questions.count {
+                upNextList
+            }
+
             Spacer()
 
-            // Answer buttons
+            // Answer buttons — only the walk-away answer earns the brand green
             HStack(spacing: DS.Spacing.lg) {
                 answerButton(
                     label: "Yes",
                     icon: "checkmark",
-                    color: .noBuyGreen,
+                    color: question.frugalAnswer ? .noBuyGreen : .answerNeutral,
                     isYes: true
                 )
 
                 answerButton(
                     label: "No",
                     icon: "xmark",
-                    color: .spendRed,
+                    color: question.frugalAnswer ? .answerNeutral : .noBuyGreen,
                     isYes: false
                 )
             }
             .padding(.horizontal, DS.Spacing.xxl)
             .padding(.bottom, DS.Spacing.xxxl)
         }
+    }
+
+    /// The remaining questions, muted — fills the frame with the actual
+    /// checklist so the screen (and its store shot) reads as one.
+    private var upNextList: some View {
+        VStack(alignment: .leading, spacing: DS.Spacing.sm) {
+            Text("Up next")
+                .font(.caption.weight(.semibold))
+                .foregroundStyle(.textTertiary)
+                .textCase(.uppercase)
+                .tracking(1)
+
+            ForEach(Array(questions.enumerated().dropFirst(currentIndex + 1)), id: \.offset) { _, upcoming in
+                HStack(spacing: DS.Spacing.sm) {
+                    Image(systemName: upcoming.icon)
+                        .font(.caption)
+                        .foregroundStyle(.textTertiary)
+                        .frame(width: 18)
+                        .accessibilityHidden(true)
+                    Text(upcoming.text)
+                        .font(.subheadline)
+                        .foregroundStyle(.textSecondary)
+                }
+            }
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding(DS.Spacing.lg)
+        .background(
+            RoundedRectangle(cornerRadius: DS.Radius.md)
+                .fill(Color.surfaceSecondary)
+        )
+        .padding(.horizontal, DS.Spacing.xxl)
     }
 
     private func answerButton(label: String, icon: String, color: Color, isYes: Bool) -> some View {
@@ -582,8 +635,9 @@ struct ImpulseChecklistScreen: View {
 
     private var waitingListOfferSheet: some View {
         NavigationStack {
-            VStack(spacing: DS.Spacing.xxl) {
-                Spacer().frame(height: DS.Spacing.md)
+            ScrollView {
+                VStack(spacing: DS.Spacing.xxl) {
+                    Spacer().frame(height: DS.Spacing.md)
 
                 ZStack {
                     Circle()
@@ -613,6 +667,7 @@ struct ImpulseChecklistScreen: View {
                         "What do you want to buy?",
                         text: $waitingItemName
                     )
+                    .focused($offerFieldFocus, equals: .name)
                     .font(.body)
                     .padding(DS.Spacing.lg)
                     .background(
@@ -625,6 +680,7 @@ struct ImpulseChecklistScreen: View {
                         "Estimated price (optional)",
                         text: $waitingItemCost
                     )
+                    .focused($offerFieldFocus, equals: .price)
                     .font(.body)
                     .keyboardType(.decimalPad)
                     .padding(DS.Spacing.lg)
@@ -689,7 +745,9 @@ struct ImpulseChecklistScreen: View {
                 .disabled(waitingItemName.trimmingCharacters(in: .whitespaces).isEmpty)
                 .padding(.horizontal, DS.Spacing.xxl)
                 .padding(.bottom, DS.Spacing.xxxl)
+                }
             }
+            .scrollDismissesKeyboard(.interactively)
             .background(Color.surfacePrimary)
             .navigationTitle("Waiting List")
             .navigationBarTitleDisplayMode(.inline)
@@ -700,6 +758,10 @@ struct ImpulseChecklistScreen: View {
                         showWaitingListOffer = false
                     }
                     .accessibilityIdentifier("waiting_list_cancel")
+                }
+                ToolbarItemGroup(placement: .keyboard) {
+                    Spacer()
+                    Button("Done") { offerFieldFocus = nil }
                 }
             }
         }

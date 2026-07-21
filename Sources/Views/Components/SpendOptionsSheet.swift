@@ -11,6 +11,7 @@ struct SpendOptionsSheet: View {
     @State private var spendAmount: String = ""
     @State private var showError = false
     @State private var errorMessage = ""
+    @FocusState private var amountFocused: Bool
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @Environment(\.horizontalSizeClass) private var sizeClass
 
@@ -148,6 +149,7 @@ struct SpendOptionsSheet: View {
                         .foregroundStyle(.textTertiary)
                     TextField(L10n.spendAmountPlaceholder, text: $spendAmount)
                         .keyboardType(.decimalPad)
+                        .focused($amountFocused)
                         .font(.subheadline)
                 }
                 .padding(DS.Spacing.md)
@@ -200,6 +202,10 @@ struct SpendOptionsSheet: View {
                         HapticManager.tap()
                         dismiss()
                     }
+                }
+                ToolbarItemGroup(placement: .keyboard) {
+                    Spacer()
+                    Button("Done") { amountFocused = false }
                 }
             }
             .onAppear {

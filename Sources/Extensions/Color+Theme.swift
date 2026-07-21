@@ -12,22 +12,40 @@ extension Color {
     /// Lighter green for backgrounds
     static let noBuyGreenLight = Color.noBuyGreen.opacity(0.15)
 
-    /// Muted red for spend days — dark mode aware
+    /// Muted red for spend days — dark mode aware.
+    /// White text on this fill: 4.59:1 light / 4.61:1 dark (WCAG AA for body).
     static let spendRed = Color(uiColor: UIColor { traits in
         traits.userInterfaceStyle == .dark
-            ? UIColor(red: 0.88, green: 0.40, blue: 0.40, alpha: 1)
+            ? UIColor(red: 0.74, green: 0.26, blue: 0.26, alpha: 1)
             : UIColor(red: 0.78, green: 0.30, blue: 0.30, alpha: 1)
     })
     /// Lighter red for backgrounds
     static let spendRedLight = Color.spendRed.opacity(0.15)
 
-    /// Mandatory spending — dark mode aware amber
+    /// Mandatory spending — dark mode aware amber.
+    /// White text on this fill clears 4.5:1 in both appearances.
     static let mandatoryAmber = Color(uiColor: UIColor { traits in
         traits.userInterfaceStyle == .dark
-            ? UIColor(red: 0.92, green: 0.75, blue: 0.38, alpha: 1)
-            : UIColor(red: 0.82, green: 0.65, blue: 0.28, alpha: 1)
+            ? UIColor(red: 0.60, green: 0.43, blue: 0.10, alpha: 1)
+            : UIColor(red: 0.58, green: 0.42, blue: 0.08, alpha: 1)
     })
     static let mandatoryAmberLight = Color.mandatoryAmber.opacity(0.15)
+
+    /// Streak-freeze blue — opaque and appearance-aware so white text on it
+    /// clears WCAG AA (never an alpha wash over an unknown backdrop).
+    static let freezeBlue = Color(uiColor: UIColor { traits in
+        traits.userInterfaceStyle == .dark
+            ? UIColor(red: 0.16, green: 0.36, blue: 0.70, alpha: 1)
+            : UIColor(red: 0.14, green: 0.34, blue: 0.68, alpha: 1)
+    })
+
+    /// Neutral answer-button fill (checklist): dark slate that carries white
+    /// text at ~6:1 without borrowing the calendar's red/green semantics.
+    static let answerNeutral = Color(uiColor: UIColor { traits in
+        traits.userInterfaceStyle == .dark
+            ? UIColor(red: 0.38, green: 0.41, blue: 0.46, alpha: 1)
+            : UIColor(red: 0.35, green: 0.38, blue: 0.42, alpha: 1)
+    })
 
     /// Background tones
     static let surfacePrimary = Color(uiColor: .systemBackground)
