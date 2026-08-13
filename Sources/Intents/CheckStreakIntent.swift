@@ -20,7 +20,7 @@ struct CheckStreakIntent: AppIntent {
         let info = StreakCalculator.calculate(from: records)
 
         if info.currentStreak > 0 {
-            return .result(dialog: "Your current streak is \(info.currentStreak) days! Your longest is \(info.longestStreak) days. 🔥")
+            return .result(dialog: "You are on \(info.currentStreak) days. Your best is \(info.longestStreak).")
         } else {
             return .result(dialog: "No active streak right now. Open NoBuy to start one!")
         }

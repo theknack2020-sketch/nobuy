@@ -1,55 +1,120 @@
 {
-  "panels": [
-    {
-      "id": "01-hero",
-      "caption": "Break impulse buying",
-      "sub": "One tap a day. No budgets, no bank logins.",
-      "uiState": "today",
-      "bgVariant": "mint-light",
-      "accent": "halo",
-      "settle": 6
+  "$note": "DERIVED from panels-geometry.json — do not hand-edit. Regenerate after any geometry change.",
+  "devices": {
+    "iphone": {
+      "size": [
+        1320,
+        2868
+      ],
+      "panels": [
+        {
+          "id": "01-question",
+          "caption": "One question, every evening.",
+          "sub": "Answer with one tap. Keep the days.",
+          "uiState": "today-quiet-dark",
+          "field": "dark",
+          "settle": 5,
+          "bgVariant": "dark"
+        },
+        {
+          "id": "02-record",
+          "caption": "The record keeps its shape.",
+          "sub": "Five truths a day can carry, including the honest one.",
+          "uiState": "calendar-light",
+          "field": "light",
+          "settle": 5,
+          "bgVariant": "light"
+        },
+        {
+          "id": "03-waiting",
+          "caption": "Waiting is the mechanism.",
+          "sub": "Ten minutes for an urge. Twenty-four hours for a want.",
+          "uiState": "urge-running-dark",
+          "field": "dark",
+          "settle": 5,
+          "bgVariant": "dark"
+        },
+        {
+          "id": "04-glance",
+          "caption": "Glance without opening.",
+          "sub": "Home and Lock Screen, with tonight's answer one tap away.",
+          "uiState": "widget-home-light",
+          "field": "light",
+          "settle": 5,
+          "bgVariant": "light"
+        },
+        {
+          "id": "05-finishes",
+          "caption": "Five dials, one record.",
+          "sub": "The finish changes. The truth doesn't.",
+          "uiState": "today-salmon-light",
+          "field": "light",
+          "settle": 5,
+          "bgVariant": "light"
+        },
+        {
+          "id": "06-yours",
+          "caption": "Yours alone, on this phone.",
+          "sub": "No account. No bank connection. No analytics. Ever.",
+          "uiState": "settings-privacy-light",
+          "field": "light",
+          "settle": 5,
+          "bgVariant": "light"
+        }
+      ]
     },
-    {
-      "id": "02-urge",
-      "caption": "Beat the urge in minutes",
-      "sub": "10-minute urge-surfing timer for impulse moments",
-      "uiState": "urge",
-      "bgVariant": "forest-dark",
-      "settle": 5,
-      "deviceOverrides": { "ipad": { "dev_w_frac": 0.96, "dev_top_frac": 0.24 } }
-    },
-    {
-      "id": "03-calendar",
-      "caption": "Your month at a glance",
-      "sub": "Color-coded no-spend calendar with streaks and freezes",
-      "uiState": "calendar",
-      "bgVariant": "ocean",
-      "settle": 4
-    },
-    {
-      "id": "04-stats",
-      "caption": "Watch real savings grow",
-      "sub": "Savings estimate, achievements, monthly progress",
-      "uiState": "stats",
-      "bgVariant": "sunset",
-      "settle": 4
-    },
-    {
-      "id": "05-pro",
-      "caption": "Pro insights keep you going",
-      "sub": "Trends, weekday patterns, streak history — pay once",
-      "uiState": "statsCharts",
-      "bgVariant": "forest-dark",
-      "settle": 6
-    },
-    {
-      "id": "06-checklist",
-      "caption": "Think before you buy",
-      "sub": "Honest checklist and a 24-hour waiting list",
-      "uiState": "checklist",
-      "bgVariant": "mint-light",
-      "settle": 5,
-      "deviceOverrides": { "ipad": { "dev_w_frac": 0.96, "dev_top_frac": 0.24 } }
+    "ipad": {
+      "size": [
+        2064,
+        2752
+      ],
+      "panels": [
+        {
+          "id": "01-question",
+          "caption": "One question, every evening.",
+          "sub": "Answer with one tap. Keep the days.",
+          "uiState": "today-quiet-dark",
+          "field": "dark",
+          "settle": 5,
+          "bgVariant": "dark"
+        },
+        {
+          "id": "02-record",
+          "caption": "The record keeps its shape.",
+          "sub": "Five truths a day can carry, including the honest one.",
+          "uiState": "calendar-light",
+          "field": "light",
+          "settle": 5,
+          "bgVariant": "light"
+        },
+        {
+          "id": "03-waiting",
+          "caption": "Waiting is the mechanism.",
+          "sub": "Ten minutes for an urge. Twenty-four hours for a want.",
+          "uiState": "urge-running-dark",
+          "field": "dark",
+          "settle": 5,
+          "bgVariant": "dark"
+        },
+        {
+          "id": "05-finishes",
+          "caption": "Five dials, one record.",
+          "sub": "The finish changes. The truth doesn't.",
+          "uiState": "today-salmon-light",
+          "field": "light",
+          "settle": 5,
+          "bgVariant": "light"
+        },
+        {
+          "id": "06-yours",
+          "caption": "Yours alone, on this phone.",
+          "sub": "No account. No bank connection. No analytics. Ever.",
+          "uiState": "settings-privacy-light",
+          "field": "light",
+          "settle": 5,
+          "bgVariant": "light"
+        }
+      ]
     }
-  ]
+  }
 }

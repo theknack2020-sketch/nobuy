@@ -1,0 +1,23 @@
+{
+  "appId": 1495384779,
+  "name": "ZayZoon - Wages On-Demand",
+  "bundleId": "com.zayzoon.app",
+  "country": "US",
+  "countryName": "United States",
+  "url": "https://apps.apple.com/us/app/zayzoon-wages-on-demand/id1495384779?uo=4",
+  "artworkUrl": "https://is1-ssl.mzstatic.com/image/thumb/Purple211/v4/79/2e/7b/792e7bd3-7d8c-e6b3-d570-46b96ddc30f2/AppIcon-0-0-1x_U007epad-0-1-85-220.png/512x512bb.jpg",
+  "sellerName": "ZayZoon Inc.",
+  "primaryGenreName": "Finance",
+  "genres": [
+    "Finance"
+  ],
+  "version": "1.6.2",
+  "description": "Make today the new payday. How it works: Each day you work, you build up an available amount and can choose how much of your wages you’d like to receive, instantly! On your payday, you are paid normally, minus the amount you accessed early. \n\nZayZoon allows you to access your earned but unpaid wages to avoid payday loans, late bill payments and overdraft fees. Its financial wellness tools provide overdraft prediction, financial tracking and financial education. \n\nWhat else there is to love:\nMoney transferred instantly, 24/7/365!\nFlat fee to access money, no interest!\nTrusted by your employer and payroll provider!\nFinancial tools and courses to improve your financial health!\nNow get even more out of your ZayZoon payouts with Boost! Access 5-20% more of additional spending power when wages are redeemed on gift cards for essentials like groceries!\n\nNote: to use this app, your employer must have an existing agreement with ZayZoon. Get your company onboard with ZayZoon by becoming an ambassador. See www.zayzoon.com/ambassador for more details.",
+  "price": 0,
+  "formattedPrice": "Free",
+  "currency": "USD",
+  "averageRating": 4.8704,
+  "ratingCount": 39718,
+  "currentVersionRating": 4.8704,
+  "currentVersionCount": 39718
+}

@@ -1,0 +1,114 @@
+{
+ "$schema": "nobuy-panel-compose/1",
+ "deviceClasses": {
+  "iphone69": {
+   "canvas": [
+    1320,
+    2868
+   ],
+   "safe": [
+    80,
+    120,
+    80,
+    160
+   ],
+   "caption": {
+    "x": 108,
+    "y": 124,
+    "maxWidth": 1104,
+    "size": 108,
+    "weight": 800,
+    "leading": 1.15
+   },
+   "subline": {
+    "size": 54,
+    "gapBelowCaption": 34
+   },
+   "well": {
+    "x": 174,
+    "y": 840,
+    "w": 972,
+    "h": 2028,
+    "radius": 140,
+    "note": "real screenshot slots here; top corners only, bleeds off bottom"
+   },
+   "fields": {
+    "dark": "#0F1113",
+    "light": "#E8EAE7"
+   }
+  },
+  "ipad13": {
+   "canvas": [
+    2064,
+    2752
+   ],
+   "safe": [
+    120,
+    140,
+    120,
+    160
+   ],
+   "caption": {
+    "x": 152,
+    "y": 150,
+    "maxWidth": 1760,
+    "size": 124,
+    "weight": 800,
+    "leading": 1.12
+   },
+   "subline": {
+    "size": 60,
+    "gapBelowCaption": 38
+   },
+   "well": {
+    "x": 432,
+    "y": 880,
+    "w": 1200,
+    "h": 1872,
+    "radius": 120,
+    "note": "same compositions, centered well; P4/P5/P6 object clusters scale 1.35x"
+   }
+  }
+ },
+ "panels": [
+  {
+   "id": 1,
+   "field": "dark",
+   "wellShot": "today-quiet-dark"
+  },
+  {
+   "id": 2,
+   "field": "light",
+   "wellShot": "calendar-july-light"
+  },
+  {
+   "id": 3,
+   "field": "dark",
+   "wellShot": "urge-running-dark"
+  },
+  {
+   "id": 4,
+   "field": "light",
+   "wellShot": null,
+   "objects": "widget family, drawn live"
+  },
+  {
+   "id": 5,
+   "field": "dark",
+   "wellShot": null,
+   "objects": "five finishes + worn dial"
+  },
+  {
+   "id": 6,
+   "field": "light",
+   "wellShot": null,
+   "objects": "device glyph + promise"
+  }
+ ],
+ "bans": [
+  "paywall",
+  "price",
+  "lock imagery",
+  "urgency wording"
+ ]
+}

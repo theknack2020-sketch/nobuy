@@ -1,0 +1,28 @@
+{
+  "appId": "6475173011",
+  "name": "Stop Impulse Buying | Budget",
+  "ratingCount": 76,
+  "sellerName": "Britney Shawstad",
+  "term": "stop impulse buying",
+  "storefront": "us",
+  "fetched_at": "2026-08-12T13:37:59.420Z",
+  "readable": true,
+  "typed": true,
+  "url": "https://apps.apple.com/us/app/id6475173011",
+  "sha256": "f18dd636fad07a5ba280aca5c894d6fa577fbf9535411994b48a1778f5c41fac",
+  "iap": [
+    {
+      "name": "Premium",
+      "price": 9.99,
+      "tier": "unknown"
+    },
+    {
+      "name": "Yearly",
+      "price": 49.99,
+      "tier": "yearly"
+    }
+  ],
+  "tiers": {
+    "yearly": 49.99
+  }
+}

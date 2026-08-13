@@ -1,0 +1,22 @@
+{
+  "appId": "467936485",
+  "name": "Weple Money: Expense Tracker",
+  "ratingCount": 3662,
+  "sellerName": "Park Hankyu",
+  "term": "impulse spending",
+  "storefront": "us",
+  "fetched_at": "2026-08-12T13:37:17.904Z",
+  "readable": true,
+  "typed": false,
+  "url": "https://apps.apple.com/us/app/id467936485",
+  "sha256": "e66f1c43a294f82be816d49c68121478ae24725c60dadfd168c36f1ebee91db4",
+  "iap": [
+    {
+      "name": "Weple Money Pro",
+      "price": 11.49,
+      "tier": "unknown"
+    }
+  ],
+  "tiers": {},
+  "untypedReason": "1 SKU bulundu ama hiçbirinin adında süre yok (ör. \"Weple Money Pro\") — kademe atanamadı; medyana katkı vermez"
+}

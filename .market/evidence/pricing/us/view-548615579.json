@@ -1,0 +1,24 @@
+{
+  "appId": 548615579,
+  "name": "Spending Tracker",
+  "bundleId": "com.mhriley.SpendingTracker",
+  "country": "US",
+  "countryName": "United States",
+  "url": "https://apps.apple.com/us/app/spending-tracker/id548615579?uo=4",
+  "artworkUrl": "https://is1-ssl.mzstatic.com/image/thumb/Purple221/v4/e0/cd/05/e0cd05f7-47b0-ce96-69f0-8da559b0df0d/AppIcon-0-0-1x_U007emarketing-0-6-0-85-220.png/512x512bb.jpg",
+  "sellerName": "MH Riley Ltd",
+  "primaryGenreName": "Finance",
+  "genres": [
+    "Finance",
+    "Business"
+  ],
+  "version": "3.2",
+  "description": "Spending Tracker is the easiest and most user friendly Personal Finance App in the store. And best of all, it's free!\n\nThe simple fact is, by tracking your spending you will be able to stick to a budget and therefore SAVE MONEY. \n\nSo give it a try and have instant control over your spending!\n\n*** Features *** \n------------------ \n√ Simple and intuitive user interface \n- helps you track your spending quickly and easily\n\n√ Flexible Time Periods\n- choose to track Weekly, Monthly or Yearly\n\n√ Budget Mode\n- optionally set a fixed budget amount to help you meet your spending targets\n- carry over any remaining budget to the next period\n\n√ Summary View\n- overview of your current spending progress\n- time travel backwards and forwards in time\n- see your main areas of spending\n\n√ Log Expense and Income\n- easy and quick transaction entry\n- sort by date, name or amount\n- repeat transactions daily, weekly or monthly (Pro Upgrade required)\n- export transactions (Pro Upgrade required)\n\n√ Categories\n- editable spending and income categories\n- choose a quality icon for each category\n\n√ Reports\n- easy visualisation of where your money goes\n- beautiful and interactive charts\n- view spending grouped by category \n- see the history of your spending",
+  "price": 0,
+  "formattedPrice": "Free",
+  "currency": "USD",
+  "averageRating": 4.78001,
+  "ratingCount": 19342,
+  "currentVersionRating": 4.78001,
+  "currentVersionCount": 19342
+}

@@ -1,0 +1,49 @@
+{
+  "appId": "1505368956",
+  "name": "MoodWallet: Mind Your Money",
+  "ratingCount": 145,
+  "sellerName": "Jomo Labs, LLC",
+  "term": "stop impulse buying",
+  "storefront": "us",
+  "fetched_at": "2026-08-12T13:37:57.993Z",
+  "readable": true,
+  "typed": true,
+  "url": "https://apps.apple.com/us/app/id1505368956",
+  "sha256": "472c3b22645441a50c2cd32d0f0b41ca8275b4283c9de1023ac67606db032b13",
+  "iap": [
+    {
+      "name": "Monthly",
+      "price": 12.99,
+      "tier": "monthly"
+    },
+    {
+      "name": "Monthly",
+      "price": 6.99,
+      "tier": "monthly"
+    },
+    {
+      "name": "Monthly",
+      "price": 6.99,
+      "tier": "monthly"
+    },
+    {
+      "name": "Yearly",
+      "price": 89.99,
+      "tier": "yearly"
+    },
+    {
+      "name": "Yearly",
+      "price": 49.99,
+      "tier": "yearly"
+    },
+    {
+      "name": "Yearly",
+      "price": 49.99,
+      "tier": "yearly"
+    }
+  ],
+  "tiers": {
+    "monthly": 6.99,
+    "yearly": 49.99
+  }
+}

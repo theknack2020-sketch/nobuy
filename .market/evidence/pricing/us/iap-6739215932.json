@@ -1,0 +1,65 @@
+{
+  "appId": "6739215932",
+  "name": "Dollarwise: Budget & Tracking",
+  "ratingCount": 3809,
+  "sellerName": "Hammer Media LLC",
+  "term": "no spend challenge",
+  "storefront": "us",
+  "fetched_at": "2026-08-12T13:37:47.101Z",
+  "readable": true,
+  "typed": true,
+  "url": "https://apps.apple.com/us/app/id6739215932",
+  "sha256": "7859bd9cf6edc2aea437873c0020e9855dbc9dc98a96d8b18110c2833f5d3c99",
+  "iap": [
+    {
+      "name": "Monthly Membership",
+      "price": 14.99,
+      "tier": "monthly"
+    },
+    {
+      "name": "Yearly membership",
+      "price": 89.99,
+      "tier": "yearly"
+    },
+    {
+      "name": "DollarWise Monthly Membership",
+      "price": 14.99,
+      "tier": "monthly"
+    },
+    {
+      "name": "Quarterly Membership",
+      "price": 39.99,
+      "tier": "quarterly"
+    },
+    {
+      "name": "DollarWise Annual Membership",
+      "price": 89.99,
+      "tier": "yearly"
+    },
+    {
+      "name": "DollarWise Quarterly Membership",
+      "price": 39.99,
+      "tier": "quarterly"
+    },
+    {
+      "name": "DollarWise Central Upgrade",
+      "price": 149.99,
+      "tier": "unknown"
+    },
+    {
+      "name": "DollarWise Central",
+      "price": 149.99,
+      "tier": "unknown"
+    },
+    {
+      "name": "DollarWise Central Yearly",
+      "price": 499,
+      "tier": "yearly"
+    }
+  ],
+  "tiers": {
+    "monthly": 14.99,
+    "yearly": 89.99,
+    "quarterly": 39.99
+  }
+}

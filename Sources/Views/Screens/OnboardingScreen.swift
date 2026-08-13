@@ -1,630 +1,477 @@
+import SwiftData
 import SwiftUI
 import UserNotifications
 
+// MARK: - Onboarding — four screens that end INSIDE the product (Escapement, v2.0.0)
+//
+// Held to the same higher bar as the paywall (owner law 2026-08-07), and shaped by the round:
+//
+//   1. What this is — the day dial carrying a real run, not an abstract splash.
+//   2. The record — the five truths taught on a real week row, in the exact marks the app uses.
+//   3. The promise — no account, no bank, no analytics; the deal, permanently.
+//   4. Tonight — the REAL question, answerable on the spot. There is no "Get started"
+//      dead-end: the first session ends with day one already in the record.
+//   4b. The permission moment — asked only AFTER day one is kept, in one plain sentence, with
+//      the refused path drawn: declining changes nothing but the reminder, and the single
+//      re-offer lives in Settings.
+//
+// Skip is present from screen one and lands on Today, where the shape of the answer is already
+// visible. Progress is four index ticks — the product's own mark — not dots.
+//
+// What this version deliberately DROPPED: the v1 goal picker and daily-spend estimate. Setup is
+// four screens and one question; the goal now lives in Settings, where it can be set, changed
+// or ignored without standing between a new user and their first answer.
+
 struct OnboardingScreen: View {
-    @AppStorage("hasCompletedOnboarding") private var hasCompletedOnboarding = false
-    @AppStorage("savingsGoal") private var savingsGoal: String = ""
-    @AppStorage("dailySpendingEstimate") private var dailySpendingEstimate: Double = 0
-    @State private var currentPage = 0
-    @State private var selectedGoal: SavingsGoal? = nil
-    @State private var customGoalText: String = ""
-    @State private var spendingInput: String = ""
-    @State private var notificationPermissionGranted = false
-    @State private var direction: Int = 1 // 1 = forward, -1 = back
-    @State private var showPaywall = false
+    @Environment(\.modelContext) private var modelContext
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @Environment(\.horizontalSizeClass) private var sizeClass
+    @AppStorage("hasCompletedOnboarding") private var hasCompletedOnboarding = false
+    @AppStorage("dailyReminderEnabled") private var dailyReminderEnabled = false
+    @AppStorage("notificationHour") private var notificationHour = 21
+    @AppStorage("notificationMinute") private var notificationMinute = 30
 
-    private var isRegular: Bool {
-        sizeClass == .regular
-    }
+    @State private var page = 0
+    @State private var answered: DayTruth?
+    @State private var drawn = false
 
-    private let totalPages = 5
+    /// The three type roles this screen sizes in points, each scaling with the user's setting
+    /// and floored where it stops doing its job: the teaching title, the day-one count, and the
+    /// question — which is the same 20pt question Today asks, because it IS Today's question.
+    @ScaledMetric(relativeTo: .largeTitle) private var scaledTitle: CGFloat = 28
+    @ScaledMetric(relativeTo: .largeTitle) private var scaledCount: CGFloat = 56
+    @ScaledMetric(relativeTo: .body) private var scaledQuestion: CGFloat = 20
 
-    enum SavingsGoal: String, CaseIterable, Identifiable {
-        case emergencyFund
-        case vacation
-        case debtFree
-        case discipline
-        case custom
+    private var isRegular: Bool { sizeClass == .regular }
 
-        var id: String {
-            rawValue
-        }
-
-        var label: String {
-            switch self {
-            case .emergencyFund: L10n.goalEmergencyFund
-            case .vacation: L10n.goalVacation
-            case .debtFree: L10n.goalDebtFree
-            case .discipline: L10n.goalDiscipline
-            case .custom: L10n.goalCustom
-            }
-        }
-
-        var icon: String {
-            switch self {
-            case .emergencyFund: "shield.fill"
-            case .vacation: "airplane"
-            case .debtFree: "creditcard.trianglebadge.exclamationmark"
-            case .discipline: "brain.head.profile"
-            case .custom: "pencil.line"
-            }
-        }
-
-        var color: Color {
-            switch self {
-            case .emergencyFund: .blue
-            case .vacation: .orange
-            case .debtFree: .noBuyGreen
-            case .discipline: .purple
-            case .custom: .textSecondary
-            }
-        }
-    }
+    /// Four teaching screens; the permission moment is a fifth state of the last one, reached
+    /// only by answering.
+    private let pageCount = 4
 
     var body: some View {
-        VStack(spacing: 0) {
-            // Content
-            TabView(selection: $currentPage) {
-                welcomePage.tag(0)
-                howItWorksPage.tag(1)
-                streaksPage.tag(2)
-                goalSettingPage.tag(3)
-                notificationsPage.tag(4)
-            }
-            .tabViewStyle(.page(indexDisplayMode: .never))
-            .animation(reduceMotion ? nil : .spring(duration: 0.5, bounce: 0.2), value: currentPage)
+        ZStack {
+            Color.surfaceField.ignoresSafeArea()
 
-            // Page indicator
-            HStack(spacing: DS.Spacing.sm) {
-                ForEach(0 ..< totalPages, id: \.self) { index in
-                    Capsule()
-                        .fill(index == currentPage ? Color.noBuyGreen : Color.textTertiary.opacity(0.4))
-                        .frame(width: index == currentPage ? DS.Spacing.xxl : DS.Spacing.sm, height: DS.Spacing.sm)
-                        .animation(reduceMotion ? nil : .spring(duration: 0.3, bounce: 0.3), value: currentPage)
+            VStack(spacing: 0) {
+                topBar
+
+                // Every page scrolls. Onboarding is held to the higher bar by owner law, and it
+                // was the one surface with no ScrollView anywhere: at large Dynamic Type the copy
+                // simply ran off the bottom, taking the Continue button with it on the page that
+                // asks for a permission. `scrollBounceBehavior(.basedOnSize)` keeps the short
+                // pages feeling fixed, so nothing moves at the default text size.
+                TabView(selection: $page) {
+                    scrollable(whatThisIs).tag(0)
+                    scrollable(theRecord).tag(1)
+                    scrollable(thePromise).tag(2)
+                    scrollable(tonight).tag(3)
                 }
+                .tabViewStyle(.page(indexDisplayMode: .never))
+                .animation(reduceMotion ? nil : DS.Anim.functional, value: page)
             }
-            .padding(.bottom, DS.Spacing.xxl + DS.Spacing.xs)
-            .accessibilityElement(children: .combine)
-            .accessibilityLabel("Page \(currentPage + 1) of \(totalPages)")
-
-            // Action button
-            Button {
-                advancePage()
-            } label: {
-                Text(buttonLabel)
-                    .font(.headline)
-                    .foregroundStyle(.white)
-                    .frame(maxWidth: .infinity)
-                    .frame(height: 56)
-                    .background(
-                        RoundedRectangle(cornerRadius: DS.Radius.lg)
-                            .fill(Color.noBuyGreen)
-                    )
-            }
-            .buttonStyle(.scale)
-            .padding(.horizontal, DS.Spacing.xxl)
-            .padding(.bottom, DS.Spacing.md)
-            .accessibilityIdentifier("onboarding_next_button")
-
-            // Skip / Maybe Later
-            if currentPage < totalPages - 1 {
-                Button {
-                    completeOnboarding()
-                } label: {
-                    Text(L10n.skip)
-                        .font(.subheadline)
-                        .foregroundStyle(.textTertiary)
-                }
-                .buttonStyle(.scale)
-                .padding(.bottom, DS.Spacing.xxl)
-                .accessibilityLabel("Skip onboarding")
+        }
+        .task {
+            if reduceMotion {
+                drawn = true
             } else {
-                // On notification page, offer "Maybe Later" as skip
-                Button {
-                    completeOnboarding()
-                } label: {
-                    Text(L10n.maybeLater)
-                        .font(.subheadline)
-                        .foregroundStyle(.textTertiary)
-                }
-                .buttonStyle(.scale)
-                .padding(.bottom, DS.Spacing.xxl)
-            }
-        }
-        .background(
-            LinearGradient(
-                colors: [Color.noBuyGreen.opacity(0.15), Color.black],
-                startPoint: .top,
-                endPoint: .bottom
-            )
-            .ignoresSafeArea()
-        )
-        .preferredColorScheme(.dark)
-    }
-
-    // MARK: - Button Label
-
-    private var buttonLabel: String {
-        switch currentPage {
-        case 4:
-            notificationPermissionGranted ? L10n.getStarted : L10n.enableNotifications
-        case 3:
-            L10n.next
-        default:
-            currentPage < totalPages - 1 ? L10n.next : L10n.getStarted
-        }
-    }
-
-    // MARK: - Page Advance Logic
-
-    private func advancePage() {
-        HapticManager.impact(.light)
-
-        if currentPage == 3 {
-            persistGoal()
-        }
-
-        if currentPage == 4 {
-            if !notificationPermissionGranted {
-                requestNotifications()
-                return
-            } else {
-                completeOnboarding()
-                return
-            }
-        }
-
-        if currentPage < totalPages - 1 {
-            direction = 1
-            withAnimation(reduceMotion ? nil : .spring(duration: 0.5, bounce: 0.2)) {
-                currentPage += 1
+                withAnimation(DS.Anim.gauge) { drawn = true }
             }
         }
     }
 
-    private func persistGoal() {
-        if let goal = selectedGoal {
-            if goal == .custom {
-                savingsGoal = customGoalText.isEmpty ? goal.rawValue : customGoalText
-            } else {
-                savingsGoal = goal.rawValue
-            }
-        }
-        if let value = Double(spendingInput.replacingOccurrences(of: ",", with: ".")) {
-            dailySpendingEstimate = value
-        }
-    }
+    // MARK: - Chrome
 
-    private func requestNotifications() {
-        Task {
-            let center = UNUserNotificationCenter.current()
-            do {
-                let granted = try await center.requestAuthorization(options: [.alert, .sound, .badge])
-                await MainActor.run {
-                    notificationPermissionGranted = granted
-                    if granted {
-                        HapticManager.impact(.medium)
-                        // Schedule the daily reminder via NotificationManager
-                        Task {
-                            await NotificationManager().scheduleDailyReminder(hour: 21, minute: 0)
-                        }
-                        // Auto-advance after granting
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                            completeOnboarding()
-                        }
-                    } else {
-                        // Denied (or previously denied — iOS never re-presents
-                        // the alert): the CTA must still move forward, never
-                        // go dead. Reminders can be enabled later in Settings.
-                        completeOnboarding()
-                    }
-                }
-            } catch {
-                await MainActor.run {
-                    completeOnboarding()
-                }
-            }
-        }
-    }
-
-    private func completeOnboarding() {
-        persistGoal()
-        HapticManager.impact(.medium)
-
-        // Schedule Day 1-3 onboarding journey push notifications
-        Task {
-            await NotificationManager().scheduleOnboardingJourney()
-        }
-
-        withAnimation(reduceMotion ? nil : .spring(duration: 0.4, bounce: 0.2)) {
-            hasCompletedOnboarding = true
-        }
-    }
-
-    // MARK: - Brand Mark (consistent across all pages)
-
-    private var brandMark: some View {
-        HStack(spacing: 6) {
-            ZStack {
-                Image(systemName: "bag.fill")
-                    .font(Font.adaptiveDetail(isRegular: isRegular).weight(.medium))
-                Image(systemName: "line.diagonal")
-                    .font(Font.adaptiveHeadline(isRegular: isRegular).weight(.bold))
-            }
-            .foregroundStyle(.white.opacity(0.5))
-            Text("NoBuy")
-                .font(Font.adaptiveCaption(isRegular: isRegular).weight(.semibold))
-                .foregroundStyle(.white.opacity(0.4))
-        }
-        .accessibilityHidden(true)
-    }
-
-    // MARK: - Page 1: Welcome
-
-    private var welcomePage: some View {
-        VStack(spacing: DS.Spacing.xxl) {
-            brandMark
-            Spacer()
-
-            ZStack {
-                Circle()
-                    .fill(Color.noBuyGreen.opacity(0.12))
-                    .frame(width: 160, height: 160)
-
-                Image(systemName: "heart.circle.fill")
-                    .font(Font.adaptiveDisplay(size: 80, isRegular: isRegular))
-                    .foregroundStyle(.noBuyGreen)
-                    .symbolEffect(.pulse, options: reduceMotion ? .nonRepeating : .repeating)
-                    .accessibilityHidden(true)
-            }
-
-            VStack(spacing: DS.Spacing.md) {
-                Text(L10n.onboardingTitle1)
-                    .font(Font.adaptiveDisplay(size: 26, weight: .bold, design: .rounded, isRegular: isRegular))
-                    .multilineTextAlignment(.center)
-                    .padding(.horizontal, DS.Spacing.lg)
-
-                Text(L10n.onboardingDesc1)
-                    .font(.body)
-                    .foregroundStyle(.textSecondary)
-                    .multilineTextAlignment(.center)
-                    .padding(.horizontal, DS.Spacing.xxxl)
-                    .lineSpacing(4)
-            }
-
-            Spacer()
-            Spacer()
-        }
-    }
-
-    // MARK: - Page 2: How It Works
-
-    private var howItWorksPage: some View {
-        VStack(spacing: DS.Spacing.xxl) {
-            brandMark
-            Spacer()
-
-            ZStack {
-                Circle()
-                    .fill(Color.blue.opacity(0.12))
-                    .frame(width: 160, height: 160)
-
-                Image(systemName: "hand.tap.fill")
-                    .font(Font.adaptiveDisplay(size: 80, isRegular: isRegular))
-                    .foregroundStyle(.blue)
-                    .symbolEffect(.pulse, options: reduceMotion ? .nonRepeating : .repeating)
-                    .accessibilityHidden(true)
-            }
-
-            VStack(spacing: DS.Spacing.md) {
-                Text(L10n.onboardingTitle2)
-                    .font(Font.adaptiveDisplay(size: 26, weight: .bold, design: .rounded, isRegular: isRegular))
-                    .multilineTextAlignment(.center)
-                    .padding(.horizontal, DS.Spacing.lg)
-
-                Text(L10n.onboardingDesc2)
-                    .font(.body)
-                    .foregroundStyle(.textSecondary)
-                    .multilineTextAlignment(.center)
-                    .padding(.horizontal, DS.Spacing.xxxl)
-                    .lineSpacing(4)
-            }
-
-            Spacer()
-            Spacer()
-        }
-    }
-
-    // MARK: - Page 3: Streaks & Milestones
-
-    private var streaksPage: some View {
-        VStack(spacing: DS.Spacing.xxl) {
-            brandMark
-            Spacer()
-
-            ZStack {
-                Circle()
-                    .fill(Color.orange.opacity(0.12))
-                    .frame(width: 160, height: 160)
-
-                Image(systemName: "flame.fill")
-                    .font(Font.adaptiveDisplay(size: 80, isRegular: isRegular))
-                    .foregroundStyle(.orange)
-                    .symbolEffect(.pulse, options: reduceMotion ? .nonRepeating : .repeating)
-                    .accessibilityHidden(true)
-            }
-
-            VStack(spacing: DS.Spacing.md) {
-                Text(L10n.onboardingTitle3)
-                    .font(Font.adaptiveDisplay(size: 26, weight: .bold, design: .rounded, isRegular: isRegular))
-                    .multilineTextAlignment(.center)
-                    .padding(.horizontal, DS.Spacing.lg)
-
-                Text(L10n.onboardingDesc3)
-                    .font(.body)
-                    .foregroundStyle(.textSecondary)
-                    .multilineTextAlignment(.center)
-                    .padding(.horizontal, DS.Spacing.xxxl)
-                    .lineSpacing(4)
-            }
-
-            // Mini milestone preview
-            HStack(spacing: DS.Spacing.lg) {
-                milestonePill(days: 7, icon: "trophy.fill", color: .blue)
-                milestonePill(days: 30, icon: "crown.fill", color: .orange)
-                milestonePill(days: 100, icon: "star.circle.fill", color: .purple)
-            }
-            .padding(.top, DS.Spacing.sm)
-
-            Spacer()
-            Spacer()
-        }
-    }
-
-    private func milestonePill(days: Int, icon: String, color: Color) -> some View {
-        VStack(spacing: 6) {
-            Image(systemName: icon)
-                .font(.title3)
-                .foregroundStyle(color)
-                .accessibilityHidden(true)
-            Text("\(days)")
-                .font(Font.adaptiveSubheadline(isRegular: isRegular).weight(.bold))
-                .minimumScaleFactor(0.8)
-                .foregroundStyle(.textPrimary)
-            Text(L10n.dayStreak)
-                .font(.caption2)
-                .foregroundStyle(.textTertiary)
-        }
-        .padding(.vertical, DS.Spacing.md)
-        .padding(.horizontal, DS.Spacing.lg)
-        .background(
-            RoundedRectangle(cornerRadius: DS.Radius.md)
-                .fill(color.opacity(0.1))
-        )
-    }
-
-    // MARK: - Page 4: Goal Setting
-
-    private var goalSettingPage: some View {
+    private func scrollable(_ page: some View) -> some View {
         ScrollView {
-            VStack(spacing: DS.Spacing.xl) {
-                brandMark
-                Spacer().frame(height: DS.Spacing.lg)
-
-                Image(systemName: "target")
-                    .font(Font.adaptiveDisplay(size: 48, isRegular: isRegular))
-                    .foregroundStyle(.noBuyGreen)
-
-                VStack(spacing: DS.Spacing.sm) {
-                    Text(L10n.onboardingTitle4)
-                        .font(Font.adaptiveDisplay(size: 26, weight: .bold, design: .rounded, isRegular: isRegular))
-                        .multilineTextAlignment(.center)
-
-                    Text(L10n.onboardingDesc4)
-                        .font(.body)
-                        .foregroundStyle(.textSecondary)
-                        .multilineTextAlignment(.center)
-                        .padding(.horizontal, DS.Spacing.lg)
-                }
-
-                // Goal options
-                VStack(spacing: 10) {
-                    ForEach(SavingsGoal.allCases) { goal in
-                        Button {
-                            withAnimation(reduceMotion ? nil : .spring(duration: 0.3, bounce: 0.2)) {
-                                selectedGoal = goal
-                            }
-                            HapticManager.impact(.light)
-                        } label: {
-                            HStack(spacing: DS.Spacing.md) {
-                                Image(systemName: goal.icon)
-                                    .font(.body)
-                                    .foregroundStyle(selectedGoal == goal ? .white : goal.color)
-                                    .frame(width: DS.Spacing.xxxl)
-
-                                Text(goal.label)
-                                    .font(.subheadline)
-                                    .fontWeight(.medium)
-                                    .foregroundStyle(selectedGoal == goal ? .white : .textPrimary)
-
-                                Spacer()
-
-                                if selectedGoal == goal {
-                                    Image(systemName: "checkmark.circle.fill")
-                                        .foregroundStyle(.white)
-                                        .transition(.scale.combined(with: .opacity))
-                                }
-                            }
-                            .padding(.horizontal, DS.Spacing.lg)
-                            .padding(.vertical, DS.Spacing.lg - 2)
-                            .background(
-                                RoundedRectangle(cornerRadius: DS.Radius.md)
-                                    .fill(selectedGoal == goal ? Color.noBuyGreen : Color.surfaceSecondary)
-                            )
-                        }
-                        .buttonStyle(.plain)
-                    }
-                }
-                .padding(.horizontal, DS.Spacing.xxl)
-
-                // Custom goal text field
-                if selectedGoal == .custom {
-                    TextField(L10n.goalCustomPlaceholder, text: $customGoalText)
-                        .textFieldStyle(.roundedBorder)
-                        .padding(.horizontal, DS.Spacing.xxl)
-                        .transition(.opacity.combined(with: .move(edge: .top)))
-                }
-
-                // Daily spending estimate (optional)
-                VStack(spacing: DS.Spacing.sm) {
-                    HStack {
-                        Text(L10n.dailySpendingLabel)
-                            .font(.subheadline)
-                            .foregroundStyle(.textSecondary)
-                        Text("(\(L10n.optional))")
-                            .font(.caption)
-                            .foregroundStyle(.textTertiary)
-                    }
-
-                    TextField(L10n.dailySpendingPlaceholder, text: $spendingInput)
-                        .keyboardType(.decimalPad)
-                        .font(Font.adaptiveTitle3(isRegular: isRegular).weight(.semibold))
-                        .multilineTextAlignment(.center)
-                        .padding(.vertical, DS.Spacing.md)
-                        .background(
-                            RoundedRectangle(cornerRadius: DS.Radius.md)
-                                .fill(Color.surfaceSecondary)
-                        )
-
-                    Text(L10n.dailySpendingHint)
-                        .font(.caption)
-                        .foregroundStyle(.textTertiary)
-                }
-                .padding(.horizontal, DS.Spacing.xxl)
-                .padding(.top, DS.Spacing.sm)
-
-                Spacer().frame(height: 60)
-            }
+            page.frame(maxWidth: .infinity)
         }
-        .scrollDismissesKeyboard(.interactively)
+        .scrollBounceBehavior(.basedOnSize)
     }
 
-    // MARK: - Page 5: Notifications
-
-    private var notificationsPage: some View {
-        VStack(spacing: DS.Spacing.xxl) {
-            brandMark
-            Spacer()
-
-            ZStack {
-                Circle()
-                    .fill(Color.mandatoryAmber.opacity(0.12))
-                    .frame(width: 160, height: 160)
-
-                Image(systemName: "bell.badge.fill")
-                    .font(Font.adaptiveDisplay(size: 80, isRegular: isRegular))
-                    .foregroundStyle(.mandatoryAmber)
-            }
-
-            VStack(spacing: DS.Spacing.md) {
-                Text(L10n.onboardingTitle5)
-                    .font(Font.adaptiveDisplay(size: 26, weight: .bold, design: .rounded, isRegular: isRegular))
-                    .multilineTextAlignment(.center)
-                    .padding(.horizontal, DS.Spacing.lg)
-
-                Text(L10n.onboardingDesc5)
-                    .font(.body)
-                    .foregroundStyle(.textSecondary)
-                    .multilineTextAlignment(.center)
-                    .padding(.horizontal, DS.Spacing.xxxl)
-                    .lineSpacing(4)
-            }
-
-            // Notification preview mockup
-            notificationPreview
-
-            // Subtle Pro mention
-            proTrialCTA
-
-            Spacer()
-            Spacer()
-        }
-    }
-
-    // MARK: - Pro Trial CTA
-
-    private var proTrialCTA: some View {
-        Button {
-            HapticManager.impact(.light)
-            showPaywall = true
-        } label: {
+    private var topBar: some View {
+        HStack {
+            // Four index ticks: the same triangle that marks "now" on a dial. Dots would be a
+            // borrowed convention; this is the product's own mark doing the same job.
             HStack(spacing: DS.Spacing.sm) {
-                Image(systemName: "crown.fill")
-                    .font(.caption)
-                    .foregroundStyle(.noBuyGreen)
-                    .accessibilityHidden(true)
-
-                Text("Unlock all features with Pro")
-                    .font(.caption)
-                    .foregroundStyle(.textSecondary)
-
-                Image(systemName: "chevron.right")
-                    .font(.caption2)
-                    .foregroundStyle(.textTertiary)
+                ForEach(0 ..< pageCount, id: \.self) { index in
+                    IndexTriangle()
+                        .fill(index <= page ? Color.accentKept : Color.stateNotYet)
+                        .frame(width: 10, height: 8)
+                }
             }
-            .padding(.horizontal, DS.Spacing.lg)
-            .padding(.vertical, DS.Spacing.sm + 2)
-            .background(
-                Capsule()
-                    .fill(Color.noBuyGreenLight)
-            )
-        }
-        .buttonStyle(ScaleButtonStyle())
-        .fullScreenCover(isPresented: $showPaywall) {
-            PaywallView(store: .shared)
-        }
-    }
-
-    private var notificationPreview: some View {
-        HStack(spacing: DS.Spacing.md) {
-            RoundedRectangle(cornerRadius: DS.Radius.sm)
-                .fill(Color.noBuyGreen)
-                .frame(width: DS.Spacing.huge, height: DS.Spacing.huge)
-                .overlay(
-                    Text("N")
-                        .font(.headline.bold())
-                        .foregroundStyle(.white)
-                )
-
-            VStack(alignment: .leading, spacing: 2) {
-                Text("NoBuy")
-                    .font(.caption.bold())
-                    .foregroundStyle(.textPrimary)
-                Text(L10n.notifDailyReminder1)
-                    .font(.caption)
-                    .foregroundStyle(.textSecondary)
-                    .lineLimit(1)
-                    .minimumScaleFactor(0.75)
-            }
+            .accessibilityElement(children: .ignore)
+            .accessibilityLabel("Step \(page + 1) of \(pageCount)")
 
             Spacer()
 
-            Text("21:00")
-                .font(.caption2)
-                .foregroundStyle(.textTertiary)
+            if answered == nil {
+                Button("Skip") { finish() }
+                    .font(.subheadline)
+                    .foregroundStyle(.inkSecondary)
+                    .accessibilityIdentifier("onboarding_skip")
+            }
         }
-        .padding(DS.Spacing.md)
-        .background(
-            RoundedRectangle(cornerRadius: DS.Radius.lg)
-                .fill(Color.surfaceSecondary)
-                .shadow(color: .black.opacity(0.05), radius: 8, y: 4)
-        )
-        .padding(.horizontal, DS.Spacing.huge)
+        .padding(.horizontal, DS.Spacing.screenGutter)
+        .padding(.vertical, DS.Spacing.md)
     }
-}
 
-#Preview {
-    OnboardingScreen()
+    private func continueButton(_ title: String = "Continue", action: @escaping () -> Void) -> some View {
+        Button(action: action) {
+            Text(title)
+                .font(.headline)
+                .foregroundStyle(Color.inkOnAccent)
+                .frame(maxWidth: .infinity)
+                .frame(height: 54)
+                .background(Capsule().fill(Color.accentKept))
+        }
+        .buttonStyle(.scale)
+        .padding(.horizontal, DS.Spacing.screenGutter)
+        .padding(.bottom, DS.Spacing.xxl)
+    }
+
+    private func teachingPage(
+        title: String,
+        copy: String,
+        @ViewBuilder illustration: () -> some View,
+        @ViewBuilder footer: () -> some View
+    ) -> some View {
+        VStack(spacing: 0) {
+            Spacer(minLength: DS.Spacing.lg)
+
+            illustration()
+                .frame(maxWidth: .infinity)
+
+            Spacer(minLength: DS.Spacing.xl)
+
+            VStack(alignment: .leading, spacing: DS.Spacing.md) {
+                Text(title)
+                    .font(.system(size: max(scaledTitle, 24), weight: .bold))
+                    .foregroundStyle(.inkPrimary)
+                    .fixedSize(horizontal: false, vertical: true)
+
+                Text(copy)
+                    .font(.body)
+                    .foregroundStyle(.inkSecondary)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .padding(.horizontal, DS.Spacing.screenGutter)
+
+            Spacer(minLength: DS.Spacing.xl)
+
+            footer()
+        }
+    }
+
+    // MARK: - 1 · What this is
+
+    private var whatThisIs: some View {
+        teachingPage(
+            title: "One question,\nevery evening.",
+            copy: "Did you buy anything unnecessary today? One tap answers it, and the days you keep accumulate into a run."
+        ) {
+            // A real run on a real dial. An abstract splash would teach nothing about the one
+            // object the whole product is built from.
+            DialFace(size: 220, scale: .day, progress: drawn ? 0.86 : 0, handPosition: 0.86) {
+                VStack(spacing: 0) {
+                    Text("23")
+                        .font(.system(size: max(scaledCount, 44), weight: .semibold))
+                        .monospacedDigit()
+                        .foregroundStyle(.inkPrimary)
+                    Text("days kept")
+                        .font(.caption)
+                        .foregroundStyle(.inkSecondary)
+                }
+            }
+        } footer: {
+            continueButton { withAnimation(reduceMotion ? nil : DS.Anim.functional) { page = 1 } }
+        }
+    }
+
+    // MARK: - 2 · The record
+
+    private var theRecord: some View {
+        teachingPage(
+            title: "Every day gets\nits truth.",
+            copy: "Rent, utilities, transport and groceries never break the run. A spent day is recorded, never punished — and one freeze a month covers a slip."
+        ) {
+            VStack(spacing: DS.Spacing.lg) {
+                // The five truths on a real week row, in the exact marks the calendar uses.
+                HStack(spacing: DS.Spacing.cellGap) {
+                    ForEach(Array(weekTeaching.enumerated()), id: \.offset) { index, item in
+                        DayCell(day: 10 + index, truth: item.truth)
+                    }
+                }
+                .padding(.horizontal, DS.Spacing.screenGutter)
+
+                VStack(alignment: .leading, spacing: DS.Spacing.sm) {
+                    ForEach(Array(weekTeaching.enumerated()), id: \.offset) { _, item in
+                        if let caption = item.caption {
+                            HStack(spacing: DS.Spacing.sm) {
+                                DayMark(truth: item.truth)
+                                Text(caption)
+                                    .font(.footnote)
+                                    .foregroundStyle(.inkSecondary)
+                            }
+                        }
+                    }
+                }
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .padding(.horizontal, DS.Spacing.screenGutter)
+            }
+        } footer: {
+            continueButton { withAnimation(reduceMotion ? nil : DS.Anim.functional) { page = 2 } }
+        }
+    }
+
+    private var weekTeaching: [(truth: DayTruth, caption: String?)] {
+        [
+            (.kept, "kept"),
+            (.mandatoryOnly, "essentials only — still kept"),
+            (.spent, "spent — a fact, not a fault"),
+            (.frozen, "frozen — one mercy a month"),
+            (.notYet, nil),
+        ]
+    }
+
+    // MARK: - 3 · The promise
+
+    private var thePromise: some View {
+        teachingPage(
+            title: "Yours alone,\non this phone.",
+            copy: "No account. No bank connection. No analytics. The record lives on this device and nowhere else — that is the deal, permanently."
+        ) {
+            DialFace(size: 160, scale: .interval, progress: drawn ? 1 : 0, handPosition: nil) {
+                Image(systemName: "iphone")
+                    .font(.system(size: 40, weight: .light))
+                    .foregroundStyle(.inkSecondary)
+                    .accessibilityHidden(true)
+            }
+        } footer: {
+            continueButton { withAnimation(reduceMotion ? nil : DS.Anim.functional) { page = 3 } }
+        }
+    }
+
+    // MARK: - 4 · Tonight (and 4b, the permission moment)
+
+    @ViewBuilder
+    private var tonight: some View {
+        if answered == nil {
+            askTonight
+        } else {
+            permissionMoment
+        }
+    }
+
+    private var askTonight: some View {
+        VStack(spacing: 0) {
+            Spacer(minLength: DS.Spacing.lg)
+
+            VStack(alignment: .leading, spacing: DS.Spacing.md) {
+                Text("Start with today.")
+                    .font(.system(size: max(scaledTitle, 24), weight: .bold))
+                    .foregroundStyle(.inkPrimary)
+
+                Text("It is \(Self.clock.string(from: .now)) on \(Self.weekday.string(from: .now)). The day closes at midnight.")
+                    .font(.body)
+                    .foregroundStyle(.inkSecondary)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .padding(.horizontal, DS.Spacing.screenGutter)
+
+            Spacer(minLength: DS.Spacing.xl)
+
+            // The real question, not a rehearsal of it.
+            VStack(spacing: DS.Spacing.lg) {
+                Text("Buy anything unnecessary today?")
+                    .font(.system(size: max(scaledQuestion, 20), weight: .semibold))
+                    .foregroundStyle(.inkPrimary)
+                    .multilineTextAlignment(.center)
+
+                HStack(spacing: DS.Spacing.md) {
+                    answerButton("No", isPrimary: true, identifier: "onboarding_answer_no") {
+                        record(.kept)
+                    }
+                    answerButton("Yes", isPrimary: false, identifier: "onboarding_answer_yes") {
+                        record(.spent)
+                    }
+                }
+
+                Text("Rent, utilities, transport and groceries never count.")
+                    .font(.caption)
+                    .foregroundStyle(.inkSecondary)
+                    .multilineTextAlignment(.center)
+            }
+            .padding(DS.Spacing.xl)
+            .background(
+                RoundedRectangle(cornerRadius: DS.Radius.sheet)
+                    .fill(Color.surfaceDial)
+                    .overlay(
+                        RoundedRectangle(cornerRadius: DS.Radius.sheet)
+                            .strokeBorder(Color.inkHairline, lineWidth: DS.Stroke.hairline)
+                    )
+            )
+            .padding(.horizontal, DS.Spacing.screenGutter)
+
+            Text("Answering starts the record — day one.")
+                .font(.caption)
+                .foregroundStyle(.inkSecondary)
+                .padding(.top, DS.Spacing.md)
+
+            Spacer(minLength: DS.Spacing.xxl)
+        }
+    }
+
+    private func answerButton(
+        _ title: String,
+        isPrimary: Bool,
+        identifier: String,
+        action: @escaping () -> Void
+    ) -> some View {
+        Button(action: action) {
+            Text(title)
+                .font(.headline)
+                .foregroundStyle(isPrimary ? Color.inkOnAccent : Color.inkPrimary)
+                .frame(maxWidth: .infinity)
+                .frame(height: 52)
+                .background(
+                    Capsule()
+                        .fill(isPrimary ? Color.accentKept : Color.surfaceDial)
+                        .overlay(
+                            Capsule().strokeBorder(
+                                isPrimary ? Color.clear : Color.accentSpentText,
+                                lineWidth: DS.Stroke.hairline
+                            )
+                        )
+                )
+        }
+        .buttonStyle(.scale)
+        .accessibilityIdentifier(identifier)
+    }
+
+    /// 4b — asked only after day one is already in the record. The sentence earns the
+    /// permission; the refused path changes nothing else and is stated plainly.
+    private var permissionMoment: some View {
+        VStack(spacing: 0) {
+            Spacer(minLength: DS.Spacing.lg)
+
+            VStack(spacing: DS.Spacing.sm) {
+                Text("1")
+                    .font(.system(size: max(scaledCount, 44), weight: .semibold))
+                    .monospacedDigit()
+                    .foregroundStyle(.inkPrimary)
+
+                Text(answered == .kept ? "Day one, kept." : "Day one, recorded.")
+                    .font(.system(size: max(scaledTitle * 0.86, 22), weight: .bold))
+                    .foregroundStyle(.inkPrimary)
+
+                Text("\(Self.longDate.string(from: .now)) — answered, in the record.")
+                    .font(.footnote)
+                    .foregroundStyle(.inkSecondary)
+            }
+            .frame(maxWidth: .infinity)
+
+            Spacer(minLength: DS.Spacing.xl)
+
+            VStack(alignment: .leading, spacing: DS.Spacing.md) {
+                Text("One reminder at 21:30.")
+                    .font(.headline)
+                    .foregroundStyle(.inkPrimary)
+
+                // Every clause here is now literally true, and was made true rather than softened:
+                // the re-engagement class was deleted (it was the "marketing" this sentence
+                // disclaims, and nothing could switch it off), streak alerts default OFF so this
+                // really is the only one, and the Settings toggle covers it.
+                Text("So the day gets its answer before it closes. Nothing else — no streak alerts, no marketing — and it can be turned off in Settings.")
+                    .font(.subheadline)
+                    .foregroundStyle(.inkSecondary)
+                    .fixedSize(horizontal: false, vertical: true)
+
+                Button {
+                    Task { await enableReminder() }
+                } label: {
+                    Text("Allow the reminder")
+                        .font(.headline)
+                        .foregroundStyle(Color.inkOnAccent)
+                        .frame(maxWidth: .infinity)
+                        .frame(height: 52)
+                        .background(Capsule().fill(Color.accentKept))
+                }
+                .buttonStyle(.scale)
+                .accessibilityIdentifier("onboarding_allow_reminder")
+
+                Button("Without it") { finish() }
+                    .font(.subheadline.weight(.medium))
+                    .foregroundStyle(.inkSecondary)
+                    .frame(maxWidth: .infinity)
+                    .accessibilityIdentifier("onboarding_decline_reminder")
+
+                Text("Declining changes nothing else. The app never asks again on its own — the one re-offer lives in Settings ▸ Reminders.")
+                    .font(.caption)
+                    .foregroundStyle(.inkSecondary)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+            .padding(DS.Spacing.lg)
+            .background(RoundedRectangle(cornerRadius: DS.Radius.sheet).fill(Color.surfaceWell))
+            .padding(.horizontal, DS.Spacing.screenGutter)
+
+            Spacer(minLength: DS.Spacing.xxl)
+        }
+    }
+
+    // MARK: - Actions
+
+    /// Writes day one. The onboarding's last screen IS the product, so this is a real record —
+    /// the same one Today would have written.
+    private func record(_ truth: DayTruth) {
+        let record = DayRecord(date: .now, didSpend: truth == .spent)
+        modelContext.insert(record)
+        try? modelContext.save()
+
+        HapticManager.noBuySuccess()
+        withAnimation(reduceMotion ? nil : DS.Anim.beat) { answered = truth }
+    }
+
+    private func enableReminder() async {
+        let manager = NotificationManager()
+        await manager.requestAuthorization()
+        // The app's own switch follows the SYSTEM answer: if the user declines at the system
+        // prompt, nothing here pretends a reminder was set.
+        let settings = await UNUserNotificationCenter.current().notificationSettings()
+        dailyReminderEnabled = settings.authorizationStatus == .authorized
+        if dailyReminderEnabled {
+            notificationHour = 21
+            notificationMinute = 30
+            await manager.scheduleDailyReminder(hour: 21, minute: 30)
+        }
+        finish()
+    }
+
+    private func finish() {
+        hasCompletedOnboarding = true
+    }
+
+    // MARK: - Formatters
+
+    private static let clock: DateFormatter = {
+        let f = DateFormatter()
+        f.locale = Locale(identifier: "en_US")
+        f.dateFormat = "HH:mm"
+        return f
+    }()
+
+    private static let weekday: DateFormatter = {
+        let f = DateFormatter()
+        f.locale = Locale(identifier: "en_US")
+        f.dateFormat = "EEEE d MMMM"
+        return f
+    }()
+
+    private static let longDate: DateFormatter = {
+        let f = DateFormatter()
+        f.locale = Locale(identifier: "en_US")
+        f.dateFormat = "d MMMM"
+        return f
+    }()
 }

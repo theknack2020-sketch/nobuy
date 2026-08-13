@@ -4,7 +4,7 @@ struct ConfettiView: View {
     @State private var particles: [ConfettiParticle] = []
     @State private var isAnimating = false
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
-    let colors: [Color] = [.noBuyGreen, .yellow, .orange, .blue, .pink, .purple]
+    let colors: [Color] = [.accentKept, .accentSpentMark, .accentSpentMark, .stateWait, .accentSpentMark, .stateWait]
 
     var body: some View {
         if reduceMotion {
@@ -15,7 +15,7 @@ struct ConfettiView: View {
                     RoundedRectangle(cornerRadius: particle.isCircle ? particle.size / 2 : 2)
                         .fill(particle.color)
                         .frame(width: particle.size, height: particle.isCircle ? particle.size : particle.size * 0.5)
-                        .shadow(color: particle.color.opacity(0.4), radius: 2, x: 0, y: 1)
+
                         .offset(x: particle.x, y: isAnimating ? particle.endY : particle.startY)
                         .rotationEffect(.degrees(isAnimating ? particle.rotation : 0))
                         .opacity(isAnimating ? 0 : 1)

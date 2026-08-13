@@ -7,7 +7,9 @@ import SwiftUI
 @MainActor
 @Observable
 final class CalendarViewModel {
-    var currentMonth: Date = .now
+    /// Always the first instant of its month — see `startOfMonth` below for why a stray
+    /// time-of-day component stranded the user in the past.
+    var currentMonth: Date = CalendarViewModel.startOfMonth(.now)
     var selectedDate: Date?
     var lastError: String?
 
@@ -61,23 +63,41 @@ final class CalendarViewModel {
         }
     }
 
+    // MARK: - Stepping
+    //
+    // Every month is held at the START of its month, and the forward bound is one expression used
+    // by BOTH the stepper and the chevron's enabled state.
+    //
+    // The first version kept whatever time of day `.now` carried. Step back once from 01:00 and
+    // the next month lands at 01:00 too, which is later than `startOfDay(.now)` — so the guard
+    // refused while the chevron, comparing against a different bound, still looked available. The
+    // user was stranded in the past until relaunch, pressing a control that did nothing.
+
+    private static func startOfMonth(_ date: Date) -> Date {
+        let calendar = Calendar.current
+        return calendar.date(from: calendar.dateComponents([.year, .month], from: date)) ?? date
+    }
+
+    /// The furthest month that may be shown: the one we are living in.
+    private var forwardBound: Date { Self.startOfMonth(.now) }
+
     func goToPreviousMonth() {
         guard let newMonth = Calendar.current.date(byAdding: .month, value: -1, to: currentMonth) else { return }
-        currentMonth = newMonth
+        currentMonth = Self.startOfMonth(newMonth)
         HapticManager.impact(.light)
     }
 
     func goToNextMonth() {
-        guard let newMonth = Calendar.current.date(byAdding: .month, value: 1, to: currentMonth) else { return }
-        let today = Calendar.current.startOfDay(for: .now)
-        guard newMonth <= today else { return }
-        currentMonth = newMonth
+        guard canGoForward,
+              let newMonth = Calendar.current.date(byAdding: .month, value: 1, to: currentMonth)
+        else { return }
+        currentMonth = Self.startOfMonth(newMonth)
         HapticManager.impact(.light)
     }
 
     var canGoForward: Bool {
         guard let nextMonth = Calendar.current.date(byAdding: .month, value: 1, to: currentMonth) else { return false }
-        return nextMonth <= .now
+        return Self.startOfMonth(nextMonth) <= forwardBound
     }
 
     /// Returns how many months from the current month we are (0 = this month, -1 = last month, etc.)
@@ -149,12 +169,24 @@ enum DayStatus {
 
     var color: SwiftUI.Color {
         switch self {
-        case .noBuy: .noBuyGreen
-        case .spent: .spendRed
-        case .essential: .mandatoryAmber
-        case .frozen: .blue.opacity(0.6)
-        case .unrecorded: .clear
+        case .noBuy: .accentKept
+        case .spent: .accentSpentMark
+        case .essential, .frozen: .stateWait
+        case .unrecorded: .stateNotYet
         case .future: .clear
+        }
+    }
+
+    /// The drawn truth for this status. `future` has none — a day that has not happened is not
+    /// a state to judge, and the calendar gives it a bare numeral instead of a cell.
+    var truth: DayTruth? {
+        switch self {
+        case .noBuy: .kept
+        case .spent: .spent
+        case .essential: .mandatoryOnly
+        case .frozen: .frozen
+        case .unrecorded: .notYet
+        case .future: nil
         }
     }
 }

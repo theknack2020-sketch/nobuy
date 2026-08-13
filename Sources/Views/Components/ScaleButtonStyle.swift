@@ -97,7 +97,7 @@ struct CardShadowModifier: ViewModifier {
     let radius: CGFloat
     let y: CGFloat
 
-    init(color: Color = .black.opacity(0.08), radius: CGFloat = 8, y: CGFloat = 4) {
+    init(color: Color = Color.surfaceScrim.opacity(0.08), radius: CGFloat = 8, y: CGFloat = 4) {
         self.color = color
         self.radius = radius
         self.y = y
@@ -105,7 +105,7 @@ struct CardShadowModifier: ViewModifier {
 
     func body(content: Content) -> some View {
         content
-            .shadow(color: color, radius: radius, x: 0, y: y)
+
     }
 }
 
@@ -115,6 +115,6 @@ extension View {
     }
 
     func ctaShadow() -> some View {
-        modifier(CardShadowModifier(color: .noBuyGreen.opacity(0.3), radius: 12, y: 6))
+        modifier(CardShadowModifier(color: .accentKept.opacity(0.3), radius: 12, y: 6))
     }
 }

@@ -19,26 +19,17 @@ struct FreezeOfferSheet: View {
             ZStack {
                 Circle()
                     .fill(
-                        RadialGradient(
-                            colors: [.noBuyGreen.opacity(0.25), .noBuyGreen.opacity(0.02)],
-                            center: .center,
-                            startRadius: 5,
-                            endRadius: 50
-                        )
+                        .accentKept.opacity(0.12)
                     )
                     .frame(width: 100, height: 100)
 
-                Image(systemName: "shield.fill")
+                Image(systemName: "shield")
                     .font(Font.adaptiveDisplay(size: 48, isRegular: isRegular))
                     .foregroundStyle(
-                        LinearGradient(
-                            colors: [.noBuyGreen, .green.opacity(0.7)],
-                            startPoint: .top,
-                            endPoint: .bottom
-                        )
+                        .accentKept
                     )
                     .symbolEffect(.pulse, value: reduceMotion ? false : appeared)
-                    .shadow(color: .noBuyGreen.opacity(0.3), radius: 6, x: 0, y: 3)
+
                     .accessibilityHidden(true)
             }
             .scaleEffect(appeared ? 1.0 : (reduceMotion ? 1.0 : 0.5))
@@ -47,11 +38,11 @@ struct FreezeOfferSheet: View {
 
             VStack(spacing: DS.Spacing.sm) {
                 Text("Protect Your Streak")
-                    .font(Font.adaptiveDisplay(size: 22, weight: .bold, design: .rounded, isRegular: isRegular))
+                    .font(Font.adaptiveDisplay(size: 22, weight: .semibold, isRegular: isRegular))
 
                 Text("Your \(streakCount)-day streak is about to break. Use a freeze to protect it.")
                     .font(.body)
-                    .foregroundStyle(.textSecondary)
+                    .foregroundStyle(.inkSecondary)
                     .multilineTextAlignment(.center)
                     .padding(.horizontal, DS.Spacing.xl)
             }
@@ -61,18 +52,18 @@ struct FreezeOfferSheet: View {
 
             // Freeze count indicator
             HStack(spacing: DS.Spacing.sm) {
-                Image(systemName: "shield.fill")
-                    .foregroundStyle(.noBuyGreen)
+                Image(systemName: "shield")
+                    .foregroundStyle(.accentKept)
                 Text("You have \(freezesRemaining) freezes left")
                     .font(.subheadline)
-                    .foregroundStyle(.textSecondary)
+                    .foregroundStyle(.inkSecondary)
             }
             .padding(.horizontal, DS.Spacing.lg)
             .padding(.vertical, DS.Spacing.md)
             .background(
-                Capsule().fill(Color.noBuyGreenLight)
+                Capsule().fill(Color.accentKeptWash)
             )
-            .shadow(DS.Shadow.card)
+
             .opacity(appeared ? 1 : 0)
             .offset(y: appeared ? 0 : 10)
             .animation(reduceMotion ? nil : DS.Anim.normal.delay(DS.Anim.stagger * 2), value: appeared)
@@ -91,20 +82,16 @@ struct FreezeOfferSheet: View {
                         Text("Use Freeze")
                             .fontWeight(.semibold)
                     }
-                    .foregroundStyle(.white)
+                    .foregroundStyle(Color.inkOnAccent)
                     .frame(maxWidth: .infinity)
                     .frame(height: 52)
                     .background(
                         RoundedRectangle(cornerRadius: DS.Radius.md)
                             .fill(
-                                LinearGradient(
-                                    colors: [.noBuyGreen, .noBuyGreen.opacity(0.8)],
-                                    startPoint: .leading,
-                                    endPoint: .trailing
-                                )
+                                .accentKept
                             )
                     )
-                    .shadow(color: .noBuyGreen.opacity(0.3), radius: 10, x: 0, y: 5)
+
                 }
                 .buttonStyle(.scale)
                 .accessibilityLabel("Use streak freeze")
@@ -119,7 +106,7 @@ struct FreezeOfferSheet: View {
                 } label: {
                     Text("Skip, let the streak break")
                         .font(.subheadline)
-                        .foregroundStyle(.spendRed)
+                        .foregroundStyle(.accentSpentText)
                 }
                 .buttonStyle(.scale)
                 .accessibilityLabel("Decline freeze, let streak break")

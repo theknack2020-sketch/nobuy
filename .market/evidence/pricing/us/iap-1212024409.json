@@ -1,0 +1,52 @@
+{
+  "appId": "1212024409",
+  "name": "Monefy: Money Tracker",
+  "ratingCount": 6615,
+  "sellerName": "Reflective Technologies ApS",
+  "term": "no spend tracker",
+  "storefront": "us",
+  "fetched_at": "2026-08-12T13:37:02.345Z",
+  "readable": true,
+  "typed": false,
+  "url": "https://apps.apple.com/us/app/id1212024409",
+  "sha256": "b6097a38803aee395235b548309d7dcb1f00dd6e2ba92054ff625ae7f0c81f3b",
+  "iap": [
+    {
+      "name": "Monefy Premium",
+      "price": 59.99,
+      "tier": "unknown"
+    },
+    {
+      "name": "Monefy Premium",
+      "price": 59.99,
+      "tier": "unknown"
+    },
+    {
+      "name": "Monefy Premium",
+      "price": 59.99,
+      "tier": "unknown"
+    },
+    {
+      "name": "Monefy Premium",
+      "price": 59.99,
+      "tier": "unknown"
+    },
+    {
+      "name": "Monefy Premium",
+      "price": 59.99,
+      "tier": "unknown"
+    },
+    {
+      "name": "Monefy Premium",
+      "price": 59.99,
+      "tier": "unknown"
+    },
+    {
+      "name": "Monefy Premium",
+      "price": 59.99,
+      "tier": "unknown"
+    }
+  ],
+  "tiers": {},
+  "untypedReason": "7 SKU bulundu ama hiçbirinin adında süre yok (ör. \"Monefy Premium\") — kademe atanamadı; medyana katkı vermez"
+}

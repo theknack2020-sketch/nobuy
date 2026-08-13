@@ -248,7 +248,6 @@ final class StatsViewModel {
 
         var days: [HeatmapDay] = []
         var current = startDate
-        let startWeek = calendar.component(.weekOfYear, from: startDate)
 
         var weekIndex = 0
         var lastWeekOfYear = calendar.component(.weekOfYear, from: startDate)

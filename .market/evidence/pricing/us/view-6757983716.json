@@ -1,0 +1,24 @@
+{
+  "appId": 6757983716,
+  "name": "ThinkTwice - Save Money",
+  "bundleId": "com.thinktwice.app",
+  "country": "US",
+  "countryName": "United States",
+  "url": "https://apps.apple.com/us/app/thinktwice-save-money/id6757983716?uo=4",
+  "artworkUrl": "https://is1-ssl.mzstatic.com/image/thumb/Purple211/v4/94/fa/c1/94fac125-69b4-e628-e977-0fe5910ca419/AppIcon-0-0-1x_U007ephone-0-1-85-220.png/512x512bb.jpg",
+  "sellerName": "Lit Apps LLC (Mobile)",
+  "primaryGenreName": "Lifestyle",
+  "genres": [
+    "Lifestyle",
+    "Finance"
+  ],
+  "version": "1.2.0",
+  "description": "ThinkTwice helps you stop impulse buys by showing the “real cost” of spending. \n\nNot just the price tag — but how much time it costs, and how much money it could become if you invested it instead. \n\nSo before you buy that random thing you don’t even need… you can quickly check: \n\nHow many work hours it costs \n\nWhat it could grow into over time Your progress toward saving goals \n\nSmall wins that actually add up fast It’s not about strict budgets or boring spreadsheets. \n\nIt’s about making smarter choices without feeling broke or guilty. \n\nThe best part? You’re not doing it alone. \n\nSee other people hitting goals, skipping purchases, and stacking savings — so it feels motivating instead of depressing. \n\nSave money. Stop impulse buying. Your future you will thank you.\n\nPrivacy Policy: https://litappslab.com/thinktwice/privacy\nTerms of Use (EULA): https://www.apple.com/legal/internet-services/itunes/dev/stdeula/\nSubscription: Auto-renewing. Cancel anytime in Apple ID settings. Payment charged to Apple ID at confirmation. Subscription renews unless cancelled at least 24 hours before the end of the current period.",
+  "price": 0,
+  "formattedPrice": "Free",
+  "currency": "USD",
+  "averageRating": 4.69792,
+  "ratingCount": 192,
+  "currentVersionRating": 4.69792,
+  "currentVersionCount": 192
+}

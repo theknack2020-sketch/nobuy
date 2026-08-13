@@ -1,0 +1,51 @@
+{
+  "schemaVersion": 1,
+  "generatedAt": "2026-08-13T00:23:37Z",
+  "command": "metadata plan",
+  "reviewDir": ".asc/metadata/review",
+  "planPath": ".asc/metadata/review/plan.json",
+  "approvalPath": ".asc/metadata/review/approved.json",
+  "planHash": "acb5cd54e86e59b1aa751cc9aa16f81e4e6039fd133b607e842943fdbdd5c1b3",
+  "options": {
+    "appId": "6760716822",
+    "appInfoId": "ee6eda09-3a1f-4031-85ac-5ac94574769a",
+    "version": "2.0.0",
+    "dir": ".asc/metadata",
+    "includes": [
+      "localizations"
+    ],
+    "allowDeletes": false
+  },
+  "plan": {
+    "appId": "6760716822",
+    "appInfoId": "ee6eda09-3a1f-4031-85ac-5ac94574769a",
+    "version": "2.0.0",
+    "versionId": "64672c12-9233-40f2-a7da-ace72a02131c",
+    "dir": ".asc/metadata",
+    "dryRun": true,
+    "includes": [
+      "localizations"
+    ],
+    "adds": [],
+    "updates": [
+      {
+        "key": "version:2.0.0:en-US:whatsNew",
+        "scope": "version",
+        "locale": "en-US",
+        "version": "2.0.0",
+        "field": "whatsNew",
+        "reason": "field value differs",
+        "from": "A new face, a widget, and a checklist that is yours.\n\n• The whole app redrawn as one instrument — the day on a dial, the run as a bar you can read at a glance.\n• A widget family: answer the day from the Home Screen without opening NoBuy, and read the run from the Lock Screen. Free, all of it.\n• The impulse checklist is now yours to shape — add your own questions, remove the ones that do not fit, reorder them.\n• Pro is a subscription now, monthly or yearly with a 7-day free trial. If you already bought the one-time unlock, it stays yours permanently: nothing to re-buy, no trial, no expiry.\n• The free tier got more generous: the last 90 days on every surface, both interventions in full, CSV export, and the entire widget family.",
+        "to": "A new face, a widget, and a checklist that is yours.\n\n• The day, the record and both interventions redrawn as one instrument — the day on a dial, the run as a bar you can read at a glance.\n• A widget family: answer the day from the Home Screen without opening NoBuy, and read the run from the Lock Screen. Free, all of it.\n• The impulse checklist is now yours to shape — add your own questions, remove the ones that do not fit, reorder them.\n• Pro is a subscription now, monthly or yearly with a 7-day free trial. If you already bought the one-time unlock, it stays yours permanently: nothing to re-buy, no trial, no expiry.\n• The free tier got more generous: the last 90 days on every surface, both interventions in full, CSV export, and the entire widget family."
+      }
+    ],
+    "deletes": [],
+    "apiCalls": [
+      {
+        "operation": "update_localization",
+        "scope": "version",
+        "count": 1
+      }
+    ]
+  }
+}

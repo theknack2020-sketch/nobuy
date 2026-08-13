@@ -1,8 +1,8 @@
 import Foundation
 import Observation
 import os
+import WidgetKit
 import SwiftData
-import TipKit
 
 @MainActor
 @Observable
@@ -113,7 +113,7 @@ final class HomeViewModel {
             return L10n.noRecordYet
         }
         if record.isFrozen {
-            return "Freeze used today 🛡️"
+            return "Freeze used today"
         }
         if record.isNoBuyDay {
             return L10n.noBuyToday
@@ -163,17 +163,9 @@ final class HomeViewModel {
     var shareText: String {
         let streak = streakInfo.currentStreak
         if streak == 0 {
-            return "I'm starting my no-spend journey with NoBuy! 🌱"
+            return "Starting a no-spend run with NoBuy."
         }
-        let emoji = switch streak {
-        case 100...: "💯"
-        case 60...: "👑"
-        case 30...: "🏆"
-        case 14...: "⭐"
-        case 7...: "🔥"
-        default: "🌱"
-        }
-        return "I've been on a \(streak)-day no-spend streak with NoBuy! \(emoji) #NoBuy #MindfulSpending"
+        return "\(streak) days without an unnecessary purchase. Tracked with NoBuy."
     }
 
     /// Motivational text that varies based on streak length, day of week, and date-seeded randomization
@@ -194,7 +186,7 @@ final class HomeViewModel {
 
         if streak < 3 {
             let earlyMessages = [
-                "You're doing great, keep going!",
+                "You are doing this. Keep going.",
                 "Every day you're one step further.",
                 "Starting is the hardest part — you've already done it.",
             ]
@@ -203,8 +195,8 @@ final class HomeViewModel {
 
         if streak < 7 {
             let midMessages = [
-                "A habit is forming, don't stop!",
-                "Keep this pace 🔥",
+                "A pattern is forming.",
+                "This is a good pace.",
                 "Discipline brought you here.",
             ]
             return midMessages[dayOfYear % midMessages.count]
@@ -214,23 +206,23 @@ final class HomeViewModel {
             if weekday == 1 || weekday == 7 {
                 let weekendMessages = [
                     "Weekends test your goals. You're strong.",
-                    "Weekends — best deals get missed, but you win 💪",
+                    "Weekends are where the offers are loudest.",
                 ]
                 return weekendMessages[dayOfYear % weekendMessages.count]
             }
 
             let weekMessages = [
-                "\(streak) days! It's a habit now.",
+                "\(streak) days. This is a habit now.",
                 "Most people quit here. You keep going.",
-                "Your savings grow every day 🌱",
+                "Every day here is money you still have.",
             ]
             return weekMessages[dayOfYear % weekMessages.count]
         }
 
         let longMessages = [
-            "Epic streak! A real lifestyle change.",
+            "A long run. This is how it changes.",
             "\(streak) days — you're an inspiration.",
-            "This is a marathon, and you're winning 🏆",
+            "This is a long game and you are still in it.",
         ]
         return longMessages[dayOfYear % longMessages.count]
     }
@@ -262,9 +254,9 @@ final class HomeViewModel {
     /// Display text for remaining freezes
     var freezeDisplayText: String {
         if streakFreezeCount >= 99 {
-            return "🛡️ Unlimited freezes"
+            return "Unlimited freezes"
         }
-        return "🛡️ \(streakFreezeCount) freezes left"
+        return "\(streakFreezeCount) freezes left"
     }
 
     // MARK: - Actions
@@ -300,6 +292,7 @@ final class HomeViewModel {
 
         do {
             try context.save()
+            WidgetCenter.shared.reloadAllTimelines()
         } catch {
             AppLogger.data.error("Failed to save NoBuy record: \(error.localizedDescription)")
             lastError = "Failed to save your no-spend day. Please try again."
@@ -307,7 +300,6 @@ final class HomeViewModel {
         }
         HapticManager.noBuySuccess()
         SoundManager.playIfEnabled(.success)
-        ImpulseChecklistTip.hasLoggedDay = true
         SoftPaywallTracker.shared.trackAction()
 
         var updated = allRecords.filter { calendar.startOfDay(for: $0.date) != today }
@@ -339,7 +331,6 @@ final class HomeViewModel {
                     )
                 }
 
-                await manager.scheduleLapsedUserNotification()
             }
         }
     }
@@ -389,6 +380,7 @@ final class HomeViewModel {
 
         do {
             try context.save()
+            WidgetCenter.shared.reloadAllTimelines()
         } catch {
             AppLogger.data.error("Failed to save spend record: \(error.localizedDescription)")
             lastError = "Failed to save your record. Please try again."
@@ -416,7 +408,6 @@ final class HomeViewModel {
             Task {
                 let manager = NotificationManager()
                 await manager.scheduleStreakBreakNotification(previousStreak: streakBeforeAction)
-                await manager.scheduleLapsedUserNotification()
             }
         }
     }

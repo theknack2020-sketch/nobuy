@@ -13,6 +13,7 @@ struct SettingsScreen: View {
     @State private var showAddCategory = false
     @State private var showDeleteConfirmation = false
     @State private var showPaywall = false
+    @State private var paywallEntry: PaywallEntry = .general
     @State private var showCategoryLimit = false
     @State private var showExportSheet = false
     @State private var exportURL: URL?
@@ -24,6 +25,8 @@ struct SettingsScreen: View {
     @AppStorage("challengeDuration") private var challengeDuration = 0
     @AppStorage("challengeStartDate") private var challengeStartDate: Double = 0
     @AppStorage("soundEnabled") private var soundEnabled = true
+    @AppStorage("savingsGoal") private var savingsGoal: String = ""
+    @AppStorage("dailySpendingEstimate") private var dailySpendingEstimate: Double = 0
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @Environment(\.horizontalSizeClass) private var sizeClass
 
@@ -36,73 +39,22 @@ struct SettingsScreen: View {
             List {
                 // MARK: - Settings Header
 
+                // MARK: - Standing
+                //
+                // Three people can read this screen and each gets their own first section:
+                // an EARLY SUPPORTER (one of the 60 who bought the retired lifetime unlock),
+                // a subscriber, and someone on the free tier. The crown, the pulsing glow and
+                // the gradient button are gone — the tokens forbid gradient-as-decoration and
+                // crown imagery, and none of them told the user anything a sentence could not.
+
                 Section {
-                    VStack(spacing: DS.Spacing.md) {
-                        ZStack {
-                            Circle()
-                                .fill(
-                                    RadialGradient(
-                                        colors: [Color.noBuyGreen.opacity(0.3), Color.clear],
-                                        center: .center,
-                                        startRadius: 20,
-                                        endRadius: 60
-                                    )
-                                )
-                                .frame(width: 100, height: 100)
-
-                            Group {
-                                if store.isPro {
-                                    Image(systemName: "crown.fill")
-                                        .font(Font.adaptiveDisplay(size: 36, isRegular: isRegular))
-                                        .foregroundStyle(Color.noBuyGreen)
-                                } else {
-                                    ZStack {
-                                        Image(systemName: "bag.fill")
-                                            .font(Font.adaptiveDisplay(size: 32, weight: .medium, isRegular: isRegular))
-                                            .accessibilityHidden(true)
-                                        Image(systemName: "line.diagonal")
-                                            .font(Font.adaptiveDisplay(size: 40, isRegular: isRegular))
-                                            .accessibilityHidden(true)
-                                    }
-                                    .foregroundStyle(.textSecondary)
-                                }
-                            }
-                            .symbolEffect(.pulse, options: .repeating)
-                        }
-
-                        Text(store.isPro ? "NoBuy Pro" : "NoBuy")
-                            .font(.title2.bold())
-
-                        if !store.isPro {
-                            Button {
-                                showPaywall = true
-                            } label: {
-                                Text("Upgrade to Pro")
-                                    .font(.subheadline.bold())
-                                    .foregroundStyle(.white)
-                                    .padding(.horizontal, DS.Spacing.xl)
-                                    .padding(.vertical, DS.Spacing.sm)
-                                    .background(
-                                        Capsule().fill(
-                                            LinearGradient(
-                                                colors: [Color.noBuyGreen, Color.noBuyGreen.opacity(0.7)],
-                                                startPoint: .leading,
-                                                endPoint: .trailing
-                                            )
-                                        )
-                                    )
-                                    .shadow(color: .noBuyGreen.opacity(0.3), radius: 8, y: 4)
-                            }
-                            .buttonStyle(.scale)
-                            .accessibilityLabel("Upgrade to Pro")
-                            .accessibilityHint("Double tap to view Pro features and pricing")
-                            .accessibilityIdentifier("settings_upgrade_pro")
-                        }
+                    if store.isLegacyLifetimeOwner {
+                        earlySupporterRow
+                    } else if store.isPro {
+                        subscriberRow
+                    } else {
+                        freeStandingRow
                     }
-                    .frame(maxWidth: .infinity)
-                    .padding(.vertical, DS.Spacing.lg)
-                    .listRowInsets(EdgeInsets())
-                    .listRowBackground(Color.clear)
                 }
 
                 // MARK: - Pro Features
@@ -117,7 +69,7 @@ struct SettingsScreen: View {
                     ForEach(mandatoryCategories) { category in
                         HStack {
                             Image(systemName: category.icon)
-                                .foregroundStyle(.mandatoryAmber)
+                                .foregroundStyle(.stateWait)
                                 .frame(width: 28)
                                 .accessibilityHidden(true)
                             Text(category.name)
@@ -133,14 +85,14 @@ struct SettingsScreen: View {
                         }
                     } label: {
                         HStack {
-                            Image(systemName: "plus.circle.fill")
-                                .foregroundStyle(.noBuyGreen)
+                            Image(systemName: "plus.circle")
+                                .foregroundStyle(.accentKept)
                             Text(L10n.addCategory)
                             if !store.isPro {
                                 Spacer()
                                 Text("\(mandatoryCategories.count)/\(StoreService.freeCategoryLimit)")
                                     .font(.caption)
-                                    .foregroundStyle(.textTertiary)
+                                    .foregroundStyle(.inkSecondary)
                             }
                         }
                     }
@@ -156,8 +108,8 @@ struct SettingsScreen: View {
 
                 Section {
                     HStack {
-                        Image(systemName: "shield.fill")
-                            .foregroundStyle(.noBuyGreen)
+                        Image(systemName: "shield")
+                            .foregroundStyle(.accentKept)
                             .frame(width: 28)
                             .accessibilityHidden(true)
                         VStack(alignment: .leading, spacing: 2) {
@@ -165,18 +117,18 @@ struct SettingsScreen: View {
                                 .font(.body)
                             Text("Protects your streak when you spend")
                                 .font(.caption)
-                                .foregroundStyle(.textSecondary)
+                                .foregroundStyle(.inkSecondary)
                         }
                         Spacer()
                         Text(freezeDisplayText)
                             .font(.caption)
                             .fontWeight(.medium)
-                            .foregroundStyle(.noBuyGreen)
+                            .foregroundStyle(.accentKept)
                     }
 
                     HStack {
                         Image(systemName: "snowflake")
-                            .foregroundStyle(.blue)
+                            .foregroundStyle(Color.stateWait)
                             .frame(width: 28)
                             .accessibilityHidden(true)
                         Text("Monthly Freeze Allowance")
@@ -185,7 +137,7 @@ struct SettingsScreen: View {
                             ? "Unlimited"
                             : "1 / month")
                             .font(.callout)
-                            .foregroundStyle(.textSecondary)
+                            .foregroundStyle(.inkSecondary)
                     }
                 } header: {
                     Text("Streak")
@@ -205,27 +157,27 @@ struct SettingsScreen: View {
 
                         HStack {
                             Image(systemName: isCompleted ? "trophy.fill" : "flame.fill")
-                                .foregroundStyle(isCompleted ? .mandatoryAmber : .noBuyGreen)
+                                .foregroundStyle(isCompleted ? .stateWait : .accentKept)
                                 .frame(width: 28)
                                 .accessibilityHidden(true)
                             VStack(alignment: .leading, spacing: 2) {
                                 Text("\(challengeDuration)-Day Challenge")
                                     .font(.body)
                                 if isCompleted {
-                                    Text("Completed! 🎉")
+                                    Text("Completed")
                                         .font(.caption)
-                                        .foregroundStyle(.mandatoryAmber)
+                                        .foregroundStyle(.stateWait)
                                 } else {
                                     Text("\(remaining) days left")
                                         .font(.caption)
-                                        .foregroundStyle(.textSecondary)
+                                        .foregroundStyle(.inkSecondary)
                                 }
                             }
                             Spacer()
                             Text("\(completed)/\(challengeDuration)")
                                 .font(.callout)
                                 .fontWeight(.medium)
-                                .foregroundStyle(.noBuyGreen)
+                                .foregroundStyle(.accentKept)
                         }
                     }
 
@@ -233,8 +185,8 @@ struct SettingsScreen: View {
                         showChallengeSetup = true
                     } label: {
                         HStack {
-                            Image(systemName: "plus.circle.fill")
-                                .foregroundStyle(.noBuyGreen)
+                            Image(systemName: "plus.circle")
+                                .foregroundStyle(.accentKept)
                                 .frame(width: 28)
                                 .accessibilityHidden(true)
                             Text(challengeDuration > 0
@@ -249,18 +201,61 @@ struct SettingsScreen: View {
                     Text("Set yourself a goal and see how many no-spend days you can achieve.")
                 }
 
+                // MARK: - Savings goal
+                //
+                // v2.0.0 moved this OUT of onboarding: setup is now four screens and one real
+                // question, and a goal picker standing between a new user and their first
+                // answer cost more than it earned. But a feature with no way to reach it is an
+                // orphan (finished-product law, clause 6), so it lives here — optional, changeable,
+                // and ignorable.
+
+                Section {
+                    Picker(selection: $savingsGoal) {
+                        Text("Not set").tag("")
+                        Text("Emergency fund").tag("emergencyFund")
+                        Text("A trip").tag("vacation")
+                        Text("Getting out of debt").tag("debtFree")
+                        Text("Just the discipline").tag("discipline")
+                    } label: {
+                        HStack {
+                            Image(systemName: "target")
+                                .foregroundStyle(.stateWait)
+                                .frame(width: 28)
+                            Text("What you're saving for")
+                        }
+                    }
+                    .accessibilityIdentifier("settings_savings_goal")
+
+                    HStack {
+                        Image(systemName: "banknote")
+                            .foregroundStyle(.stateWait)
+                            .frame(width: 28)
+                        Text("A typical spend day")
+                        Spacer()
+                        TextField("optional", value: $dailySpendingEstimate, format: .number)
+                            .keyboardType(.decimalPad)
+                            .multilineTextAlignment(.trailing)
+                            .frame(maxWidth: 90)
+                            .accessibilityLabel("Typical spending on a day you buy something")
+                    }
+                } header: {
+                    Text("Goal")
+                } footer: {
+                    Text("Both are optional. They only change the estimate shown on Stats — the record itself never depends on them.")
+                }
+
                 // MARK: - Notifications
 
                 Section {
                     Toggle(isOn: $soundEnabled) {
                         HStack {
-                            Image(systemName: "speaker.wave.2.fill")
-                                .foregroundStyle(.noBuyGreen)
+                            Image(systemName: "speaker.wave.2")
+                                .foregroundStyle(.accentKept)
                                 .frame(width: 28)
                             Text("Sound Effects")
                         }
                     }
-                    .tint(.noBuyGreen)
+                    .tint(.accentKept)
                     .accessibilityLabel("Sound effects")
                     .accessibilityValue(soundEnabled ? "On" : "Off")
                     .accessibilityHint("Double tap to toggle sound effects")
@@ -269,8 +264,8 @@ struct SettingsScreen: View {
                         NotificationSettingsView()
                     } label: {
                         HStack {
-                            Image(systemName: "bell.fill")
-                                .foregroundStyle(.noBuyGreen)
+                            Image(systemName: "bell")
+                                .foregroundStyle(.accentKept)
                                 .frame(width: 28)
                             Text(L10n.notifications)
                         }
@@ -285,31 +280,28 @@ struct SettingsScreen: View {
 
                 Section {
                     Button {
-                        if store.isPro {
-                            exportCSV()
-                        } else {
-                            showPaywall = true
-                        }
+                        // Free, deliberately: a record you cannot take with you is a record
+                        // held hostage, and the free tier's own promise is that it is not
+                        // (docs/FREE-TIER.md). Export is what makes the 90-day view window an
+                        // honest limit rather than a lock on the user's own data.
+                        exportCSV()
                     } label: {
                         HStack {
                             Image(systemName: "arrow.down.doc")
-                                .foregroundStyle(.noBuyGreen)
+                                .foregroundStyle(.accentKept)
                                 .frame(width: 28)
                                 .accessibilityHidden(true)
                             Text(L10n.exportCSV)
                             Spacer()
-                            if !store.isPro {
-                                Text(L10n.proBadge)
-                                    .font(.caption2.bold())
-                                    .foregroundStyle(.noBuyGreen)
-                                    .padding(.horizontal, 6)
-                                    .padding(.vertical, 2)
-                                    .background(Capsule().fill(Color.noBuyGreenLight))
-                            }
+                            // No PRO badge, on purpose. The button above runs for everyone, the
+                            // free-tier map says export is free, the paywall lists it as free and
+                            // the store description sells it as free — a badge here was the one
+                            // surface still claiming otherwise, and a lock on a button that is
+                            // not locked reads as a bait.
                         }
                     }
                     .buttonStyle(.scale)
-                    .accessibilityLabel(store.isPro ? "Export data as CSV" : "Export CSV, requires Pro")
+                    .accessibilityLabel("Export data as CSV")
 
                     Button(role: .destructive) {
                         showDeleteConfirmation = true
@@ -329,7 +321,7 @@ struct SettingsScreen: View {
                 // MARK: - Appearance
 
                 Section {
-                    ThemePickerView(showPaywall: $showPaywall)
+                    ThemePickerView(showPaywall: $showPaywall, entry: $paywallEntry)
                 } header: {
                     Text("Appearance")
                 }
@@ -341,14 +333,14 @@ struct SettingsScreen: View {
                         Text(L10n.version)
                         Spacer()
                         Text(Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "1.0")
-                            .foregroundStyle(.textSecondary)
+                            .foregroundStyle(.inkSecondary)
                     }
 
                     HStack {
                         Text(L10n.settingsBuild)
                         Spacer()
                         Text(Bundle.main.infoDictionary?["CFBundleVersion"] as? String ?? "1")
-                            .foregroundStyle(.textSecondary)
+                            .foregroundStyle(.inkSecondary)
                     }
 
                     // User-initiated ask: deep-link straight to the App Store
@@ -356,8 +348,8 @@ struct SettingsScreen: View {
                     // can silently no-op on an explicit tap.
                     Link(destination: URL(string: "https://apps.apple.com/app/id6760716822?action=write-review")!) {
                         HStack {
-                            Image(systemName: "star.fill")
-                                .foregroundStyle(.yellow)
+                            Image(systemName: "star")
+                                .foregroundStyle(.accentSpentMark)
                                 .frame(width: 28)
                             Text(L10n.rateApp)
                         }
@@ -373,8 +365,8 @@ struct SettingsScreen: View {
 
                 Section {
                     HStack(spacing: DS.Spacing.md) {
-                        Image(systemName: "lock.shield.fill")
-                            .foregroundStyle(.noBuyGreen)
+                        Image(systemName: "lock.shield")
+                            .foregroundStyle(.accentKept)
                             .frame(width: 28)
                             .accessibilityHidden(true)
                         VStack(alignment: .leading, spacing: DS.Spacing.xs) {
@@ -382,7 +374,7 @@ struct SettingsScreen: View {
                                 .font(.body)
                             Text(L10n.settingsPrivacyNote)
                                 .font(.caption)
-                                .foregroundStyle(.textSecondary)
+                                .foregroundStyle(.inkSecondary)
                         }
                     }
                 } header: {
@@ -394,14 +386,14 @@ struct SettingsScreen: View {
                 Section {
                     Link(destination: URL(string: "https://theknack2020-sketch.github.io/nobuy/privacy/")!) {
                         HStack {
-                            Image(systemName: "hand.raised.fill")
-                                .foregroundStyle(.noBuyGreen)
+                            Image(systemName: "hand.raised")
+                                .foregroundStyle(.accentKept)
                                 .frame(width: 28)
                             Text(L10n.privacyPolicy)
                             Spacer()
                             Image(systemName: "arrow.up.right")
                                 .font(.caption)
-                                .foregroundStyle(.textTertiary)
+                                .foregroundStyle(.inkSecondary)
                                 .accessibilityHidden(true)
                         }
                     }
@@ -410,14 +402,14 @@ struct SettingsScreen: View {
 
                     Link(destination: URL(string: "https://theknack2020-sketch.github.io/nobuy/terms/")!) {
                         HStack {
-                            Image(systemName: "doc.text.fill")
-                                .foregroundStyle(.noBuyGreen)
+                            Image(systemName: "doc.text")
+                                .foregroundStyle(.accentKept)
                                 .frame(width: 28)
                             Text(L10n.termsOfUse)
                             Spacer()
                             Image(systemName: "arrow.up.right")
                                 .font(.caption)
-                                .foregroundStyle(.textTertiary)
+                                .foregroundStyle(.inkSecondary)
                                 .accessibilityHidden(true)
                         }
                     }
@@ -431,25 +423,25 @@ struct SettingsScreen: View {
 
                 Section {
                     moreAppRow(
-                        icon: "💧",
+                        icon: "drop.fill",
                         name: "AquaFaste",
                         subtitle: "Hydration Tracker",
                         appStoreID: "6760975661"
                     )
                     moreAppRow(
-                        icon: "🍽️",
+                        icon: "fork.knife",
                         name: "Lumifaste",
                         subtitle: "Fasting Tracker",
                         appStoreID: "6760971357"
                     )
                     moreAppRow(
-                        icon: "💊",
+                        icon: "pills.fill",
                         name: "PillPal",
                         subtitle: "Medication Reminder",
                         appStoreID: "6740510337"
                     )
                     moreAppRow(
-                        icon: "🐾",
+                        icon: "pawprint.fill",
                         name: "Vettie",
                         subtitle: "Pet Health Tracker",
                         appStoreID: "6760741400"
@@ -464,10 +456,10 @@ struct SettingsScreen: View {
                     VStack(spacing: DS.Spacing.xs) {
                         Text("© 2026 TheKnack. All rights reserved.")
                             .font(.caption2)
-                            .foregroundStyle(.textTertiary)
+                            .foregroundStyle(.inkSecondary)
                         Text("Version \(Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "1.0") (\(Bundle.main.infoDictionary?["CFBundleVersion"] as? String ?? "1"))")
                             .font(.caption2)
-                            .foregroundStyle(.textTertiary)
+                            .foregroundStyle(.inkSecondary)
                     }
                     .frame(maxWidth: .infinity)
                     .padding(.top, DS.Spacing.md)
@@ -477,6 +469,11 @@ struct SettingsScreen: View {
             .navigationTitle(L10n.settingsTitle)
             .navigationBarTitleDisplayMode(.large)
             .listStyle(.insetGrouped)
+            // Settings is one of the four rooms, and until now the only one that let the system's
+            // grouped background through — noticeably lighter than the field in light mode and
+            // pure black against #0F1113 in dark.
+            .scrollContentBackground(.hidden)
+            .background(Color.surfaceField)
             .alert(L10n.newCategory, isPresented: $showAddCategory) {
                 TextField(L10n.categoryName, text: $newCategoryName)
                 Button(L10n.add) {
@@ -488,7 +485,13 @@ struct SettingsScreen: View {
                 Button(L10n.cancel, role: .cancel) { newCategoryName = "" }
             }
             .alert(L10n.categoryLimitReached, isPresented: $showCategoryLimit) {
-                Button(L10n.upgradeButton) { showPaywall = true }
+                Button(L10n.upgradeButton) {
+                    paywallEntry = .categoryLimit(
+                        used: mandatoryCategories.count,
+                        limit: StoreService.freeCategoryLimit
+                    )
+                    showPaywall = true
+                }
                 Button(L10n.cancel, role: .cancel) {}
             }
             .alert("Are you sure? All data will be permanently deleted.", isPresented: $showDeleteConfirmation) {
@@ -497,7 +500,7 @@ struct SettingsScreen: View {
             } message: {
                 Text("This action cannot be undone. All daily records and streak data will be deleted.")
             }
-            .fullScreenCover(isPresented: $showPaywall) { PaywallView(store: store) }
+            .fullScreenCover(isPresented: $showPaywall) { PaywallView(store: store, entry: paywallEntry) }
             .sheet(isPresented: $showExportSheet) {
                 if let url = exportURL { ShareSheet(items: [url]) }
             }
@@ -531,16 +534,15 @@ struct SettingsScreen: View {
         Section {
             proFeatureRow(icon: "square.and.arrow.up.fill", title: L10n.enhancedSharing)
             proFeatureRow(icon: "folder.fill.badge.plus", title: L10n.unlimitedCategories)
-            proFeatureRow(icon: "arrow.down.doc.fill", title: L10n.exportCSV)
         } header: { Text(L10n.proFeaturesSection) }
     }
 
     private func proFeatureRow(icon: String, title: String) -> some View {
         HStack(spacing: 12) {
-            Image(systemName: icon).foregroundStyle(.noBuyGreen).frame(width: 28).accessibilityHidden(true)
+            Image(systemName: icon).foregroundStyle(.accentKept).frame(width: 28).accessibilityHidden(true)
             Text(title).font(.body)
             Spacer()
-            Text(L10n.proFeatureActive).font(.caption).foregroundStyle(.noBuyGreen)
+            Text(L10n.proFeatureActive).font(.caption).foregroundStyle(.accentKept)
         }
     }
 
@@ -598,7 +600,7 @@ struct ShareSheet: UIViewControllerRepresentable {
 
 struct NotificationSettingsView: View {
     @AppStorage("dailyReminderEnabled") private var dailyReminderEnabled = true
-    @AppStorage("streakNotificationsEnabled") private var streakNotificationsEnabled = true
+    @AppStorage("streakNotificationsEnabled") private var streakNotificationsEnabled = false
     @AppStorage("weeklySummaryEnabled") private var weeklySummaryEnabled = false
     @AppStorage("notificationHour") private var notificationHour = 21
     @AppStorage("notificationMinute") private var notificationMinute = 0
@@ -619,16 +621,16 @@ struct NotificationSettingsView: View {
                 Section {
                     Link(destination: URL(string: UIApplication.openSettingsURLString)!) {
                         HStack(spacing: DS.Spacing.md) {
-                            Image(systemName: "bell.slash.fill")
-                                .foregroundStyle(.mandatoryAmber)
+                            Image(systemName: "bell.slash")
+                                .foregroundStyle(.stateWait)
                                 .accessibilityHidden(true)
                             VStack(alignment: .leading, spacing: 2) {
                                 Text("Notifications are off in Settings")
                                     .font(.subheadline.weight(.medium))
-                                    .foregroundStyle(.textPrimary)
+                                    .foregroundStyle(.inkPrimary)
                                 Text("Open Settings to allow reminders")
                                     .font(.caption)
-                                    .foregroundStyle(.textSecondary)
+                                    .foregroundStyle(.inkSecondary)
                             }
                         }
                     }
@@ -638,7 +640,7 @@ struct NotificationSettingsView: View {
 
             Section {
                 Toggle(L10n.dailyReminder, isOn: $dailyReminderEnabled)
-                    .tint(.noBuyGreen)
+                    .tint(.accentKept)
                     .onChange(of: dailyReminderEnabled) { _, enabled in
                         if enabled {
                             Task {
@@ -667,7 +669,7 @@ struct NotificationSettingsView: View {
                         selection: $notificationTime,
                         displayedComponents: .hourAndMinute
                     )
-                    .tint(.noBuyGreen)
+                    .tint(.accentKept)
                     .onChange(of: notificationTime) { _, newTime in
                         let calendar = Calendar.current
                         notificationHour = calendar.component(.hour, from: newTime)
@@ -688,7 +690,7 @@ struct NotificationSettingsView: View {
 
             Section {
                 Toggle(L10n.streakNotifications, isOn: $streakNotificationsEnabled)
-                    .tint(.noBuyGreen)
+                    .tint(.accentKept)
             } footer: {
                 Text(L10n.streakNotificationsFooter)
             }
@@ -699,7 +701,7 @@ struct NotificationSettingsView: View {
                         "Weekly Summary",
                         isOn: $weeklySummaryEnabled
                     )
-                    .tint(.noBuyGreen)
+                    .tint(.accentKept)
                     .onChange(of: weeklySummaryEnabled) { _, enabled in
                         Task {
                             let manager = NotificationManager()
@@ -716,14 +718,14 @@ struct NotificationSettingsView: View {
                     } label: {
                         HStack {
                             Text("Weekly Summary")
-                                .foregroundStyle(.textPrimary)
+                                .foregroundStyle(.inkPrimary)
                             Spacer()
                             Text(L10n.proBadge)
                                 .font(.caption2.bold())
-                                .foregroundStyle(.noBuyGreen)
+                                .foregroundStyle(.accentKept)
                                 .padding(.horizontal, 6)
                                 .padding(.vertical, 2)
-                                .background(Capsule().fill(Color.noBuyGreenLight))
+                                .background(Capsule().fill(Color.accentKeptWash))
                         }
                     }
                 }
@@ -745,7 +747,7 @@ struct NotificationSettingsView: View {
             await refreshAuthorizationStatus()
         }
         .fullScreenCover(isPresented: $showPaywall) {
-            PaywallView(store: store)
+            PaywallView(store: store, entry: .weeklySummary)
         }
     }
 }
@@ -756,6 +758,7 @@ struct ThemePickerView: View {
     @Environment(StoreService.self) private var store
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @Binding var showPaywall: Bool
+    @Binding var entry: PaywallEntry
     @State private var gridAppeared = false
 
     private let columns = Array(repeating: GridItem(.flexible(), spacing: 12), count: 5)
@@ -764,7 +767,7 @@ struct ThemePickerView: View {
         VStack(alignment: .leading, spacing: DS.Spacing.md) {
             Text("Theme")
                 .font(.subheadline.weight(.medium))
-                .foregroundStyle(.textSecondary)
+                .foregroundStyle(.inkSecondary)
 
             LazyVGrid(columns: columns, spacing: DS.Spacing.md) {
                 ForEach(AppTheme.allCases) { theme in
@@ -774,6 +777,7 @@ struct ThemePickerView: View {
                         isLocked: theme.isPro && !store.isPro
                     ) {
                         if theme.isPro, !store.isPro {
+                            entry = .themes
                             showPaywall = true
                         } else {
                             HapticManager.impact(.light)
@@ -801,6 +805,7 @@ private struct ThemeDot: View {
     let isLocked: Bool
     let action: () -> Void
     @Environment(\.horizontalSizeClass) private var sizeClass
+    @Environment(\.colorScheme) private var colorScheme
 
     private var isRegular: Bool {
         sizeClass == .regular
@@ -810,61 +815,53 @@ private struct ThemeDot: View {
         Button(action: action) {
             VStack(spacing: DS.Spacing.sm) {
                 ZStack {
-                    // Gradient circle
+                    // The swatch IS the finish — a dial face with its bezel, because the finish
+                    // is exactly what a theme changes. No gradient: the tokens forbid gradients
+                    // as decoration, and a two-colour sweep would imply the accent moves with
+                    // the theme, which is the v1 defect this system removes.
                     Circle()
-                        .fill(
-                            LinearGradient(
-                                colors: [theme.primary, theme.accent],
-                                startPoint: .topLeading,
-                                endPoint: .bottomTrailing
-                            )
-                        )
+                        .fill(theme.dial(colorScheme))
                         .frame(width: 44, height: 44)
+                        .overlay(
+                            Circle().strokeBorder(Color.inkHairline, lineWidth: DS.Stroke.bezel)
+                        )
 
-                    // Selection ring
+                    // A seated hand, drawn in the one accent that never moves: proof that
+                    // meaning survives every finish.
+                    Capsule()
+                        .fill(Color.accentKept)
+                        .frame(width: DS.Stroke.hand, height: 14)
+                        .offset(y: -7)
+
                     if isSelected {
                         Circle()
-                            .strokeBorder(Color.textPrimary, lineWidth: 2.5)
+                            .strokeBorder(Color.accentKept, lineWidth: 2)
                             .frame(width: 52, height: 52)
                     }
 
-                    // Checkmark for selected
-                    if isSelected {
-                        Image(systemName: "checkmark")
-                            .font(Font.adaptiveDetail(isRegular: isRegular).weight(.bold))
-                            .foregroundStyle(.white)
-                            .accessibilityHidden(true)
-                    }
-
-                    // Lock + PRO badge for locked themes
-                    if isLocked {
-                        Circle()
-                            .fill(Color.black.opacity(0.4))
-                            .frame(width: 44, height: 44)
-
-                        Image(systemName: "lock.fill")
-                            .font(Font.adaptiveCaption(isRegular: isRegular).weight(.semibold))
-                            .foregroundStyle(.white)
-                            .accessibilityHidden(true)
-                    }
+                    // Locked finishes are NOT darkened and carry no padlock — deprivation
+                    // imagery is banned in this product's surfaces. The row's own "Pro" label
+                    // below says it in words instead.
                 }
 
                 // Theme name
                 Text(theme.displayName)
                     .font(.caption2)
-                    .foregroundStyle(isSelected ? .textPrimary : .textSecondary)
+                    .foregroundStyle(isSelected ? .inkPrimary : .inkSecondary)
                     .lineLimit(1)
                     .minimumScaleFactor(0.75)
 
-                // PRO badge
-                if theme.isPro {
+                // The badge says what this finish COSTS, so it belongs only to someone who has
+                // not paid. A subscriber was still seeing "PRO" stamped under four finishes they
+                // already own — the row telling them they cannot have the thing they are using.
+                if theme.isPro, isLocked {
                     Text("PRO")
                         .font(Font.adaptiveCaption2(isRegular: isRegular).weight(.bold))
-                        .foregroundStyle(.noBuyGreen)
+                        .foregroundStyle(.accentKept)
                         .padding(.horizontal, 4)
                         .padding(.vertical, 1)
                         .background(
-                            Capsule().fill(Color.noBuyGreenLight)
+                            Capsule().fill(Color.accentKeptWash)
                         )
                 } else {
                     // Spacer for alignment
@@ -880,6 +877,83 @@ private struct ThemeDot: View {
     }
 }
 
+// MARK: - Standing
+//
+// Three people can read this screen and each gets their own first section: an EARLY SUPPORTER
+// (one of the 60 who bought the retired lifetime unlock), a subscriber, and someone on the free
+// tier.
+
+extension SettingsScreen {
+    /// The 60 people who bought the retired one-time unlock.
+    ///
+    /// Their purchase is honoured permanently and this is where they are told so, in the FIRST
+    /// section of Settings — "Early supporter", never "expired" or "legacy". They are never
+    /// shown the paywall; `StoreService.checkEntitlements()` reads their old receipt on every
+    /// launch and grants everything Pro grants.
+    ///
+    /// This row exists because a promise kept silently is a promise the customer cannot see.
+    var earlySupporterRow: some View {
+        VStack(alignment: .leading, spacing: DS.Spacing.sm) {
+            Text("Early supporter")
+                .font(.headline)
+                .foregroundStyle(.inkPrimary)
+
+            Text("You bought NoBuy Pro outright, before it became a subscription. It stays yours — permanently, with nothing to renew and nothing to cancel.")
+                .font(.subheadline)
+                .foregroundStyle(.inkSecondary)
+                .fixedSize(horizontal: false, vertical: true)
+        }
+        .padding(.vertical, DS.Spacing.sm)
+        .accessibilityElement(children: .combine)
+        .accessibilityIdentifier("settings_early_supporter")
+    }
+
+    var subscriberRow: some View {
+        VStack(alignment: .leading, spacing: DS.Spacing.sm) {
+            Text("NoBuy Pro")
+                .font(.headline)
+                .foregroundStyle(.inkPrimary)
+
+            Text("Every day on record, the analysis, challenges, and all five finishes. Manage or cancel any time in Settings ▸ Subscriptions.")
+                .font(.subheadline)
+                .foregroundStyle(.inkSecondary)
+                .fixedSize(horizontal: false, vertical: true)
+        }
+        .padding(.vertical, DS.Spacing.sm)
+        .accessibilityElement(children: .combine)
+    }
+
+    /// The free tier's own row: what it holds, stated plainly, with the door beside it rather
+    /// than in place of it.
+    var freeStandingRow: some View {
+        VStack(alignment: .leading, spacing: DS.Spacing.md) {
+            Text("NoBuy")
+                .font(.headline)
+                .foregroundStyle(.inkPrimary)
+
+            Text("The nightly question, your run, the freeze, both interventions and every widget — free, always. Pro opens the whole record and the analysis behind it.")
+                .font(.subheadline)
+                .foregroundStyle(.inkSecondary)
+                .fixedSize(horizontal: false, vertical: true)
+
+            Button {
+                showPaywall = true
+            } label: {
+                Text("See NoBuy Pro")
+                    .font(.subheadline.weight(.semibold))
+                    .foregroundStyle(Color.inkOnAccent)
+                    .padding(.horizontal, DS.Spacing.xl)
+                    .frame(height: 44)
+                    .background(Capsule().fill(Color.accentKept))
+            }
+            .buttonStyle(.scale)
+            .accessibilityHint("Opens plans and pricing")
+            .accessibilityIdentifier("settings_upgrade_pro")
+        }
+        .padding(.vertical, DS.Spacing.sm)
+    }
+}
+
 // MARK: - More App Row Helper
 
 extension SettingsScreen {
@@ -891,8 +965,11 @@ extension SettingsScreen {
             }
         } label: {
             HStack(spacing: DS.Spacing.md) {
-                Text(icon)
+                Image(systemName: icon)
                     .font(.title3)
+                    .foregroundStyle(.accentKept)
+                    .frame(width: 28)
+                    .accessibilityHidden(true)
                 VStack(alignment: .leading, spacing: 2) {
                     Text(name)
                         .font(.subheadline.weight(.semibold))

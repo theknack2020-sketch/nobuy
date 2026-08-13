@@ -40,3 +40,12 @@ fastlane/screenshots/
 .asc/shots/raw/
 .asc/shots/final/
 .asc/shots/upload/
+
+# Store-shot binaries. Captures and composed panels are REGENERATED from
+# .asc/shots/panels-geometry.json + the final binary (global rule 5: produced once, at the end);
+# the repo keeps the geometry, the manifest and the brand — not tens of megabytes of PNG.
+.asc/shots/raw/
+.asc/shots/final/
+.asc/shots/upload/
+.asc/shots/_stale-v1.2.0/
+.asc/metadata-verify/

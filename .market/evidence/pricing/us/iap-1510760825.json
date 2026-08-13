@@ -1,0 +1,32 @@
+{
+  "appId": "1510760825",
+  "name": "Money+ Cute Expense Tracker",
+  "ratingCount": 3820,
+  "sellerName": "Chongqing Zhouhu Technology Co.,Ltd",
+  "term": "no spend challenge",
+  "storefront": "us",
+  "fetched_at": "2026-08-12T13:37:45.455Z",
+  "readable": true,
+  "typed": false,
+  "url": "https://apps.apple.com/us/app/id1510760825",
+  "sha256": "4e5e2281c809a2d07667c8a93cb65f43ec98d0938061c0a83315b3fd0c4f018d",
+  "iap": [
+    {
+      "name": "Pay per month",
+      "price": 1.49,
+      "tier": "unknown"
+    },
+    {
+      "name": "Pay per year",
+      "price": 9.99,
+      "tier": "unknown"
+    },
+    {
+      "name": "Premium",
+      "price": 12.99,
+      "tier": "unknown"
+    }
+  ],
+  "tiers": {},
+  "untypedReason": "3 SKU bulundu ama hiçbirinin adında süre yok (ör. \"Pay per month\") — kademe atanamadı; medyana katkı vermez"
+}

@@ -1,0 +1,13 @@
+{
+  "appId": "436672029",
+  "name": "AliExpress - Shopping App",
+  "ratingCount": 653044,
+  "sellerName": "Alibaba.com Singapore E-Commerce Private Limited",
+  "term": "no buy tracker",
+  "storefront": "us",
+  "fetched_at": "2026-08-12T13:40:12.133Z",
+  "readable": false,
+  "reason": "sayfada \"In-App Purchases\" bloğu yok (app IAP satmıyor olabilir)",
+  "url": "https://apps.apple.com/us/app/id436672029",
+  "sha256": "a9499bdaf4546493e87f1329daf7747d80e029208047e140d937471271c1d6cc"
+}

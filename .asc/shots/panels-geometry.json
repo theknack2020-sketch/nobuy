@@ -1,0 +1,233 @@
+{
+  "$schema": "nobuy-panel-compose/1",
+  "$note": "DERIVED from the accepted round-2 store deliverable (.design/rounds/r2/store/panels.dc.html + tokens/panels.schema.json + store/CAPTIONS.md). Captions are the shipped list verbatim; wells are the schema's, expressed per panel. Every panel carries a capture_well because Claude Design draws FRAMES, never UI — the widget panel's well is a real Home Screen capture with the widget on it, not a drawing of one.",
+  "tokens": ".design/rounds/r2/tokens/tokens.json",
+  "devices": {
+    "iphone": {
+      "size": [
+        1320,
+        2868
+      ],
+      "safe_box": {
+        "x": 80,
+        "y": 120,
+        "w": 1160,
+        "h": 2588
+      },
+      "panels": [
+        {
+          "id": "01-question",
+          "n": 1,
+          "field": "dark",
+          "caption": "One question, every evening.",
+          "subline": "Answer with one tap. Keep the days.",
+          "caption_y": 124,
+          "uiState": "today-quiet-dark",
+          "heroIndex": 1,
+          "capture_well": {
+            "x": 174,
+            "y": 840,
+            "w": 972,
+            "h": 2028,
+            "radius": 140,
+            "bleed": true
+          }
+        },
+        {
+          "id": "02-record",
+          "n": 2,
+          "field": "light",
+          "caption": "The record keeps its shape.",
+          "subline": "Five truths a day can carry, including the honest one.",
+          "caption_y": 124,
+          "uiState": "calendar-light",
+          "heroIndex": 2,
+          "capture_well": {
+            "x": 174,
+            "y": 840,
+            "w": 972,
+            "h": 2028,
+            "radius": 140,
+            "bleed": true
+          }
+        },
+        {
+          "id": "03-waiting",
+          "n": 3,
+          "field": "dark",
+          "caption": "Waiting is the mechanism.",
+          "subline": "Ten minutes for an urge. Twenty-four hours for a want.",
+          "caption_y": 124,
+          "uiState": "urge-running-dark",
+          "heroIndex": 3,
+          "capture_well": {
+            "x": 174,
+            "y": 840,
+            "w": 972,
+            "h": 2028,
+            "radius": 140,
+            "bleed": true
+          }
+        },
+        {
+          "id": "04-glance",
+          "n": 4,
+          "field": "light",
+          "caption": "Glance without opening.",
+          "subline": "Home and Lock Screen, with tonight's answer one tap away.",
+          "caption_y": 124,
+          "uiState": "widget-home-light",
+          "heroIndex": 4,
+          "capture_well": {
+            "x": 174,
+            "y": 840,
+            "w": 972,
+            "h": 2028,
+            "radius": 140,
+            "bleed": true
+          }
+        },
+        {
+          "id": "05-finishes",
+          "n": 5,
+          "field": "light",
+          "caption": "Five dials, one record.",
+          "subline": "The finish changes. The truth doesn't.",
+          "caption_y": 124,
+          "uiState": "today-salmon-light",
+          "heroIndex": 5,
+          "capture_well": {
+            "x": 174,
+            "y": 840,
+            "w": 972,
+            "h": 2028,
+            "radius": 140,
+            "bleed": true
+          }
+        },
+        {
+          "id": "06-yours",
+          "n": 6,
+          "field": "light",
+          "caption": "Yours alone, on this phone.",
+          "subline": "No account. No bank connection. No analytics. Ever.",
+          "caption_y": 124,
+          "uiState": "settings-privacy-light",
+          "heroIndex": 6,
+          "capture_well": {
+            "x": 174,
+            "y": 840,
+            "w": 972,
+            "h": 2028,
+            "radius": 140,
+            "bleed": true
+          }
+        }
+      ]
+    },
+    "ipad": {
+      "size": [
+        2064,
+        2752
+      ],
+      "safe_box": {
+        "x": 120,
+        "y": 140,
+        "w": 1824,
+        "h": 2452
+      },
+      "panels": [
+        {
+          "id": "01-question",
+          "n": 1,
+          "field": "dark",
+          "caption": "One question, every evening.",
+          "subline": "Answer with one tap. Keep the days.",
+          "caption_y": 150,
+          "uiState": "today-quiet-dark",
+          "heroIndex": 1,
+          "capture_well": {
+            "x": 432,
+            "y": 880,
+            "w": 1200,
+            "h": 1872,
+            "radius": 120,
+            "bleed": true
+          }
+        },
+        {
+          "id": "02-record",
+          "n": 2,
+          "field": "light",
+          "caption": "The record keeps its shape.",
+          "subline": "Five truths a day can carry, including the honest one.",
+          "caption_y": 150,
+          "uiState": "calendar-light",
+          "heroIndex": 2,
+          "capture_well": {
+            "x": 432,
+            "y": 880,
+            "w": 1200,
+            "h": 1872,
+            "radius": 120,
+            "bleed": true
+          }
+        },
+        {
+          "id": "03-waiting",
+          "n": 3,
+          "field": "dark",
+          "caption": "Waiting is the mechanism.",
+          "subline": "Ten minutes for an urge. Twenty-four hours for a want.",
+          "caption_y": 150,
+          "uiState": "urge-running-dark",
+          "heroIndex": 3,
+          "capture_well": {
+            "x": 432,
+            "y": 880,
+            "w": 1200,
+            "h": 1872,
+            "radius": 120,
+            "bleed": true
+          }
+        },
+        {
+          "id": "05-finishes",
+          "n": 4,
+          "field": "light",
+          "caption": "Five dials, one record.",
+          "subline": "The finish changes. The truth doesn't.",
+          "caption_y": 150,
+          "uiState": "today-salmon-light",
+          "heroIndex": 5,
+          "capture_well": {
+            "x": 432,
+            "y": 880,
+            "w": 1200,
+            "h": 1872,
+            "radius": 120,
+            "bleed": true
+          }
+        },
+        {
+          "id": "06-yours",
+          "n": 5,
+          "field": "light",
+          "caption": "Yours alone, on this phone.",
+          "subline": "No account. No bank connection. No analytics. Ever.",
+          "caption_y": 150,
+          "uiState": "settings-privacy-light",
+          "heroIndex": 6,
+          "capture_well": {
+            "x": 432,
+            "y": 880,
+            "w": 1200,
+            "h": 1872,
+            "radius": 120,
+            "bleed": true
+          }
+        }
+      ]
+    }
+  }
+}

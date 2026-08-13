@@ -24,14 +24,10 @@ struct SpendOptionsSheet: View {
             VStack(spacing: DS.Spacing.xl) {
                 // Header
                 VStack(spacing: DS.Spacing.sm) {
-                    Image(systemName: "questionmark.circle.fill")
+                    Image(systemName: "questionmark.circle")
                         .font(Font.adaptiveDisplay(size: 32, isRegular: isRegular))
                         .foregroundStyle(
-                            LinearGradient(
-                                colors: [.textSecondary, .textTertiary],
-                                startPoint: .top,
-                                endPoint: .bottom
-                            )
+                            .inkSecondary
                         )
 
                     Text(L10n.spendTypeQuestion)
@@ -52,11 +48,11 @@ struct SpendOptionsSheet: View {
                     HStack(spacing: DS.Spacing.md) {
                         ZStack {
                             Circle()
-                                .fill(Color.mandatoryAmber.opacity(0.15))
+                                .fill(Color.stateWait.opacity(0.15))
                                 .frame(width: 44, height: 44)
-                            Image(systemName: "building.columns.fill")
+                            Image(systemName: "building.columns")
                                 .font(.title3)
-                                .foregroundStyle(.mandatoryAmber)
+                                .foregroundStyle(.stateWait)
                                 .accessibilityHidden(true)
                         }
 
@@ -64,28 +60,28 @@ struct SpendOptionsSheet: View {
                             Text(L10n.mandatorySpend)
                                 .font(.subheadline)
                                 .fontWeight(.semibold)
-                                .foregroundStyle(.textPrimary)
+                                .foregroundStyle(.inkPrimary)
                             Text(L10n.mandatoryDesc)
                                 .font(.caption)
-                                .foregroundStyle(.textSecondary)
+                                .foregroundStyle(.inkSecondary)
                         }
 
                         Spacer()
 
-                        Image(systemName: "checkmark.shield.fill")
+                        Image(systemName: "checkmark.shield")
                             .font(.title3)
-                            .foregroundStyle(.noBuyGreen)
+                            .foregroundStyle(.accentKept)
                     }
                     .padding(DS.Spacing.lg)
                     .background(
                         RoundedRectangle(cornerRadius: DS.Radius.md)
-                            .fill(Color.mandatoryAmberLight)
+                            .fill(Color.stateWaitWash)
                             .overlay(
                                 RoundedRectangle(cornerRadius: DS.Radius.md)
-                                    .stroke(Color.mandatoryAmber.opacity(0.2), lineWidth: 1)
+                                    .stroke(Color.stateWait.opacity(0.2), lineWidth: 1)
                             )
                     )
-                    .shadow(color: .mandatoryAmber.opacity(0.1), radius: 4, x: 0, y: 2)
+
                 }
                 .buttonStyle(.scale)
                 .opacity(appeared ? 1 : 0)
@@ -103,39 +99,39 @@ struct SpendOptionsSheet: View {
                     HStack(spacing: DS.Spacing.md) {
                         ZStack {
                             Circle()
-                                .fill(Color.spendRed.opacity(0.15))
+                                .fill(Color.accentSpentText.opacity(0.15))
                                 .frame(width: 44, height: 44)
-                            Image(systemName: "cart.fill")
+                            Image(systemName: "cart")
                                 .font(.title3)
-                                .foregroundStyle(.spendRed)
+                                .foregroundStyle(.accentSpentText)
                         }
 
                         VStack(alignment: .leading, spacing: DS.Spacing.xs) {
                             Text(L10n.discretionarySpend)
                                 .font(.subheadline)
                                 .fontWeight(.semibold)
-                                .foregroundStyle(.textPrimary)
+                                .foregroundStyle(.inkPrimary)
                             Text(L10n.discretionaryDesc)
                                 .font(.caption)
-                                .foregroundStyle(.textSecondary)
+                                .foregroundStyle(.inkSecondary)
                         }
 
                         Spacer()
 
-                        Image(systemName: "exclamationmark.triangle.fill")
+                        Image(systemName: "exclamationmark.triangle")
                             .font(.title3)
-                            .foregroundStyle(.spendRed.opacity(0.7))
+                            .foregroundStyle(.accentSpentText.opacity(0.7))
                     }
                     .padding(DS.Spacing.lg)
                     .background(
                         RoundedRectangle(cornerRadius: DS.Radius.md)
-                            .fill(Color.spendRedLight)
+                            .fill(Color.accentSpentWash)
                             .overlay(
                                 RoundedRectangle(cornerRadius: DS.Radius.md)
-                                    .stroke(Color.spendRed.opacity(0.15), lineWidth: 1)
+                                    .stroke(Color.accentSpentText.opacity(0.15), lineWidth: 1)
                             )
                     )
-                    .shadow(color: .spendRed.opacity(0.08), radius: 4, x: 0, y: 2)
+
                 }
                 .buttonStyle(.scale)
                 .opacity(appeared ? 1 : 0)
@@ -144,9 +140,9 @@ struct SpendOptionsSheet: View {
 
                 // Optional amount input
                 HStack(spacing: DS.Spacing.sm) {
-                    Image(systemName: "dollarsign.circle.fill")
+                    Image(systemName: "dollarsign.circle")
                         .font(.body)
-                        .foregroundStyle(.textTertiary)
+                        .foregroundStyle(.inkSecondary)
                     TextField(L10n.spendAmountPlaceholder, text: $spendAmount)
                         .keyboardType(.decimalPad)
                         .focused($amountFocused)
@@ -155,13 +151,13 @@ struct SpendOptionsSheet: View {
                 .padding(DS.Spacing.md)
                 .background(
                     RoundedRectangle(cornerRadius: DS.Radius.sm)
-                        .fill(Color.surfaceSecondary)
+                        .fill(Color.surfaceDial)
                         .overlay(
                             RoundedRectangle(cornerRadius: DS.Radius.sm)
-                                .stroke(Color.textTertiary.opacity(0.2), lineWidth: 1)
+                                .stroke(Color.inkSecondary.opacity(0.2), lineWidth: 1)
                         )
                 )
-                .shadow(DS.Shadow.card)
+
                 .opacity(appeared ? 1 : 0)
                 .offset(y: appeared ? 0 : 10)
                 .animation(reduceMotion ? nil : .spring(response: 0.4, dampingFraction: 0.7).delay(0.15), value: appeared)
@@ -175,17 +171,17 @@ struct SpendOptionsSheet: View {
                     HStack(spacing: DS.Spacing.sm) {
                         Image(systemName: "checklist")
                             .font(.caption)
-                            .foregroundStyle(.noBuyGreen)
+                            .foregroundStyle(.accentKept)
                         Text("Wait — try the checklist first")
                             .font(.caption)
-                            .foregroundStyle(.noBuyGreen)
+                            .foregroundStyle(.accentKept)
                             .fontWeight(.medium)
                     }
                     .padding(.vertical, DS.Spacing.sm)
                     .padding(.horizontal, DS.Spacing.md)
                     .background(
                         Capsule()
-                            .fill(Color.noBuyGreenLight)
+                            .fill(Color.accentKeptWash)
                     )
                 }
                 .buttonStyle(.scale)

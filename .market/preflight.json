@@ -1,0 +1,97 @@
+{
+  "adopted": "2026-08-12",
+  "storefronts": ["us"],
+  "note": "NoBuy adopts the market contract at its v2.0.0 subscription migration. Owner decision 2026-08-12: the one-time unlock retires portfolio-wide (owner law 2026-08-06) and this app moves to monthly+yearly. Evidence archived under .market/evidence/pricing/us.",
+
+  "pricing": {
+    "monetization": "subscription",
+
+    "ongoingValue": {
+      "claim": "NoBuy is a daily-behaviour instrument, not a one-shot answer: the user makes a fresh spend/no-spend decision every day, the streak and its freeze budget renew monthly, challenges run on rolling windows, and the personal record grows for as long as the subscription lasts. The nearest ranked rivals in this niche all monetise the same daily-decision job as auto-renewable subscriptions.",
+      "because": "ev:us/stop-impulse-buying#appId=6475173011.iap"
+    },
+
+    "retiredSkus": ["com.ufukozdemir.nobuy.pro"],
+    "retiredSkusNote": "The lifetime unlock sold to 60 owners between 2026-03 and 2026-08. It is removed from sale but NEVER deleted: the app verifies their entitlement against this product id on every launch, so it must stay testable in the simulator .storekit config. Owner law 2026-08-06 retires lifetime portfolio-wide; this declaration is how the migration COMPLIES rather than reading as a foreign tier.",
+
+    "structure": {
+      "skus": [
+        { "tier": "monthly", "price": 4.99 },
+        { "tier": "yearly", "price": 39.99 }
+      ],
+      "trial": { "days": 7 },
+
+      "rejected": [
+        {
+          "tier": "weekly",
+          "claim": "Only 1 of the 5 ranked impulse-control apps sells a weekly rung (ThinkTwice at $5.99/wk) and it pairs it with a $34.99 yearly — a burst-usage pattern that contradicts a daily-habit product. Owner law 2026-08-06 rules it out regardless.",
+          "because": "ev:us/stop-impulse-buying#appId=6757983716.iap"
+        },
+        {
+          "tier": "lifetime",
+          "claim": "Retired portfolio-wide by owner law 2026-08-06. In-niche it remains common (ThinkTwice $19.99, Track Spending $149, Fleur $9.99-25.99), so this is a house decision, not a market reading — recorded here so the deviation is visible rather than silent.",
+          "because": "ev:us/no-spend-challenge#appId=6444917344.iap"
+        },
+        {
+          "tier": "quarterly",
+          "claim": "Present in only one archived app (Dollarwise $39.99/quarter) and absent from every ranked impulse-control rival; a mid-rung splits an already thin funnel.",
+          "because": "ev:us/no-spend-challenge#appId=6739215932.iap"
+        }
+      ],
+
+      "levels": {
+        "monthly": {
+          "claim": "$4.99/mo sits at the bottom of the ranked impulse-control band (Stop Impulse Buying $9.99, MoodWallet $6.99-12.99, Track Spending $4.99) and matches the cheapest credible rival exactly. Deliberate: this app carries 0 ratings, so it cannot charge on reputation. Niche monthly median is ~$8.49, so the 50% floor is ~$4.25 and $4.99 clears it.",
+          "because": "ev:us/stop-impulse-buying#appId=1505368956.iap"
+        },
+        "yearly": {
+          "claim": "$39.99/yr is set BELOW the two closest rivals ($49.99 at both Stop Impulse Buying and MoodWallet) and ABOVE the niche median of ~$29.99 — a mid-premium position justified by the behavioural toolkit (urge-surfing timer, impulse checklist, 24h waiting list) that no ranked rival ships. Yearly is 33% cheaper than 12 monthly renewals, a real discount stated truthfully on the paywall.",
+          "because": "ev:us/stop-impulse-buying#appId=6475173011.iap"
+        }
+      },
+
+      "ownFunnel": {
+        "claim": "Between 2026-04-01 and 2026-07-14 the app converted ~6% of ~976 downloads into 60 one-time purchases at $2.99-4.99 with ZERO ratings for social proof. That measures willingness to pay, not willingness to subscribe — the migration deliberately keeps the entry price at the same $4.99 the funnel already proved, and moves the risk to the yearly rung.",
+        "because": "ev:self/nobuy-funnel-2026-07"
+      }
+    }
+  },
+
+  "aso": {
+    "appId": 6760716822,
+    "targets": [
+      {
+        "phrase": "no spend day",
+        "placement": "name",
+        "because": "ev:self/aso-rank-2026-07-27",
+        "claim": "Measured #1 on every weekly pull since 2026-07-06 (ops/aso/rank_history.csv). The phrase appears verbatim inside the shipped Name 'NoBuy: No Spend Day Tracker' — which is exactly the mechanism the long-tail law describes, and the reason the rank exists at all."
+      },
+      {
+        "phrase": "no spend tracker",
+        "placement": "name",
+        "because": "ev:self/aso-rank-2026-07-27",
+        "claim": "Measured #1 since 2026-07-13 (rank_history.csv). Also carried verbatim by the Name. These two #1 positions are the app's only organic acquisition channel today, so v2.0.0 keeps the Name's long-tail spine intact — a rename would gamble two earned firsts against an unmeasured phrase."
+      },
+      {
+        "phrase": "no buy challenge",
+        "placement": "keywords",
+        "because": "ev:self/aso-rank-2026-07-27",
+        "claim": "Measured #5-#7 across four weekly pulls without appearing in Name or Subtitle — a keyword-field position, tracked but not relied on."
+      }
+    ]
+  },
+
+  "metadata": {
+    "name": "NoBuy: No Spend Day Tracker",
+    "subtitle": "Stop Impulse Buying · Streaks",
+    "terms": ["stop impulse buying", "no spend challenge"]
+  },
+
+  "scope": {
+    "owner_override": {
+      "by": "owner",
+      "date": "2026-08-12",
+      "reason": "Rule 13 caps a release at ONE new signature surface; v2.0.0 carries THREE (subscription migration · full design-pipeline redesign · interactive widget). Owner asked for all three in one release after being shown the rule and the Caliper measurement behind it. Scope freezes at the end of the design round (.asc/scope-freeze.json); every finding after that is fixed in an existing file or deferred to v-next."
+    }
+  }
+}

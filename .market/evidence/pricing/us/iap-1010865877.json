@@ -1,0 +1,37 @@
+{
+  "appId": "1010865877",
+  "name": "YNAB",
+  "ratingCount": 61164,
+  "sellerName": "You Need A Budget LLC",
+  "term": "no spend tracker",
+  "storefront": "us",
+  "fetched_at": "2026-08-12T13:36:57.426Z",
+  "readable": true,
+  "typed": false,
+  "url": "https://apps.apple.com/us/app/id1010865877",
+  "sha256": "9be4bbab1286767a2e2d16be3ef3a4146a11d5c811c65567223293a7581db2c5",
+  "iap": [
+    {
+      "name": "YNAB Subscription",
+      "price": 14.99,
+      "tier": "unknown"
+    },
+    {
+      "name": "YNAB Subscription",
+      "price": 109,
+      "tier": "unknown"
+    },
+    {
+      "name": "YNAB Subscription",
+      "price": 14.99,
+      "tier": "unknown"
+    },
+    {
+      "name": "YNAB Subscription",
+      "price": 109,
+      "tier": "unknown"
+    }
+  ],
+  "tiers": {},
+  "untypedReason": "4 SKU bulundu ama hiçbirinin adında süre yok (ör. \"YNAB Subscription\") — kademe atanamadı; medyana katkı vermez"
+}

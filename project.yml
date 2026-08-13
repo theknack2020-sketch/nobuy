@@ -11,12 +11,16 @@ options:
     - en
     - Base
 
+packages:
+  TheKnackKit:
+    path: ../TheKnackKit
+
 settings:
   base:
     SWIFT_VERSION: "6.0"
     DEVELOPMENT_TEAM: 99H9NJ6Z6J
-    MARKETING_VERSION: "1.2.0"
-    CURRENT_PROJECT_VERSION: "16"
+    MARKETING_VERSION: "2.0.0"
+    CURRENT_PROJECT_VERSION: "17"
 
 targets:
   NoBuy:
@@ -48,6 +52,66 @@ targets:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.ufukozdemir.nobuy
         TARGETED_DEVICE_FAMILY: "1,2"
+    # DECLARED here, never hand-written: XcodeGen owns every path under `entitlements:` and
+    # rewrites a file with no `properties:` block to `<dict/>` on the next generate. A hand-filled
+    # entitlements file is silently emptied and the archive ships with no capability at all —
+    # and a simulator build carries no entitlements, so nothing local ever catches it.
+    entitlements:
+      path: NoBuy.entitlements
+      properties:
+        com.apple.security.application-groups:
+          - group.com.ufukozdemir.nobuy
+    dependencies:
+      - target: NoBuyWidget
+      # The portfolio's canonical honest review pre-prompt. NoBuy carried a local
+      # copy until v2.0.0; the copy behaved correctly but only ever fired on a
+      # 7/14/30/60/100-day streak, which is why 976 downloads produced 0 ratings.
+      - package: TheKnackKit
+        product: ReviewGate
+
+  NoBuyWidget:
+    type: app-extension
+    platform: iOS
+    sources:
+      - path: Widget
+      # The widget reads the same records the app writes, so it compiles the same model layer
+      # rather than a parallel copy of it. Listed file by file on purpose: a widget process is
+      # budgeted, and pulling in the app's view layer would drag StoreKit, TipKit and the whole
+      # theme system into a 76pt circle.
+      - path: Sources/Models/DayRecord.swift
+      - path: Sources/Models/MandatoryCategory.swift
+      - path: Sources/Models/SchemaVersions.swift
+      - path: Sources/Models/StreakInfo.swift
+      - path: Sources/Models/WaitingItem.swift
+      - path: Sources/Services/NoBuyStore.swift
+      - path: Sources/Services/NoBuySnapshot.swift
+      - path: Sources/Services/StreakCalculator.swift
+      - path: Sources/Services/AppLogger.swift
+      - path: Sources/Intents/MarkNoBuyIntent.swift
+      - path: Sources/Models/DayTruth.swift
+      - path: Sources/Extensions/Localizable.swift
+      # The extension touches the same UserDefaults API the app declares, so it carries its own
+      # manifest — an extension without one is simply missing from the aggregated privacy report.
+      - path: Widget/PrivacyInfo.xcprivacy
+        buildPhase: resources
+    info:
+      path: Widget/Info.plist
+      properties:
+        CFBundleDisplayName: NoBuy
+        CFBundleShortVersionString: $(MARKETING_VERSION)
+        CFBundleVersion: $(CURRENT_PROJECT_VERSION)
+        NSExtension:
+          NSExtensionPointIdentifier: com.apple.widgetkit-extension
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.ufukozdemir.nobuy.widget
+        TARGETED_DEVICE_FAMILY: "1,2"
+        SKIP_INSTALL: YES
+    entitlements:
+      path: Widget/NoBuyWidget.entitlements
+      properties:
+        com.apple.security.application-groups:
+          - group.com.ufukozdemir.nobuy
 
   NoBuyTests:
     type: bundle.unit-test
@@ -76,6 +140,7 @@ schemes:
     build:
       targets:
         NoBuy: all
+        NoBuyWidget: all
         NoBuyTests: [test]
         NoBuyUITests: [test]
     run:

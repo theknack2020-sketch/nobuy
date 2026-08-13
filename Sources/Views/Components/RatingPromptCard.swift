@@ -23,23 +23,14 @@ struct RatingPromptCard: View {
             ZStack {
                 Circle()
                     .fill(
-                        RadialGradient(
-                            colors: [.noBuyGreen.opacity(0.25), .noBuyGreen.opacity(0.02)],
-                            center: .center,
-                            startRadius: 5,
-                            endRadius: 44
-                        )
+                        .accentKept.opacity(0.12)
                     )
                     .frame(width: 88, height: 88)
 
                 Image(systemName: "heart.fill")
                     .font(Font.adaptiveDisplay(size: 40, isRegular: isRegular))
                     .foregroundStyle(
-                        LinearGradient(
-                            colors: [.noBuyGreen, .green.opacity(0.7)],
-                            startPoint: .top,
-                            endPoint: .bottom
-                        )
+                        .accentKept
                     )
                     .symbolEffect(.pulse, value: reduceMotion ? false : appeared)
                     .accessibilityHidden(true)
@@ -50,11 +41,11 @@ struct RatingPromptCard: View {
 
             VStack(spacing: DS.Spacing.sm) {
                 Text("Enjoying NoBuy?")
-                    .font(Font.adaptiveDisplay(size: 22, weight: .bold, design: .rounded, isRegular: isRegular))
+                    .font(Font.adaptiveDisplay(size: 22, weight: .semibold, isRegular: isRegular))
 
                 Text("\(streak) days without impulse buys — nice work!")
                     .font(.body)
-                    .foregroundStyle(.textSecondary)
+                    .foregroundStyle(.inkSecondary)
                     .multilineTextAlignment(.center)
                     .padding(.horizontal, DS.Spacing.xl)
             }
@@ -69,26 +60,22 @@ struct RatingPromptCard: View {
                     dismiss()
                 } label: {
                     HStack {
-                        Image(systemName: "star.fill")
+                        Image(systemName: "star")
                             .font(.title3)
                             .accessibilityHidden(true)
                         Text("Love it!")
                             .fontWeight(.semibold)
                     }
-                    .foregroundStyle(.white)
+                    .foregroundStyle(Color.inkOnAccent)
                     .frame(maxWidth: .infinity)
                     .frame(height: 52)
                     .background(
                         RoundedRectangle(cornerRadius: DS.Radius.md)
                             .fill(
-                                LinearGradient(
-                                    colors: [.noBuyGreen, .noBuyGreen.opacity(0.8)],
-                                    startPoint: .leading,
-                                    endPoint: .trailing
-                                )
+                                .accentKept
                             )
                     )
-                    .shadow(color: .noBuyGreen.opacity(0.3), radius: 10, x: 0, y: 5)
+
                 }
                 .buttonStyle(.scale)
                 .accessibilityLabel("Love it, rate NoBuy")
@@ -102,7 +89,7 @@ struct RatingPromptCard: View {
                 } label: {
                     Text("Could be better")
                         .font(.subheadline)
-                        .foregroundStyle(.textSecondary)
+                        .foregroundStyle(.inkSecondary)
                 }
                 .buttonStyle(.scale)
                 .accessibilityLabel("Could be better, send private feedback")

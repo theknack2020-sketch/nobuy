@@ -1,3 +1,9 @@
+> ⛔ **SUPERSEDED — v1.2.0 planning, kept for history only.**
+> Written when NoBuy Pro was a one-time unlock. As of v2.0.0 Pro is a monthly/yearly
+> auto-renewable, the comparison-table paywall is banned by owner law, and "Pay once, own
+> forever" is false. The live plan is `.asc/screenshot-plan.md`, derived from
+> `.asc/shots/panels-geometry.json`. Nothing in this file may be copied into a v2 artefact.
+
 # NoBuy ASO Overhaul Report
 
 **App:** NoBuy: No Spend Day Tracker

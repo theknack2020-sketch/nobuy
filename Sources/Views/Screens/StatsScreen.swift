@@ -135,12 +135,22 @@ struct StatsScreen: View {
             ScrollViewReader { proxy in
                 ScrollView {
                     VStack(spacing: DS.Spacing.xxl) {
-                        if records.isEmpty {
-                            statsEmptyState
-                        } else {
-                            overviewCards
-                        }
+                        // MARK: - Three claims (Escapement)
+                        //
+                        // The run against the best · the month so far · EVERY RUN KEPT.
+                        // The third is the Doorframe measure (M-09) made visible: an ended run
+                        // is drawn as a completed interval, at full dignity, forever. Nothing
+                        // zeroes, nothing is cleared — the current run is simply the one with
+                        // an open end. It is the churn-risk answer drawn rather than written.
+                        theRunClaim
+                        monthSoFarClaim
+                        everyRunKeptClaim
 
+                        // The analysis layer below is Pro (owner ruling 2026-08-12, which
+                        // widened Pro from the round's three rows). The round drew Stats with
+                        // NO charts — intervals only — so the charts sit beneath the three
+                        // claims rather than replacing them: the brave choice keeps the top of
+                        // the screen, and the paid depth is a section, not the subject.
                         if store.isPro {
                             // Savings Estimate (Pro)
                             savingsEstimateCard
@@ -222,7 +232,7 @@ struct StatsScreen: View {
                     .allowsHitTesting(!isLoading)
                 }
                 .scrollDismissesKeyboard(.interactively)
-                .background(Color.surfacePrimary)
+                .background(Color.surfaceField)
                 .navigationTitle("Statistics")
                 .navigationBarTitleDisplayMode(.large)
                 .onAppear {
@@ -240,7 +250,7 @@ struct StatsScreen: View {
             }
         }
         .fullScreenCover(isPresented: $showPaywall) {
-            PaywallView(store: store)
+            PaywallView(store: store, entry: .analysis)
         }
         .onAppear {
             refreshStats()
@@ -285,7 +295,7 @@ struct StatsScreen: View {
                     title: "Total Days",
                     value: "\(viewModel.totalNoBuyDays)",
                     icon: "checkmark.circle.fill",
-                    color: .noBuyGreen
+                    color: .accentKept
                 )
                 .accessibilityLabel("Total no-spend days: \(viewModel.totalNoBuyDays)")
                 .offset(y: appeared ? 0 : 20)
@@ -296,7 +306,7 @@ struct StatsScreen: View {
                     title: "Estimated Savings",
                     value: formattedSavings,
                     icon: "banknote.fill",
-                    color: .noBuyGreen
+                    color: .accentKept
                 )
                 .accessibilityLabel("Estimated savings: \(formattedSavings)")
                 .offset(y: appeared ? 0 : 20)
@@ -308,7 +318,7 @@ struct StatsScreen: View {
                     value: "\(viewModel.currentStreak)",
                     subtitle: "days",
                     icon: "flame.fill",
-                    color: .orange
+                    color: .accentSpentMark
                 )
                 .accessibilityLabel("Current streak: \(viewModel.currentStreak) days")
                 .offset(y: appeared ? 0 : 20)
@@ -320,7 +330,7 @@ struct StatsScreen: View {
                     value: "\(viewModel.longestStreak)",
                     subtitle: "days",
                     icon: "trophy.fill",
-                    color: .yellow
+                    color: .accentSpentMark
                 )
                 .accessibilityLabel("Longest streak: \(viewModel.longestStreak) days")
                 .offset(y: appeared ? 0 : 20)
@@ -334,7 +344,7 @@ struct StatsScreen: View {
                     title: "Total Spending",
                     value: formattedTotalSpending,
                     icon: "creditcard.fill",
-                    color: .spendRed
+                    color: .accentSpentText
                 )
                 .accessibilityLabel("Total spending: \(formattedTotalSpending)")
                 .offset(y: appeared ? 0 : 20)
@@ -376,27 +386,27 @@ struct StatsScreen: View {
                     .foregroundStyle(color)
                 Text(title)
                     .font(.caption)
-                    .foregroundStyle(.textSecondary)
+                    .foregroundStyle(.inkSecondary)
             }
 
             HStack(alignment: .firstTextBaseline, spacing: DS.Spacing.xs) {
                 Text(value)
                     .font(.title.bold())
-                    .foregroundStyle(.textPrimary)
+                    .foregroundStyle(.inkPrimary)
                     .contentTransition(.numericText())
                 if let subtitle {
                     Text(subtitle)
                         .font(.caption)
-                        .foregroundStyle(.textTertiary)
+                        .foregroundStyle(.inkSecondary)
                 }
             }
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding(DS.Spacing.lg)
         .background(DS.Gradient.card, in: RoundedRectangle(cornerRadius: DS.Radius.md))
-        .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: DS.Radius.md))
-        .background(Color.surfaceSecondary, in: RoundedRectangle(cornerRadius: DS.Radius.md))
-        .shadow(DS.Shadow.card)
+        .background(Color.surfaceWell, in: RoundedRectangle(cornerRadius: DS.Radius.md))
+        .background(Color.surfaceDial, in: RoundedRectangle(cornerRadius: DS.Radius.md))
+
     }
 
     // MARK: - Savings Estimate Card (Pro)
@@ -412,14 +422,14 @@ struct StatsScreen: View {
             if dailySpendingEstimate > 0 {
                 VStack(spacing: DS.Spacing.sm) {
                     Text(formattedSavings)
-                        .font(Font.adaptiveDisplay(size: 48, weight: .black, design: .rounded, isRegular: isRegular))
-                        .foregroundStyle(.noBuyGreen)
+                        .font(Font.adaptiveDisplay(size: 48, weight: .semibold, isRegular: isRegular))
+                        .foregroundStyle(.accentKept)
                         .contentTransition(.numericText())
                         .animation(reduceMotion ? nil : DS.Anim.normal, value: viewModel.estimatedSavings)
 
                     Text("\(viewModel.totalNoBuyDays) no-spend days × \(formattedDailyEstimate)/day")
                         .font(.subheadline)
-                        .foregroundStyle(.textSecondary)
+                        .foregroundStyle(.inkSecondary)
                 }
                 .frame(maxWidth: .infinity)
                 .padding(.vertical, DS.Spacing.md)
@@ -427,10 +437,10 @@ struct StatsScreen: View {
                 VStack(spacing: DS.Spacing.sm) {
                     Image(systemName: "questionmark.circle")
                         .font(.title2)
-                        .foregroundStyle(.textTertiary)
+                        .foregroundStyle(.inkSecondary)
                     Text("Set your daily spending estimate in Settings to see savings")
                         .font(.subheadline)
-                        .foregroundStyle(.textSecondary)
+                        .foregroundStyle(.inkSecondary)
                         .multilineTextAlignment(.center)
                 }
                 .padding(.vertical, DS.Spacing.md)
@@ -467,22 +477,22 @@ struct StatsScreen: View {
                 .cornerRadius(DS.Radius.sm / 2)
             }
             .chartForegroundStyleScale([
-                "No-Spend": Color.noBuyGreen,
-                "Spent": Color.spendRed,
+                "No-Spend": Color.accentKept,
+                "Spent": Color.accentSpentText,
             ])
             .chartLegend(position: .bottom, alignment: .center, spacing: DS.Spacing.md)
             .chartYAxis {
                 AxisMarks(position: .leading) { _ in
                     AxisGridLine(stroke: StrokeStyle(lineWidth: 0.5, dash: [4, 4]))
-                        .foregroundStyle(Color.textTertiary.opacity(0.3))
+                        .foregroundStyle(Color.inkSecondary.opacity(0.3))
                     AxisValueLabel()
-                        .foregroundStyle(Color.textTertiary)
+                        .foregroundStyle(Color.inkSecondary)
                 }
             }
             .chartXAxis {
                 AxisMarks { _ in
                     AxisValueLabel()
-                        .foregroundStyle(Color.textSecondary)
+                        .foregroundStyle(Color.inkSecondary)
                 }
             }
             .frame(height: 220)
@@ -513,7 +523,7 @@ struct StatsScreen: View {
                     if item.totalRecorded > 0 {
                         Text("\(Int(item.percentage))%")
                             .font(.caption2)
-                            .foregroundStyle(.textTertiary)
+                            .foregroundStyle(.inkSecondary)
                     }
                 }
             }
@@ -521,7 +531,7 @@ struct StatsScreen: View {
             .chartYAxis {
                 AxisMarks { _ in
                     AxisValueLabel()
-                        .foregroundStyle(Color.textSecondary)
+                        .foregroundStyle(Color.inkSecondary)
                 }
             }
             .frame(height: 210)
@@ -532,9 +542,9 @@ struct StatsScreen: View {
     }
 
     private func barColor(for item: WeekdayData) -> Color {
-        if item.percentage >= 70 { return .noBuyGreen }
-        if item.percentage >= 40 { return .mandatoryAmber }
-        return .spendRed
+        if item.percentage >= 70 { return .accentKept }
+        if item.percentage >= 40 { return .stateWait }
+        return .accentSpentText
     }
 
     // MARK: - Streak History Line Chart (Pro)
@@ -550,7 +560,7 @@ struct StatsScreen: View {
             if weeklyStreakPoints.isEmpty || weeklyStreakPoints.allSatisfy({ $0.streakLength == 0 }) {
                 Text("Start building streaks to see your history")
                     .font(.subheadline)
-                    .foregroundStyle(.textTertiary)
+                    .foregroundStyle(.inkSecondary)
                     .frame(maxWidth: .infinity, alignment: .center)
                     .padding(.vertical, DS.Spacing.xl)
             } else {
@@ -560,11 +570,7 @@ struct StatsScreen: View {
                         y: .value("Streak", point.streakLength)
                     )
                     .foregroundStyle(
-                        LinearGradient(
-                            colors: [Color.noBuyGreen.opacity(0.3), Color.noBuyGreen.opacity(0.02)],
-                            startPoint: .top,
-                            endPoint: .bottom
-                        )
+                        Color.accentKept.opacity(0.3)
                     )
                     .interpolationMethod(.catmullRom)
 
@@ -572,7 +578,7 @@ struct StatsScreen: View {
                         x: .value("Week", point.weekLabel),
                         y: .value("Streak", point.streakLength)
                     )
-                    .foregroundStyle(Color.noBuyGreen)
+                    .foregroundStyle(Color.accentKept)
                     .lineStyle(StrokeStyle(lineWidth: 2.5))
                     .interpolationMethod(.catmullRom)
 
@@ -580,21 +586,21 @@ struct StatsScreen: View {
                         x: .value("Week", point.weekLabel),
                         y: .value("Streak", point.streakLength)
                     )
-                    .foregroundStyle(Color.noBuyGreen)
+                    .foregroundStyle(Color.accentKept)
                     .symbolSize(36)
                 }
                 .chartYAxis {
                     AxisMarks(position: .leading) { _ in
                         AxisGridLine(stroke: StrokeStyle(lineWidth: 0.5, dash: [4, 4]))
-                            .foregroundStyle(Color.textTertiary.opacity(0.3))
+                            .foregroundStyle(Color.inkSecondary.opacity(0.3))
                         AxisValueLabel()
-                            .foregroundStyle(Color.textTertiary)
+                            .foregroundStyle(Color.inkSecondary)
                     }
                 }
                 .chartXAxis {
                     AxisMarks(values: .automatic(desiredCount: 4)) { _ in
                         AxisValueLabel()
-                            .foregroundStyle(Color.textSecondary)
+                            .foregroundStyle(Color.inkSecondary)
                             .font(.caption2)
                     }
                 }
@@ -619,7 +625,7 @@ struct StatsScreen: View {
             if categorySlices.isEmpty {
                 Text("No data yet")
                     .font(.subheadline)
-                    .foregroundStyle(.textTertiary)
+                    .foregroundStyle(.inkSecondary)
                     .frame(maxWidth: .infinity, alignment: .center)
                     .padding(.vertical, DS.Spacing.xl)
             } else {
@@ -634,9 +640,9 @@ struct StatsScreen: View {
                         .cornerRadius(DS.Radius.sm / 2)
                     }
                     .chartForegroundStyleScale([
-                        "No-Spend": Color.noBuyGreen,
-                        "Essential": Color.mandatoryAmber,
-                        "Discretionary": Color.spendRed,
+                        "No-Spend": Color.accentKept,
+                        "Essential": Color.stateWait,
+                        "Discretionary": Color.accentSpentText,
                     ])
                     .chartLegend(.hidden)
                     .frame(width: 140, height: 140)
@@ -652,10 +658,10 @@ struct StatsScreen: View {
                                 VStack(alignment: .leading, spacing: 1) {
                                     Text(slice.category)
                                         .font(.caption.weight(.medium))
-                                        .foregroundStyle(.textPrimary)
+                                        .foregroundStyle(.inkPrimary)
                                     Text("\(slice.count) days")
                                         .font(.caption2)
-                                        .foregroundStyle(.textSecondary)
+                                        .foregroundStyle(.inkSecondary)
                                 }
                             }
                         }
@@ -672,10 +678,10 @@ struct StatsScreen: View {
 
     private func colorForCategory(_ category: String) -> Color {
         switch category {
-        case "No-Spend": .noBuyGreen
-        case "Essential": .mandatoryAmber
-        case "Discretionary": .spendRed
-        default: .textTertiary
+        case "No-Spend": .accentKept
+        case "Essential": .stateWait
+        case "Discretionary": .accentSpentText
+        default: .inkSecondary
         }
     }
 
@@ -692,7 +698,7 @@ struct StatsScreen: View {
             if noBuyRatePoints.isEmpty {
                 Text("Not enough data yet")
                     .font(.subheadline)
-                    .foregroundStyle(.textTertiary)
+                    .foregroundStyle(.inkSecondary)
                     .frame(maxWidth: .infinity, alignment: .center)
                     .padding(.vertical, DS.Spacing.xl)
             } else {
@@ -702,11 +708,7 @@ struct StatsScreen: View {
                         y: .value("Rate", point.rate)
                     )
                     .foregroundStyle(
-                        LinearGradient(
-                            colors: [Color.noBuyGreen.opacity(0.4), Color.noBuyGreen.opacity(0.03)],
-                            startPoint: .top,
-                            endPoint: .bottom
-                        )
+                        Color.accentKept.opacity(0.4)
                     )
                     .interpolationMethod(.catmullRom)
 
@@ -714,7 +716,7 @@ struct StatsScreen: View {
                         x: .value("Month", point.label),
                         y: .value("Rate", point.rate)
                     )
-                    .foregroundStyle(Color.noBuyGreen.gradient)
+                    .foregroundStyle(Color.accentKept.gradient)
                     .lineStyle(StrokeStyle(lineWidth: 2.5))
                     .interpolationMethod(.catmullRom)
 
@@ -722,13 +724,13 @@ struct StatsScreen: View {
                         x: .value("Month", point.label),
                         y: .value("Rate", point.rate)
                     )
-                    .foregroundStyle(Color.noBuyGreen)
+                    .foregroundStyle(Color.accentKept)
                     .symbolSize(30)
                     .annotation(position: .top, spacing: 4) {
                         if point.rate > 0 {
                             Text(String(format: "%.0f%%", point.rate))
                                 .font(.caption2.bold())
-                                .foregroundStyle(.textSecondary)
+                                .foregroundStyle(.inkSecondary)
                         }
                     }
                 }
@@ -736,12 +738,12 @@ struct StatsScreen: View {
                 .chartYAxis {
                     AxisMarks(position: .leading, values: [0, 25, 50, 75, 100]) { value in
                         AxisGridLine(stroke: StrokeStyle(lineWidth: 0.5, dash: [4, 4]))
-                            .foregroundStyle(Color.textTertiary.opacity(0.3))
+                            .foregroundStyle(Color.inkSecondary.opacity(0.3))
                         AxisValueLabel {
                             if let v = value.as(Int.self) {
                                 Text("\(v)%")
                                     .font(.caption2)
-                                    .foregroundStyle(Color.textTertiary)
+                                    .foregroundStyle(Color.inkSecondary)
                             }
                         }
                     }
@@ -749,7 +751,7 @@ struct StatsScreen: View {
                 .chartXAxis {
                     AxisMarks { _ in
                         AxisValueLabel()
-                            .foregroundStyle(Color.textSecondary)
+                            .foregroundStyle(Color.inkSecondary)
                     }
                 }
                 .frame(height: 200)
@@ -783,12 +785,12 @@ struct StatsScreen: View {
                         VStack(spacing: DS.Spacing.xs) {
                             Image(systemName: trend.isImproving ? "arrow.up.circle.fill" : "arrow.down.circle.fill")
                                 .font(.title)
-                                .foregroundStyle(trend.isImproving ? Color.noBuyGreen : Color.spendRed)
+                                .foregroundStyle(trend.isImproving ? Color.accentKept : Color.accentSpentText)
                                 .symbolEffect(.bounce, value: trend.delta)
 
                             Text(String(format: "%+.0f%%", trend.delta))
                                 .font(.caption.bold())
-                                .foregroundStyle(trend.isImproving ? Color.noBuyGreen : Color.spendRed)
+                                .foregroundStyle(trend.isImproving ? Color.accentKept : Color.accentSpentText)
                         }
 
                         trendColumn(
@@ -811,15 +813,15 @@ struct StatsScreen: View {
         VStack(spacing: DS.Spacing.sm) {
             Text(label)
                 .font(.caption)
-                .foregroundStyle(.textSecondary)
+                .foregroundStyle(.inkSecondary)
 
             Text(String(format: "%.0f%%", percentage))
                 .font(.title2.bold())
-                .foregroundStyle(isPrimary ? Color.textPrimary : Color.textSecondary)
+                .foregroundStyle(isPrimary ? Color.inkPrimary : Color.inkSecondary)
 
             Text(detail)
                 .font(.caption2)
-                .foregroundStyle(.textTertiary)
+                .foregroundStyle(.inkSecondary)
         }
         .frame(maxWidth: .infinity)
     }
@@ -837,7 +839,7 @@ struct StatsScreen: View {
             if viewModel.heatmapDays.isEmpty {
                 Text("No data yet")
                     .font(.subheadline)
-                    .foregroundStyle(.textTertiary)
+                    .foregroundStyle(.inkSecondary)
                     .frame(maxWidth: .infinity, alignment: .center)
                     .padding(.vertical, DS.Spacing.xl)
             } else {
@@ -847,9 +849,9 @@ struct StatsScreen: View {
             }
 
             HStack(spacing: DS.Spacing.lg) {
-                heatmapLegendItem(color: Color.noBuyGreen, label: "No-Spend")
-                heatmapLegendItem(color: Color.spendRed, label: "Spent")
-                heatmapLegendItem(color: Color.surfaceTertiary, label: "Unrecorded")
+                heatmapLegendItem(color: Color.accentKept, label: "No-Spend")
+                heatmapLegendItem(color: Color.accentSpentText, label: "Spent")
+                heatmapLegendItem(color: Color.surfaceWell, label: "Unrecorded")
             }
             .font(.caption2)
         }
@@ -872,9 +874,9 @@ struct StatsScreen: View {
                 let path = RoundedRectangle(cornerRadius: 2).path(in: rect)
 
                 let color: Color = switch day.status {
-                case .noBuy: .noBuyGreen
-                case .spent: .spendRed
-                case .unrecorded: .surfaceTertiary
+                case .noBuy: .accentKept
+                case .spent: .accentSpentText
+                case .unrecorded: .surfaceWell
                 case .future: .clear
                 }
 
@@ -893,90 +895,256 @@ struct StatsScreen: View {
                 .fill(color)
                 .frame(width: 10, height: 10)
             Text(label)
-                .foregroundStyle(.textTertiary)
+                .foregroundStyle(.inkSecondary)
         }
     }
+
+    // MARK: - Claim 1 — the run
+
+    private var runs: [StreakCalculator.Run] {
+        StreakCalculator.allRuns(from: records)
+    }
+
+    private var openRun: StreakCalculator.Run? { runs.first(where: \.isOpen) }
+    private var bestRun: StreakCalculator.Run? { runs.max(by: { $0.days < $1.days }) }
+
+    private var theRunClaim: some View {
+        claimCard(title: "The run") {
+            if records.isEmpty {
+                // The shape of the answer before any data (deliverable 9): the slot holds, with
+                // one factual line. No tutorial, no zero dressed up as a score.
+                VStack(alignment: .leading, spacing: DS.Spacing.sm) {
+                    Text("0")
+                        .font(.system(size: 44, weight: .semibold))
+                        .monospacedDigit()
+                        .foregroundStyle(.inkPrimary)
+                    Text("Begins tonight")
+                        .font(.subheadline)
+                        .foregroundStyle(.inkPrimary)
+                    Text("The first answer starts the first run. A best appears when a run ends.")
+                        .font(.footnote)
+                        .foregroundStyle(.inkSecondary)
+                        .fixedSize(horizontal: false, vertical: true)
+                }
+            } else {
+                HStack(alignment: .center, spacing: DS.Spacing.xl) {
+                    DialFace(
+                        size: 118,
+                        scale: .interval,
+                        progress: runFraction,
+                        handPosition: nil
+                    ) {
+                        VStack(spacing: 0) {
+                            Text("\(openRun?.days ?? 0)")
+                                .font(.system(size: 34, weight: .semibold))
+                                .monospacedDigit()
+                                .foregroundStyle(.inkPrimary)
+                            Text("of the best")
+                                .font(.system(size: 9))
+                                .foregroundStyle(.inkSecondary)
+                                .fixedSize()
+                        }
+                    }
+
+                    VStack(alignment: .leading, spacing: DS.Spacing.xs) {
+                        Text(openRun.map { "\($0.days) days, open" } ?? "No run open")
+                            .font(.subheadline.weight(.semibold))
+                            .foregroundStyle(.inkPrimary)
+
+                        if let best = bestRun {
+                            Text("Best — \(best.days) · \(Self.range(best))")
+                                .font(.footnote)
+                                .foregroundStyle(.inkSecondary)
+                                .fixedSize(horizontal: false, vertical: true)
+                        }
+
+                        if let gap = gapToBest {
+                            Text(gap)
+                                .font(.footnote)
+                                .foregroundStyle(.inkSecondary)
+                                .fixedSize(horizontal: false, vertical: true)
+                        }
+                    }
+                }
+                .accessibilityElement(children: .combine)
+            }
+        }
+    }
+
+    /// The open run drawn against the best — the arc is a comparison, not a percentage.
+    private var runFraction: Double {
+        guard let open = openRun, let best = bestRun, best.days > 0 else { return 0 }
+        return min(Double(open.days) / Double(best.days), 1)
+    }
+
+    private var gapToBest: String? {
+        guard let open = openRun, let best = bestRun else { return nil }
+        if open.days >= best.days { return "This is the longest run on record." }
+        return "\(best.days - open.days) more would match it"
+    }
+
+    // MARK: - Claim 2 — the month so far
+
+    private var monthSoFarClaim: some View {
+        claimCard(title: Self.monthName.string(from: .now) + " so far") {
+            if records.isEmpty {
+                Text("today, open — the strip grows one tick a night")
+                    .font(.footnote)
+                    .foregroundStyle(.inkSecondary)
+            } else {
+                Text(monthLine)
+                    .font(.subheadline)
+                    .foregroundStyle(.inkPrimary)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+        }
+    }
+
+    private var monthLine: String {
+        let calendar = Calendar.current
+        let today = calendar.startOfDay(for: .now)
+        let monthDays = records.filter { calendar.isDate($0.date, equalTo: today, toGranularity: .month) }
+        let answered = monthDays.count
+        let kept = monthDays.filter(\.isNoBuyDay).count
+        let todayAnswered = monthDays.contains { calendar.isDateInToday($0.date) }
+        return "\(answered) answered · \(kept) kept" + (todayAnswered ? "" : " · today open")
+    }
+
+    // MARK: - Claim 3 — every run, kept
+
+    private var everyRunKeptClaim: some View {
+        claimCard(title: "Every run, kept") {
+            VStack(alignment: .leading, spacing: DS.Spacing.md) {
+                if runs.isEmpty {
+                    Text("day 0 — the first interval opens with tonight's answer")
+                        .font(.footnote)
+                        .foregroundStyle(.inkSecondary)
+                } else {
+                    if let since = runs.last {
+                        Text("since \(Self.longDate.string(from: since.start))")
+                            .font(.caption)
+                            .foregroundStyle(.inkSecondary)
+                    }
+
+                    ForEach(runs.prefix(6)) { run in
+                        VStack(alignment: .leading, spacing: DS.Spacing.xs) {
+                            HStack {
+                                Text("\(run.days)")
+                                    .font(.subheadline.weight(.semibold))
+                                    .monospacedDigit()
+                                    .foregroundStyle(.inkPrimary)
+                                Text(run.isOpen ? "since \(Self.longDate.string(from: run.start)) · open"
+                                    : "\(Self.range(run)) · settled")
+                                    .font(.caption)
+                                    .foregroundStyle(.inkSecondary)
+                            }
+                            IntervalBar(
+                                days: run.days,
+                                best: bestRun?.days ?? run.days,
+                                isOpen: run.isOpen,
+                                isDense: runs.count > 8
+                            )
+                        }
+                        .accessibilityElement(children: .combine)
+                    }
+
+                    if runs.count > 6 {
+                        Text("\(runs.count - 6) earlier runs")
+                            .font(.caption)
+                            .foregroundStyle(.inkSecondary)
+                    }
+                }
+
+                Text("Ended runs stay. Nothing here is ever zeroed or cleared.")
+                    .font(.caption)
+                    .foregroundStyle(.inkSecondary)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+        }
+    }
+
+    // MARK: - Claim shell
+
+    private func claimCard(title: String, @ViewBuilder content: () -> some View) -> some View {
+        VStack(alignment: .leading, spacing: DS.Spacing.md) {
+            Text(title)
+                .font(.caption)
+                .tracking(1.2)
+                .textCase(.uppercase)
+                .foregroundStyle(.inkSecondary)
+                .accessibilityAddTraits(.isHeader)
+
+            content()
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding(DS.Spacing.lg)
+        .background(
+            RoundedRectangle(cornerRadius: DS.Radius.sheet)
+                .fill(Color.surfaceDial)
+                .overlay(
+                    RoundedRectangle(cornerRadius: DS.Radius.sheet)
+                        .strokeBorder(Color.inkHairline, lineWidth: DS.Stroke.hairline)
+                )
+        )
+    }
+
+    private static func range(_ run: StreakCalculator.Run) -> String {
+        "\(shortDate.string(from: run.start)) to \(shortDate.string(from: run.end))"
+    }
+
+    private static let shortDate: DateFormatter = {
+        let f = DateFormatter()
+        f.locale = Locale(identifier: "en_US")
+        f.dateFormat = "d MMM"
+        return f
+    }()
+
+    private static let longDate: DateFormatter = {
+        let f = DateFormatter()
+        f.locale = Locale(identifier: "en_US")
+        f.dateFormat = "d MMMM"
+        return f
+    }()
+
+    private static let monthName: DateFormatter = {
+        let f = DateFormatter()
+        f.locale = Locale(identifier: "en_US")
+        f.dateFormat = "MMMM"
+        return f
+    }()
 
     // MARK: - Achievements Grid
 
     private var achievementsGrid: some View {
         VStack(alignment: .leading, spacing: DS.Spacing.md) {
+            // v2.0.0: achievements are earned, not bought. Locking a badge the user already
+            // worked for behind a subscription made the reward feel like bait — the free tier
+            // now carries all of them, and Pro sells depth (analysis, export, challenges).
             sectionHeader(
                 title: "Achievements",
                 icon: "medal.fill",
-                showProBadge: !store.isPro
+                showProBadge: false
             )
 
             let allAchievements = achievementManager.achievements
             let unlockedCount = allAchievements.filter(\.isUnlocked).count
             let totalCount = allAchievements.count
-            let freeLimit = 5
 
             Text("\(unlockedCount)/\(totalCount) achievements unlocked")
                 .font(.caption)
-                .foregroundStyle(.textSecondary)
+                .foregroundStyle(.inkSecondary)
 
             LazyVGrid(columns: [
                 GridItem(.flexible(), spacing: DS.Spacing.md),
                 GridItem(.flexible(), spacing: DS.Spacing.md),
                 GridItem(.flexible(), spacing: DS.Spacing.md),
             ], spacing: DS.Spacing.md) {
-                ForEach(Array(allAchievements.enumerated()), id: \.element.id) { index, achievement in
-                    if store.isPro || index < freeLimit {
-                        achievementCell(achievement)
-                    } else {
-                        lockedAchievementCell(achievement)
-                    }
+                ForEach(allAchievements) { achievement in
+                    achievementCell(achievement)
                 }
-            }
-
-            // Upgrade prompt for free users
-            if !store.isPro, allAchievements.count > freeLimit {
-                Button {
-                    HapticManager.impact(.medium)
-                    showPaywall = true
-                } label: {
-                    HStack(spacing: DS.Spacing.sm) {
-                        Image(systemName: "lock.fill")
-                            .font(.caption)
-                            .accessibilityHidden(true)
-                        Text("Unlock all \(totalCount) achievements with Pro")
-                            .font(.caption.weight(.medium))
-                    }
-                    .foregroundStyle(.noBuyGreen)
-                    .frame(maxWidth: .infinity)
-                    .padding(.vertical, DS.Spacing.md)
-                    .background(
-                        RoundedRectangle(cornerRadius: DS.Radius.md)
-                            .fill(Color.noBuyGreenLight)
-                    )
-                }
-                .buttonStyle(.scale)
-                .accessibilityLabel("Unlock all achievements with Pro")
             }
         }
         .sectionCard()
-    }
-
-    private func lockedAchievementCell(_ achievement: Achievement) -> some View {
-        VStack(spacing: DS.Spacing.sm) {
-            ZStack {
-                Circle()
-                    .fill(Color.surfaceTertiary)
-                    .frame(width: 52, height: 52)
-
-                Text("🔒")
-                    .font(.title3)
-            }
-
-            Text(achievement.title)
-                .font(.caption2.weight(.medium))
-                .foregroundStyle(.textTertiary)
-                .multilineTextAlignment(.center)
-                .lineLimit(2)
-                .fixedSize(horizontal: false, vertical: true)
-        }
-        .opacity(0.4)
     }
 
     private func achievementCell(_ achievement: Achievement) -> some View {
@@ -984,24 +1152,18 @@ struct StatsScreen: View {
             ZStack {
                 Circle()
                     .fill(achievement.isUnlocked
-                        ? Color.noBuyGreen.opacity(0.15)
-                        : Color.surfaceTertiary)
+                        ? Color.accentKept.opacity(0.15)
+                        : Color.surfaceWell)
                     .frame(width: 52, height: 52)
-                    .shadow(
-                        color: achievement.isUnlocked ? .noBuyGreen.opacity(0.25) : .clear,
-                        radius: achievement.isUnlocked ? 6 : 0,
-                        x: 0,
-                        y: achievement.isUnlocked ? 2 : 0
-                    )
 
                 Image(systemName: achievement.icon)
                     .font(.title3)
-                    .foregroundStyle(achievement.isUnlocked ? Color.noBuyGreen : Color.textTertiary)
+                    .foregroundStyle(achievement.isUnlocked ? Color.accentKept : Color.inkSecondary)
             }
 
             Text(achievement.title)
                 .font(.caption2.weight(.medium))
-                .foregroundStyle(achievement.isUnlocked ? Color.textPrimary : Color.textTertiary)
+                .foregroundStyle(achievement.isUnlocked ? Color.inkPrimary : Color.inkSecondary)
                 .multilineTextAlignment(.center)
                 .lineLimit(2)
                 .fixedSize(horizontal: false, vertical: true)
@@ -1010,14 +1172,9 @@ struct StatsScreen: View {
         .padding(.horizontal, DS.Spacing.xs)
         .background(
             RoundedRectangle(cornerRadius: DS.Radius.sm)
-                .fill(achievement.isUnlocked ? Color.surfaceSecondary : .clear)
+                .fill(achievement.isUnlocked ? Color.surfaceDial : .clear)
         )
-        .shadow(
-            color: achievement.isUnlocked ? .black.opacity(0.06) : .clear,
-            radius: achievement.isUnlocked ? 4 : 0,
-            x: 0,
-            y: achievement.isUnlocked ? 2 : 0
-        )
+
         .opacity(achievement.isUnlocked ? 1 : 0.5)
         .grayscale(achievement.isUnlocked ? 0 : 0.8)
     }
@@ -1044,19 +1201,19 @@ struct StatsScreen: View {
                             value: "\(checklistCompletions)",
                             label: "Checklists",
                             icon: "checklist",
-                            color: .noBuyGreen
+                            color: .accentKept
                         )
                         impulseStatCard(
                             value: "\(checklistSaved)",
                             label: "Resisted",
                             icon: "hand.raised.fill",
-                            color: .blue
+                            color: .stateWait
                         )
                         impulseStatCard(
                             value: "\(urgesSurvived)",
                             label: "Urges Beaten",
                             icon: "brain.fill",
-                            color: .purple
+                            color: .stateWait
                         )
                     }
                 }
@@ -1073,13 +1230,13 @@ struct StatsScreen: View {
                 .accessibilityHidden(true)
 
             Text(value)
-                .font(.system(.title2, design: .rounded).weight(.black))
-                .foregroundStyle(.textPrimary)
+                .font(.title2.weight(.semibold))
+                .foregroundStyle(.inkPrimary)
                 .contentTransition(.numericText())
 
             Text(label)
                 .font(.caption2)
-                .foregroundStyle(.textSecondary)
+                .foregroundStyle(.inkSecondary)
                 .multilineTextAlignment(.center)
                 .lineLimit(2)
                 .fixedSize(horizontal: false, vertical: true)
@@ -1117,19 +1274,19 @@ struct StatsScreen: View {
                             value: "\(resistedCount)",
                             label: "Resisted",
                             icon: "hand.raised.fill",
-                            color: .noBuyGreen
+                            color: .accentKept
                         )
                         impulseStatCard(
                             value: formattedWaitingSaved(savedMoney),
                             label: "Saved",
                             icon: "banknote.fill",
-                            color: .noBuyGreen
+                            color: .accentKept
                         )
                         impulseStatCard(
                             value: "\(activeCount)",
                             label: "Waiting",
                             icon: "clock.fill",
-                            color: .mandatoryAmber
+                            color: .stateWait
                         )
                     }
                 }
@@ -1148,132 +1305,70 @@ struct StatsScreen: View {
 
     // MARK: - Pro Teaser
 
+    // MARK: - What Pro reads
+    //
+    // Named in words, not shown as a blurred sample. The v1 version drew fabricated bars and a
+    // fabricated line, blurred them, and put a padlock on top — a picture of data the person does
+    // not have, which the accepted design bans outright and which is the App Store's own
+    // definition of a misleading screen. It also sold "achievements", which are free in v2.0.0.
+    //
+    // The honest form is the one the paywall already uses: say what the analysis is, on the same
+    // claim-card surface as everything else, and let the person decide.
     private var proTeaser: some View {
-        VStack(spacing: DS.Spacing.xl) {
-            // Blurred preview of charts
-            VStack(spacing: DS.Spacing.lg) {
-                // Fake stacked bar preview
-                HStack(alignment: .bottom, spacing: DS.Spacing.sm) {
-                    ForEach(0 ..< 6, id: \.self) { i in
-                        VStack(spacing: 1) {
-                            RoundedRectangle(cornerRadius: 2)
-                                .fill(Color.spendRed.opacity(0.35))
-                                .frame(width: 28, height: CGFloat([12, 18, 8, 22, 14, 10][i]))
-                            RoundedRectangle(cornerRadius: 2)
-                                .fill(Color.noBuyGreen.opacity(0.4))
-                                .frame(width: 28, height: CGFloat([40, 65, 50, 80, 55, 70][i]))
-                        }
-                    }
-                }
-                .frame(height: 100)
+        VStack(alignment: .leading, spacing: DS.Spacing.md) {
+            Text("The analysis layer")
+                .font(.headline)
+                .foregroundStyle(.inkPrimary)
 
-                // Fake line chart preview
-                HStack(spacing: 0) {
-                    let heights: [CGFloat] = [20, 35, 28, 45, 38, 52, 44, 60]
-                    ForEach(Array(heights.enumerated()), id: \.offset) { _, h in
-                        VStack {
-                            Spacer()
-                            Circle()
-                                .fill(Color.noBuyGreen.opacity(0.4))
-                                .frame(width: 6, height: 6)
-                        }
-                        .frame(height: h)
-                        .frame(maxWidth: .infinity)
-                    }
-                }
-                .frame(height: 60)
+            Text("Pro reads your own record back to you: monthly trend, weekday pattern, streak history, category split, no-spend rate and savings estimate.")
+                .font(.subheadline)
+                .foregroundStyle(.inkSecondary)
+                .fixedSize(horizontal: false, vertical: true)
 
-                // Fake pie chart preview
-                HStack(spacing: DS.Spacing.xl) {
-                    Circle()
-                        .stroke(Color.noBuyGreen.opacity(0.3), lineWidth: 12)
-                        .frame(width: 50, height: 50)
-                        .overlay {
-                            Circle()
-                                .trim(from: 0, to: 0.65)
-                                .stroke(Color.noBuyGreen.opacity(0.5), style: StrokeStyle(lineWidth: 12, lineCap: .round))
-                                .rotationEffect(.degrees(-90))
-                        }
-
-                    VStack(alignment: .leading, spacing: DS.Spacing.xs) {
-                        fakeLabel(color: .noBuyGreen.opacity(0.5), text: "No-Spend")
-                        fakeLabel(color: .mandatoryAmber.opacity(0.5), text: "Essential")
-                        fakeLabel(color: .spendRed.opacity(0.5), text: "Discretionary")
-                    }
-                }
-            }
-            .padding(DS.Spacing.xl)
-            .blur(radius: 6)
-
-            // Overlay CTA
-            VStack(spacing: DS.Spacing.md) {
-                Image(systemName: "lock.fill")
-                    .font(.title)
-                    .foregroundStyle(.textSecondary)
-
-                Text("Unlock Detailed Stats")
+            Button {
+                HapticManager.impact(.medium)
+                showPaywall = true
+            } label: {
+                Text("See NoBuy Pro")
                     .font(.headline)
-                    .foregroundStyle(.textPrimary)
-
-                Text("Monthly trends, streak history, category breakdown, savings analysis, and achievements with Pro.")
-                    .font(.subheadline)
-                    .foregroundStyle(.textSecondary)
-                    .multilineTextAlignment(.center)
-
-                Button {
-                    HapticManager.impact(.medium)
-                    showPaywall = true
-                } label: {
-                    Text("Upgrade to Pro")
-                        .font(.headline)
-                        .foregroundStyle(.white)
-                        .frame(maxWidth: .infinity)
-                        .padding(.vertical, DS.Spacing.md)
-                        .background(Color.noBuyGreen, in: RoundedRectangle(cornerRadius: DS.Radius.md))
-                }
-                .buttonStyle(ScaleButtonStyle())
-                .accessibilityLabel("Upgrade to Pro")
-                .accessibilityHint("Double tap to unlock detailed statistics")
-                .accessibilityIdentifier("stats_upgrade_pro")
+                    .foregroundStyle(Color.inkOnAccent)
+                    .frame(maxWidth: .infinity)
+                    .frame(height: 48)
+                    .background(Capsule().fill(Color.accentKept))
             }
-            .padding(.horizontal, DS.Spacing.xl)
+            .buttonStyle(.scale)
+            .accessibilityIdentifier("stats_upgrade_pro")
         }
-        .padding(.vertical, DS.Spacing.xl)
-        .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: DS.Radius.lg))
-        .background(Color.surfaceSecondary, in: RoundedRectangle(cornerRadius: DS.Radius.lg))
+        .padding(DS.Spacing.xl)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(
+            RoundedRectangle(cornerRadius: DS.Radius.md)
+                .fill(Color.surfaceWell)
+                .overlay(
+                    RoundedRectangle(cornerRadius: DS.Radius.md)
+                        .strokeBorder(Color.inkHairline, lineWidth: DS.Stroke.hairline)
+                )
+        )
         .accessibilityElement(children: .combine)
-        .accessibilityLabel("Detailed statistics are available with Pro. Tap to upgrade.")
+        .accessibilityLabel("The analysis layer. Pro reads your own record back to you: monthly trend, weekday pattern, streak history, category split, no-spend rate and savings estimate.")
     }
-
-    private func fakeLabel(color: Color, text: String) -> some View {
-        HStack(spacing: DS.Spacing.xs) {
-            Circle()
-                .fill(color)
-                .frame(width: 8, height: 8)
-            Text(text)
-                .font(.caption2)
-                .foregroundStyle(.textTertiary)
-        }
-    }
-
-    // MARK: - Shared Components
 
     private func sectionHeader(title: String, icon: String, showProBadge: Bool = false) -> some View {
         HStack(spacing: DS.Spacing.sm) {
             Image(systemName: icon)
                 .font(.subheadline)
-                .foregroundStyle(.noBuyGreen)
+                .foregroundStyle(.accentKept)
                 .accessibilityHidden(true)
             Text(title)
                 .font(.headline)
-                .foregroundStyle(.textPrimary)
+                .foregroundStyle(.inkPrimary)
             if showProBadge, store.isPro {
                 Text(L10n.proFeature)
                     .font(.caption2.bold())
-                    .foregroundStyle(.noBuyGreen)
+                    .foregroundStyle(.accentKept)
                     .padding(.horizontal, 6)
                     .padding(.vertical, 2)
-                    .background(Capsule().fill(Color.noBuyGreenLight))
+                    .background(Capsule().fill(Color.accentKeptWash))
             }
         }
     }
@@ -1286,7 +1381,7 @@ struct StatsScreen: View {
 
             Image(systemName: "chart.bar.doc.horizontal")
                 .font(Font.adaptiveDisplay(size: 64, isRegular: isRegular))
-                .foregroundStyle(.noBuyGreen.opacity(0.6))
+                .foregroundStyle(.accentKept.opacity(0.6))
                 .symbolEffect(.pulse, options: reduceMotion ? .nonRepeating : .repeating)
                 .accessibilityHidden(true)
 
@@ -1294,11 +1389,11 @@ struct StatsScreen: View {
                 Text(L10n.emptyStreakTitle)
                     .font(.title3)
                     .fontWeight(.semibold)
-                    .foregroundStyle(.textPrimary)
+                    .foregroundStyle(.inkPrimary)
 
                 Text(L10n.emptyStreakDesc)
                     .font(.callout)
-                    .foregroundStyle(.textSecondary)
+                    .foregroundStyle(.inkSecondary)
                     .multilineTextAlignment(.center)
                     .padding(.horizontal, DS.Spacing.xl)
             }
@@ -1308,8 +1403,8 @@ struct StatsScreen: View {
         .frame(maxWidth: .infinity)
         .padding(DS.Spacing.lg)
         .background(DS.Gradient.card, in: RoundedRectangle(cornerRadius: DS.Radius.lg))
-        .background(Color.surfaceSecondary, in: RoundedRectangle(cornerRadius: DS.Radius.lg))
-        .shadow(DS.Shadow.card)
+        .background(Color.surfaceDial, in: RoundedRectangle(cornerRadius: DS.Radius.lg))
+
     }
 }
 
@@ -1320,9 +1415,9 @@ private extension View {
         self
             .padding(DS.Spacing.lg)
             .background(DS.Gradient.card, in: RoundedRectangle(cornerRadius: DS.Radius.lg))
-            .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: DS.Radius.lg))
-            .background(Color.surfaceSecondary, in: RoundedRectangle(cornerRadius: DS.Radius.lg))
-            .shadow(DS.Shadow.card)
+            .background(Color.surfaceWell, in: RoundedRectangle(cornerRadius: DS.Radius.lg))
+            .background(Color.surfaceDial, in: RoundedRectangle(cornerRadius: DS.Radius.lg))
+
     }
 }
 

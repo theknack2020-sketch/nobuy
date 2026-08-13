@@ -1,177 +1,142 @@
 import SwiftUI
 
+// MARK: - What changed (Escapement, v2.0.0)
+//
+// Shown once, to someone who already uses the app, at the moment the app they know looks
+// different. So it does two jobs and no others: say what changed, and — because this release
+// changes how NoBuy is paid for — tell the people who already paid that nothing was taken away.
+//
+// That last row is the reason this screen is not decoration. Sixty people bought the one-time
+// unlock. A subscription migration that does not say "yours, permanently, in writing" reads as
+// a bait-and-switch even when the code is honest, and the code being honest is not the part the
+// user can see.
+//
+// One list, no gradient, no confetti, no scale-in hero: the same instrument voice as the rest
+// of the app. A release note that shouts is a release note nobody believes.
+
 struct WhatsNewView: View {
     @Environment(\.dismiss) private var dismiss
-    @Environment(\.accessibilityReduceMotion) private var reduceMotion
-    @Environment(\.horizontalSizeClass) private var sizeClass
 
-    private var isRegular: Bool {
-        sizeClass == .regular
-    }
-
-    @State private var appeared = false
-
-    private struct Feature: Identifiable {
+    private struct Change: Identifiable {
         let id = UUID()
-        let icon: String
+        let glyph: String
         let title: String
-        let description: String
-        let color: Color
+        let detail: String
     }
 
-    private let features: [Feature] = [
-        Feature(
-            icon: "ipad.landscape",
-            title: "NoBuy on iPad",
-            description: "Full iPad support with a sidebar layout and every orientation.",
-            color: .blue
+    /// Written for THIS release. A stale list is worse than none: the v1.2.0 notes survived the
+    /// version bump into a 2.0.0 build during development and announced iPad support to people
+    /// who had it for a year.
+    private let changes: [Change] = [
+        Change(
+            glyph: "circle.dotted",
+            title: "A new face",
+            detail: "The day, the record and both interventions redrawn as one instrument — the day on a dial, the run as a bar you can read at a glance."
         ),
-        Feature(
-            icon: "lock.shield.fill",
-            title: "Private by Design",
-            description: "All analytics code removed. Your data never leaves your device.",
-            color: .noBuyGreen
+        Change(
+            glyph: "square.grid.2x2",
+            title: "A widget",
+            detail: "Answer the day from the Home Screen without opening NoBuy, and read the run from the Lock Screen."
         ),
-        Feature(
-            icon: "star.bubble",
-            title: "A Better Way to Give Feedback",
-            description: "Tell us how we're doing — or email us privately, right from the app.",
-            color: .mandatoryAmber
+        Change(
+            glyph: "list.bullet",
+            title: "The checklist is yours",
+            detail: "Add your own questions before you buy, remove the ones that do not fit, and put them in your own order."
         ),
-        Feature(
-            icon: "sparkles",
-            title: "Faster & Lighter",
-            description: "Third-party code removed for a quicker launch and a smaller app.",
-            color: .purple
+        Change(
+            glyph: "checkmark.seal",
+            title: "Pro is a subscription now",
+            detail: "If you already bought the one-time unlock, it stays yours permanently — nothing to re-buy, no trial, no expiry."
         ),
     ]
+
+    private var version: String {
+        Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? ""
+    }
 
     var body: some View {
         NavigationStack {
             ScrollView {
-                VStack(spacing: DS.Spacing.xxl) {
-                    Spacer().frame(height: DS.Spacing.lg)
-
-                    // Hero
-                    VStack(spacing: DS.Spacing.md) {
-                        Text("🎉")
-                            .font(.system(size: 56))
-                            .opacity(appeared ? 1 : 0)
-                            .scaleEffect(appeared ? 1 : 0.5)
-
-                        Text("What's New in NoBuy")
-                            .font(.title.bold())
-                            .foregroundStyle(.textPrimary)
-                            .multilineTextAlignment(.center)
-
-                        Text("Version \(Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "")")
+                VStack(alignment: .leading, spacing: DS.Spacing.lg) {
+                    VStack(alignment: .leading, spacing: DS.Spacing.xs) {
+                        Text("What changed")
+                            .font(.largeTitle.weight(.semibold))
+                            .foregroundStyle(.inkPrimary)
+                        Text("Version \(version)")
                             .font(.subheadline)
-                            .foregroundStyle(.textSecondary)
+                            .foregroundStyle(.inkSecondary)
                     }
-                    .opacity(appeared ? 1 : 0)
-                    .offset(y: appeared ? 0 : 15)
+                    .padding(.top, DS.Spacing.lg)
+                    .accessibilityElement(children: .combine)
 
-                    // Features
-                    VStack(spacing: DS.Spacing.lg) {
-                        ForEach(Array(features.enumerated()), id: \.element.id) { index, feature in
-                            featureRow(feature)
-                                .opacity(appeared ? 1 : 0)
-                                .offset(y: appeared ? 0 : 20)
-                                .animation(
-                                    reduceMotion ? nil : DS.Anim.normal.delay(Double(index) * DS.Anim.stagger + 0.2),
-                                    value: appeared
-                                )
+                    VStack(spacing: DS.Spacing.md) {
+                        ForEach(changes) { change in
+                            row(change)
                         }
                     }
-                    .padding(.horizontal, DS.Spacing.xl)
 
-                    Spacer().frame(height: DS.Spacing.lg)
+                    Spacer(minLength: DS.Spacing.xl)
 
-                    // CTA
                     Button {
                         HapticManager.tap()
                         dismiss()
                     } label: {
                         Text("Continue")
                             .font(.headline)
-                            .foregroundStyle(.white)
+                            .foregroundStyle(Color.inkOnAccent)
                             .frame(maxWidth: .infinity)
-                            .frame(height: 56)
-                            .background(
-                                RoundedRectangle(cornerRadius: DS.Radius.lg)
-                                    .fill(
-                                        LinearGradient(
-                                            colors: [.noBuyGreen, .noBuyGreen.opacity(0.8)],
-                                            startPoint: .leading,
-                                            endPoint: .trailing
-                                        )
-                                    )
-                            )
-                            .shadow(color: .noBuyGreen.opacity(0.3), radius: 12, x: 0, y: 6)
+                            .frame(height: 54)
+                            .background(Capsule().fill(Color.accentKept))
                     }
-                    .buttonStyle(ScaleButtonStyle())
-                    .padding(.horizontal, DS.Spacing.xl)
-                    .padding(.bottom, DS.Spacing.xxxl)
+                    .buttonStyle(.scale)
+                    .accessibilityIdentifier("whats_new_continue")
+                    .padding(.bottom, DS.Spacing.xxl)
                 }
+                .padding(.horizontal, DS.Spacing.screenGutter)
             }
-            .background(Color.surfacePrimary.ignoresSafeArea())
+            .background(Color.surfaceField)
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
-                    Button {
-                        dismiss()
-                    } label: {
-                        Image(systemName: "xmark.circle.fill")
-                            .font(.title3)
-                            .symbolRenderingMode(.hierarchical)
-                            .foregroundStyle(.textTertiary)
-                    }
-                    .accessibilityLabel("Close")
-                }
-            }
-            .onAppear {
-                if reduceMotion {
-                    appeared = true
-                } else {
-                    withAnimation(DS.Anim.normal) {
-                        appeared = true
-                    }
+                    Button("Close") { dismiss() }
+                        .font(.subheadline)
+                        .accessibilityIdentifier("whats_new_close")
                 }
             }
         }
     }
 
-    private func featureRow(_ feature: Feature) -> some View {
-        HStack(spacing: DS.Spacing.lg) {
-            Image(systemName: feature.icon)
-                .font(.title2)
-                .foregroundStyle(feature.color)
-                .frame(width: 44, height: 44)
-                .background(
-                    RoundedRectangle(cornerRadius: DS.Radius.sm)
-                        .fill(feature.color.opacity(0.12))
-                )
+    private func row(_ change: Change) -> some View {
+        HStack(alignment: .top, spacing: DS.Spacing.md) {
+            Image(systemName: change.glyph)
+                .font(.footnote)
+                .foregroundStyle(.stateWait)
+                .frame(width: 22)
+                .padding(.top, 2)
                 .accessibilityHidden(true)
 
-            VStack(alignment: .leading, spacing: DS.Spacing.xs) {
-                Text(feature.title)
-                    .font(.subheadline.weight(.semibold))
-                    .foregroundStyle(.textPrimary)
-
-                Text(feature.description)
-                    .font(.caption)
-                    .foregroundStyle(.textSecondary)
+            VStack(alignment: .leading, spacing: 2) {
+                Text(change.title)
+                    .font(.subheadline.weight(.medium))
+                    .foregroundStyle(.inkPrimary)
+                Text(change.detail)
+                    .font(.footnote)
+                    .foregroundStyle(.inkSecondary)
                     .fixedSize(horizontal: false, vertical: true)
             }
 
-            Spacer()
+            Spacer(minLength: 0)
         }
         .padding(DS.Spacing.lg)
+        .frame(maxWidth: .infinity, alignment: .leading)
         .background(
             RoundedRectangle(cornerRadius: DS.Radius.md)
-                .fill(Color.surfaceSecondary)
+                .fill(Color.surfaceWell)
+                .overlay(
+                    RoundedRectangle(cornerRadius: DS.Radius.md)
+                        .strokeBorder(Color.inkHairline, lineWidth: DS.Stroke.hairline)
+                )
         )
-        .shadow(color: .black.opacity(0.06), radius: 6, x: 0, y: 3)
         .accessibilityElement(children: .combine)
     }
 }

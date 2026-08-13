@@ -11,7 +11,7 @@ final class UserSettings {
     var selectedThemeRaw: String {
         get {
             access(keyPath: \.selectedThemeRaw)
-            return UserDefaults.standard.string(forKey: "selectedTheme") ?? AppTheme.mint.rawValue
+            return UserDefaults.standard.string(forKey: "selectedTheme") ?? AppTheme.default.rawValue
         }
         set {
             withMutation(keyPath: \.selectedThemeRaw) {
@@ -20,9 +20,13 @@ final class UserSettings {
         }
     }
 
-    /// Current theme enum value
+    /// Current theme enum value.
+    ///
+    /// Reads through `AppTheme.migrated(from:)` so a v1 install that stored "mint" or "forest"
+    /// lands on the equivalent finish instead of silently snapping back to the default — a
+    /// stored value is a choice the user made, and a rename is not a reason to discard it.
     var currentTheme: AppTheme {
-        get { AppTheme(rawValue: selectedThemeRaw) ?? .mint }
+        get { AppTheme.migrated(from: selectedThemeRaw) ?? .default }
         set { selectedThemeRaw = newValue.rawValue }
     }
 

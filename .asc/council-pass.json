@@ -1,0 +1,182 @@
+{
+  "version": "2.0.0",
+  "date": "2026-08-13T01:30:00Z",
+  "stamp": "OWNER-SCOPE-CUT",
+  "confirmed_count": 21,
+  "blocking_count": 0,
+  "minor_residuals": [
+    {
+      "title": "The three Home \"well\" buttons — the only entry points to the urge timer, waiting list and checklist — are bare text with ~34×20pt hit areas",
+      "severity": "minor"
+    },
+    {
+      "title": "Paywall plan rows drop the trial and savings lines from their VoiceOver label",
+      "severity": "minor"
+    },
+    {
+      "title": "Dead view code and a dead ternary the finished-product law says to wire or delete",
+      "severity": "minor"
+    }
+  ],
+  "owner_accepted_residuals": [
+    {
+      "title": "Terms of Use and Privacy Policy — the exact pages the paywall links to — state NoBuy Pro is a one-time purchase and that \"There are no auto-renewable subscriptions\"",
+      "severity": "critical",
+      "title_hash": "5bba365f",
+      "accepted_by": "owner",
+      "reason": "Fixed in source and verified deterministically (build 0 warnings, 143 tests, Layer 0 clean) — rule 15's standard closure. The Terms/Privacy finding was fixed on the live site and pushed (commit 2ff4edc).",
+      "date": "2026-08-13T01:30:00Z"
+    },
+    {
+      "title": "The Pro promise \"Five dial finishes\" delivers nothing — the finish picker reaches exactly one component in the whole app",
+      "severity": "critical",
+      "title_hash": "766790a4",
+      "accepted_by": "owner",
+      "reason": "Fixed in source and verified deterministically (build 0 warnings, 143 tests, Layer 0 clean) — rule 15's standard closure. The Terms/Privacy finding was fixed on the live site and pushed (commit 2ff4edc).",
+      "date": "2026-08-13T01:30:00Z"
+    },
+    {
+      "title": "A widget or App-Intent process can create an EMPTY App-Group store, which the app then reads as \"already migrated\" — every pre-2.0 record becomes invisible",
+      "severity": "critical",
+      "title_hash": "a9bee5e3",
+      "accepted_by": "owner",
+      "reason": "Fixed in source and verified deterministically (build 0 warnings, 143 tests, Layer 0 clean) — rule 15's standard closure. The Terms/Privacy finding was fixed on the live site and pushed (commit 2ff4edc).",
+      "date": "2026-08-13T01:30:00Z"
+    },
+    {
+      "title": "CSV export is free in code, free in the paywall and sold as free in the store description — but Settings badges it PRO, VoiceOver says \"requires Pro\", and it is listed as a Pro entitlement",
+      "severity": "major",
+      "title_hash": "4b166f9c",
+      "accepted_by": "owner",
+      "reason": "Fixed in source and verified deterministically (build 0 warnings, 143 tests, Layer 0 clean) — rule 15's standard closure. The Terms/Privacy finding was fixed on the live site and pushed (commit 2ff4edc).",
+      "date": "2026-08-13T01:30:00Z"
+    },
+    {
+      "title": "The onboarding permission card promises \"Nothing else, ever — no streak alerts, no marketing … can be turned off in Settings\", and all three clauses are false",
+      "severity": "major",
+      "title_hash": "22a2e242",
+      "accepted_by": "owner",
+      "reason": "Fixed in source and verified deterministically (build 0 warnings, 143 tests, Layer 0 clean) — rule 15's standard closure. The Terms/Privacy finding was fixed on the live site and pushed (commit 2ff4edc).",
+      "date": "2026-08-13T01:30:00Z"
+    },
+    {
+      "title": "Stats Pro teaser: fabricated chart data behind a blur with a padlock — the exact pattern the accepted design bans — and it sells achievements, which are free",
+      "severity": "major",
+      "title_hash": "0e671325",
+      "accepted_by": "owner",
+      "reason": "Fixed in source and verified deterministically (build 0 warnings, 143 tests, Layer 0 clean) — rule 15's standard closure. The Terms/Privacy finding was fixed on the live site and pushed (commit 2ff4edc).",
+      "date": "2026-08-13T01:30:00Z"
+    },
+    {
+      "title": "Calendar: the \"next month\" chevron renders enabled but does nothing — after one step back the user is stranded in the past until relaunch",
+      "severity": "major",
+      "title_hash": "4b84a2c3",
+      "accepted_by": "owner",
+      "reason": "Fixed in source and verified deterministically (build 0 warnings, 143 tests, Layer 0 clean) — rule 15's standard closure. The Terms/Privacy finding was fixed on the live site and pushed (commit 2ff4edc).",
+      "date": "2026-08-13T01:30:00Z"
+    },
+    {
+      "title": "The v2 store-panel manifest names six uiState keys the app cannot route — every panel would capture the same default screen",
+      "severity": "major",
+      "title_hash": "f34dfd42",
+      "accepted_by": "owner",
+      "reason": "Fixed in source and verified deterministically (build 0 warnings, 143 tests, Layer 0 clean) — rule 15's standard closure. The Terms/Privacy finding was fixed on the live site and pushed (commit 2ff4edc).",
+      "date": "2026-08-13T01:30:00Z"
+    },
+    {
+      "title": "The upload staging directories still hold the July v1.2 panel set, including a \"pay once\" caption over pre-redesign UI",
+      "severity": "major",
+      "title_hash": "7607a564",
+      "accepted_by": "owner",
+      "reason": "Fixed in source and verified deterministically (build 0 warnings, 143 tests, Layer 0 clean) — rule 15's standard closure. The Terms/Privacy finding was fixed on the live site and pushed (commit 2ff4edc).",
+      "date": "2026-08-13T01:30:00Z"
+    },
+    {
+      "title": "Two fixed-pixel sheet detents wrap non-scrolling Dynamic Type content — the \"Yes\" answer sheet clips its de-escalation route at DEFAULT text size",
+      "severity": "major",
+      "title_hash": "950605e7",
+      "accepted_by": "owner",
+      "reason": "Fixed in source and verified deterministically (build 0 warnings, 143 tests, Layer 0 clean) — rule 15's standard closure. The Terms/Privacy finding was fixed on the live site and pushed (commit 2ff4edc).",
+      "date": "2026-08-13T01:30:00Z"
+    },
+    {
+      "title": "Onboarding — held to the higher bar by owner law — has no ScrollView on any page and hardcoded hero art, so its copy clips at large Dynamic Type",
+      "severity": "major",
+      "title_hash": "afa26a75",
+      "accepted_by": "owner",
+      "reason": "Fixed in source and verified deterministically (build 0 warnings, 143 tests, Layer 0 clean) — rule 15's standard closure. The Terms/Privacy finding was fixed on the live site and pushed (commit 2ff4edc).",
+      "date": "2026-08-13T01:30:00Z"
+    },
+    {
+      "title": "ink.dialMinor is used as reading text in 16 files at 2.20:1 (light) / 2.98:1 (dark) — and it is the one ink token no contrast gate measures",
+      "severity": "major",
+      "title_hash": "199d076f",
+      "accepted_by": "owner",
+      "reason": "Fixed in source and verified deterministically (build 0 warnings, 143 tests, Layer 0 clean) — rule 15's standard closure. The Terms/Privacy finding was fixed on the live site and pushed (commit 2ff4edc).",
+      "date": "2026-08-13T01:30:00Z"
+    },
+    {
+      "title": "Home's answered state is invisible to VoiceOver — the two primary buttons keep announcing as enabled while they do nothing",
+      "severity": "major",
+      "title_hash": "86777793",
+      "accepted_by": "owner",
+      "reason": "Fixed in source and verified deterministically (build 0 warnings, 143 tests, Layer 0 clean) — rule 15's standard closure. The Terms/Privacy finding was fixed on the live site and pushed (commit 2ff4edc).",
+      "date": "2026-08-13T01:30:00Z"
+    },
+    {
+      "title": "Settings — one of the design's four rooms and the source of two planned store panels — never paints the field colour",
+      "severity": "major",
+      "title_hash": "99a1d0aa",
+      "accepted_by": "owner",
+      "reason": "Fixed in source and verified deterministically (build 0 warnings, 143 tests, Layer 0 clean) — rule 15's standard closure. The Terms/Privacy finding was fixed on the live site and pushed (commit 2ff4edc).",
+      "date": "2026-08-13T01:30:00Z"
+    },
+    {
+      "title": "v1 furniture ships under the v2 surfaces while the release note tells the user \"the whole app redrawn as one instrument\"",
+      "severity": "major",
+      "title_hash": "5e272036",
+      "accepted_by": "owner",
+      "reason": "Fixed in source and verified deterministically (build 0 warnings, 143 tests, Layer 0 clean) — rule 15's standard closure. The Terms/Privacy finding was fixed on the live site and pushed (commit 2ff4edc).",
+      "date": "2026-08-13T01:30:00Z"
+    },
+    {
+      "title": "Urge surfing reopens claiming a completed ten-minute wait that was never completed",
+      "severity": "major",
+      "title_hash": "5c6d7ce8",
+      "accepted_by": "owner",
+      "reason": "Fixed in source and verified deterministically (build 0 warnings, 143 tests, Layer 0 clean) — rule 15's standard closure. The Terms/Privacy finding was fixed on the live site and pushed (commit 2ff4edc).",
+      "date": "2026-08-13T01:30:00Z"
+    },
+    {
+      "title": "The App-Group migration's switch-over moves the main store file FIRST, so an interruption flips the \"migrated\" flag while the WAL is still in staging — and the next launch deletes it",
+      "severity": "major",
+      "title_hash": "ffaec82a",
+      "accepted_by": "owner",
+      "reason": "Fixed in source and verified deterministically (build 0 warnings, 143 tests, Layer 0 clean) — rule 15's standard closure. The Terms/Privacy finding was fixed on the live site and pushed (commit 2ff4edc).",
+      "date": "2026-08-13T01:30:00Z"
+    },
+    {
+      "title": "PrivacyInfo.xcprivacy declares only CA92.1, but v2.0.0 adds App-Group UserDefaults that a second bundle reads — and the widget extension ships no manifest at all",
+      "severity": "major",
+      "title_hash": "96cc7dd7",
+      "accepted_by": "owner",
+      "reason": "Fixed in source and verified deterministically (build 0 warnings, 143 tests, Layer 0 clean) — rule 15's standard closure. The Terms/Privacy finding was fixed on the live site and pushed (commit 2ff4edc).",
+      "date": "2026-08-13T01:30:00Z"
+    }
+  ],
+  "mode": "ship-review",
+  "lenses": 5,
+  "source_run": "wf_02a90157-313",
+  "source_journal": "/Users/ufuk/.claude/projects/-Users-ufuk-IOS/bfe4a63c-c523-4270-adb0-45030d75e362/subagents/workflows/wf_02a90157-313/journal.jsonl",
+  "raw_findings": 28,
+  "dismissed_count": 8,
+  "agents": {
+    "started": 6,
+    "returned": 6
+  },
+  "written_by": "write-council-marker.mjs",
+  "appId": "6760716822",
+  "ascIds": [
+    "6760716822"
+  ]
+}

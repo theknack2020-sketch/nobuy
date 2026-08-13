@@ -25,20 +25,15 @@ struct StreakBreakView: View {
             ZStack {
                 Circle()
                     .fill(
-                        RadialGradient(
-                            colors: [.spendRed.opacity(0.15), .spendRed.opacity(0.02)],
-                            center: .center,
-                            startRadius: 5,
-                            endRadius: 45
-                        )
+                        .accentSpentText.opacity(0.12)
                     )
                     .frame(width: 100, height: 100)
 
                 Image(systemName: "heart.fill")
                     .font(Font.adaptiveDisplay(size: 48, isRegular: isRegular))
-                    .foregroundStyle(.spendRed.opacity(0.6))
+                    .foregroundStyle(.accentSpentText.opacity(0.6))
                     .symbolEffect(.pulse, value: reduceMotion ? false : appear)
-                    .shadow(color: .spendRed.opacity(0.2), radius: 6, x: 0, y: 3)
+
                     .accessibilityHidden(true)
             }
             .scaleEffect(appear ? 1.0 : (reduceMotion ? 1.0 : 0.5))
@@ -46,7 +41,7 @@ struct StreakBreakView: View {
             .animation(reduceMotion ? nil : DS.Anim.normal, value: appear)
 
             Text("Streak ended")
-                .font(Font.adaptiveDisplay(size: 22, weight: .bold, design: .rounded, isRegular: isRegular))
+                .font(Font.adaptiveDisplay(size: 22, weight: .semibold, isRegular: isRegular))
 
             Text(compassionateMessages.randomElement()!)
                 .font(.body)
@@ -58,35 +53,35 @@ struct StreakBreakView: View {
                 HStack(spacing: DS.Spacing.xl) {
                     VStack {
                         Text("\(previousStreak)")
-                            .font(Font.adaptiveDisplay(size: 28, weight: .bold, design: .rounded, isRegular: isRegular))
-                            .foregroundStyle(.textSecondary)
+                            .font(Font.adaptiveDisplay(size: 28, weight: .semibold, isRegular: isRegular))
+                            .foregroundStyle(.inkSecondary)
                         Text("Last streak")
                             .font(.caption)
-                            .foregroundStyle(.textTertiary)
+                            .foregroundStyle(.inkSecondary)
                     }
                     .padding(DS.Spacing.lg)
                     .background(
                         RoundedRectangle(cornerRadius: DS.Radius.md)
-                            .fill(Color.surfaceSecondary)
+                            .fill(Color.surfaceDial)
                     )
-                    .shadow(color: .black.opacity(0.06), radius: 4, x: 0, y: 2)
+
                     .accessibilityElement(children: .combine)
                     .accessibilityLabel("Last streak: \(previousStreak) days")
 
                     VStack {
                         Text("\(longestStreak)")
-                            .font(Font.adaptiveDisplay(size: 28, weight: .bold, design: .rounded, isRegular: isRegular))
-                            .foregroundStyle(.noBuyGreen)
+                            .font(Font.adaptiveDisplay(size: 28, weight: .semibold, isRegular: isRegular))
+                            .foregroundStyle(.accentKept)
                         Text("Best")
                             .font(.caption)
-                            .foregroundStyle(.textTertiary)
+                            .foregroundStyle(.inkSecondary)
                     }
                     .padding(DS.Spacing.lg)
                     .background(
                         RoundedRectangle(cornerRadius: DS.Radius.md)
-                            .fill(Color.surfaceSecondary)
+                            .fill(Color.surfaceDial)
                     )
-                    .shadow(color: .black.opacity(0.06), radius: 4, x: 0, y: 2)
+
                     .accessibilityElement(children: .combine)
                     .accessibilityLabel("Best streak: \(longestStreak) days")
                 }
@@ -102,20 +97,16 @@ struct StreakBreakView: View {
             } label: {
                 Text("Start New Streak")
                     .font(.headline)
-                    .foregroundStyle(.white)
+                    .foregroundStyle(Color.inkOnAccent)
                     .frame(maxWidth: .infinity)
                     .frame(height: 50)
                     .background(
                         RoundedRectangle(cornerRadius: DS.Radius.md)
                             .fill(
-                                LinearGradient(
-                                    colors: [.noBuyGreen, .noBuyGreen.opacity(0.8)],
-                                    startPoint: .leading,
-                                    endPoint: .trailing
-                                )
+                                .accentKept
                             )
                     )
-                    .shadow(color: .noBuyGreen.opacity(0.3), radius: 10, x: 0, y: 5)
+
             }
             .buttonStyle(ScaleButtonStyle())
             .padding(.horizontal, DS.Spacing.xxl)

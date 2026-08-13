@@ -1,0 +1,24 @@
+{
+  "appId": 1051342211,
+  "name": "Challenges - Compete, Get Fit",
+  "bundleId": "com.fitnow.challenges",
+  "country": "US",
+  "countryName": "United States",
+  "url": "https://apps.apple.com/us/app/challenges-compete-get-fit/id1051342211?uo=4",
+  "artworkUrl": "https://is1-ssl.mzstatic.com/image/thumb/Purple221/v4/0b/6a/c6/0b6ac6ec-a45b-5a62-d875-739024adbaa2/challenges-0-1x_U007ephone-0-1-0-sRGB-85-220-0.png/512x512bb.jpg",
+  "sellerName": "FitNow, Inc.",
+  "primaryGenreName": "Health & Fitness",
+  "genres": [
+    "Health & Fitness",
+    "Business"
+  ],
+  "version": "26.04.13",
+  "description": "Get fit and compete with friends, family & coworkers with the Challenges app. ‘Cause everybody needs a little healthy competition. \n\n-- How It Works --\nGetting started with Challenges is easy. Join a team challenge and aim to complete your Stand, Move, and Exercise rings. Whether you get there by shakin’ it to Queen Bey or taking the furthest spot in the parking lot, it’s up to you. Keep tabs on your progress via Apple Watch, the Challenges App, or the Health app. Watch in real time as your teammates get closer to closing their rings - they’re cheering you on to do the same!  \n\n-- Achievements -- \nThe more you move, the more you’re rewarded. \nStack up your points to earn Bronze, Silver, and Gold Medals. Go for the gold!\nCheck progress on your next medal\nBask in the glow of medals you’ve racked up from all of your Challenges \n\n-- Nudges -- \nWhat gets you stepping better than your L.A. Lights sneakers from the 90s? Accountability. Spark a little friendly banter to fuel your fitness flame.\nGet and send nudges from your teammates (Tell Dan from the second floor to start taking the stairs if he’s reppin’ your team Mission-Fitpossible) \nComment on the challenge wall to share tips or coordinate a workout\nInvite a friend to join your team, via email or text (Emojis 100% acceptable) \n\n-- On The Watch -- \nPump yourself up wherever you go with just a glance at your wrist. \nCheck in on team ranking\nSee when you’re closing in on an achievement\nCompare your daily average so you can gauge your progress. \nGet notified when someone nudges you\nGet pinged when one of your teammates is rocking it. “Dan just closed all three rings!” Boom, send back applause hands. Somebody’s been snubbing the elevator.\n\nGet your watch charged, your team amped, and your sneakers ready, ‘cause you’ve got a challenge to win.\n\nChallenges integrates with the Health App on your iPhone to retrieve the data it uses to determine by how much you've just beaten all your friends. Because of our integration with the Health App, this also means we leverage the powerful HealthKit API to make your user experience and user interface the best possible. Enjoy!",
+  "price": 0,
+  "formattedPrice": "Free",
+  "currency": "USD",
+  "averageRating": 4.63203,
+  "ratingCount": 5726,
+  "currentVersionRating": 4.63203,
+  "currentVersionCount": 5726
+}

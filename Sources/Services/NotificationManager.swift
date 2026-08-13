@@ -37,14 +37,16 @@ final class NotificationManager: Sendable {
     // MARK: - Daily Reminder (Rotating Messages)
 
     private var dailyReminderMessages: [String] {
+        // Single source: these lines also appear on screens, and two copies is how one of
+        // them keeps an emoji after a voice pass.
         [
-            "Don't forget to log today! 💪",
-            "Did you spend today? Update your log 📝",
-            "Check your streak — every day counts 🔥",
-            "How was your mindful spending day? Log it ✅",
-            "Another day done. Was it a NoBuy day? 🤔",
-            "Small steps, big changes. Log today 🌱",
-            "Don't forget your spending log! We're waiting 💚",
+            L10n.notifDailyReminder1,
+            L10n.notifDailyReminder2,
+            L10n.notifDailyReminder3,
+            L10n.notifDailyReminder4,
+            L10n.notifDailyReminder5,
+            L10n.notifDailyReminder6,
+            L10n.notifDailyReminder7,
         ]
     }
 
@@ -91,33 +93,33 @@ final class NotificationManager: Sendable {
 
         let center = UNUserNotificationCenter.current()
         let content = UNMutableNotificationContent()
-        content.title = "🔥 \(streak) " + "Days!"
+        content.title = "\(streak) " + L10n.notifStreakDaySuffix
         content.sound = .default
 
         switch streak {
         case 1:
-            content.body = "Your first no-spend day — great start!"
+            content.body = L10n.notifStreak1
         case 3:
-            content.body = "3 days in a row! A habit is forming."
+            content.body = L10n.notifStreak3
         case 7:
-            content.body = "One week no-spend! You're on fire 🎯"
+            content.body = L10n.notifStreak7
         case 14:
-            content.body = "2-week streak! It's a lifestyle now 💪"
+            content.body = L10n.notifStreak14
         case 30:
-            content.body = "30 days! Legend. You're a savings machine 🏆"
+            content.body = L10n.notifStreak30
         case 60:
-            content.body = "60 days! Two months strong. Incredible 🌟"
+            content.body = L10n.notifStreak60
         case 90:
-            content.body = "90 days! A quarter year no-spend. Legendary 🏅"
+            content.body = L10n.notifStreak90
         case 100:
-            content.body = "💯 100 days! A true milestone!"
+            content.body = L10n.notifStreak100
         case 180:
-            content.body = "Half a year streak! 180 days of discipline 🎖️"
+            content.body = L10n.notifStreak180
         case 365:
-            content.body = "🎉 ONE YEAR! 365 days no-spend. Unbelievable!"
+            content.body = L10n.notifStreak365
         default:
             if streak % 5 == 0 {
-                content.body = "Day \(streak) no-spend, keep it up!"
+                content.body = "Day \(streak) without an unnecessary purchase."
             } else {
                 return
             }
@@ -145,9 +147,9 @@ final class NotificationManager: Sendable {
         content.sound = .default
 
         let messages = [
-            "One day doesn't change everything. Tomorrow is a fresh start.",
-            "You were strong for \(previousStreak) days. That's still an achievement.",
-            "Falling isn't failing. Tomorrow's with you 💚",
+            L10n.notifStreakBreak1,
+            "You held it for \(previousStreak) days. That still counts.",
+            L10n.notifStreakBreak3,
         ]
 
         content.body = messages.randomElement()!
@@ -170,8 +172,8 @@ final class NotificationManager: Sendable {
 
         let center = UNUserNotificationCenter.current()
         let content = UNMutableNotificationContent()
-        content.title = "1 day from your record! 🏆"
-        content.body = "Your longest streak was \(longestStreak) days. You can break it tomorrow!"
+        content.title = L10n.notifApproachingBestTitle
+        content.body = "Your best run is \(longestStreak) days. Tomorrow matches it."
         content.sound = .default
 
         let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 1, repeats: false)
@@ -196,8 +198,8 @@ final class NotificationManager: Sendable {
         cancelNotifications(withPrefix: ID.weeklySummary)
 
         let content = UNMutableNotificationContent()
-        content.title = "Weekly Summary 📊"
-        content.body = "Open NoBuy to see this week's performance."
+        content.title = L10n.notifWeeklySummaryTitle
+        content.body = L10n.notifWeeklySummaryBody
         content.sound = .default
 
         var dateComponents = DateComponents()
@@ -219,37 +221,16 @@ final class NotificationManager: Sendable {
         cancelNotifications(withPrefix: ID.weeklySummary)
     }
 
-    // MARK: - Lapsed User Re-engagement
-
-    func scheduleLapsedUserNotification() async {
-        let center = UNUserNotificationCenter.current()
+    // MARK: - Lapsed User Re-engagement — REMOVED in v2.0.0
+    //
+    // A "you have not logged in two days" nudge is the one class the onboarding card explicitly
+    // disclaims ("no marketing"), and it was the only one no preference could switch off. It is
+    // gone rather than gated: the product's own free-tier promise is that it never nags.
+    //
+    // The cancel survives so a v1.2 install that already has one queued has it withdrawn.
+    func cancelLapsedUserNotification() {
         cancelNotifications(withPrefix: ID.lapsedUser)
-
-        let content = UNMutableNotificationContent()
-        content.title = "NoBuy"
-        content.sound = .default
-
-        let messages = [
-            "We miss you! How about logging today? 💚",
-            "No records for 2 days. Protect your streak! 🔥",
-            "Great day to come back. We're waiting 🌱",
-        ]
-        content.body = messages.randomElement()!
-
-        let trigger = UNTimeIntervalNotificationTrigger(
-            timeInterval: 2 * 24 * 60 * 60,
-            repeats: false
-        )
-        let request = UNNotificationRequest(
-            identifier: ID.lapsedUser,
-            content: content,
-            trigger: trigger
-        )
-
-        do { try await center.add(request) } catch { AppLogger.notification.error("Failed to schedule notification: \(error.localizedDescription)") }
     }
-
-    // MARK: - Onboarding Journey (Day 1-3)
 
     func scheduleOnboardingJourney() async {
         let center = UNUserNotificationCenter.current()
@@ -258,17 +239,17 @@ final class NotificationManager: Sendable {
             (
                 ID.journeyDay1,
                 24 * 3600,
-                "Welcome to NoBuy! 👋 Log your first day and see your streak grow."
+                "Log your first day whenever you are ready. The streak starts there."
             ),
             (
                 ID.journeyDay2,
                 48 * 3600,
-                "Tip: Use the Impulse Checklist when you feel the urge to buy. It works! 🧠"
+                "When something is pulling at you, the Impulse Checklist is one tap from Today."
             ),
             (
                 ID.journeyDay3,
                 72 * 3600,
-                "Day 3! Check your Stats tab to see your progress. You're building a habit! 📊"
+                "Three days in. Stats shows what the pattern looks like so far."
             ),
         ]
 
@@ -301,12 +282,18 @@ final class NotificationManager: Sendable {
 
     // MARK: - Helpers
 
+    /// async/await rather than the completion-handler form: a closure handed to
+    /// `getPendingNotificationRequests` runs on the framework's own queue, and capturing
+    /// non-Sendable state across that boundary is the crash class the simulator never shows
+    /// (`IOS/CLAUDE.md` — the surface the simulator cannot reach).
     private func cancelNotifications(withPrefix prefix: String) {
-        let center = UNUserNotificationCenter.current()
-        center.getPendingNotificationRequests { requests in
+        Task {
+            let center = UNUserNotificationCenter.current()
+            let requests = await center.pendingNotificationRequests()
             let ids = requests
                 .map(\.identifier)
                 .filter { $0.hasPrefix(prefix) }
+            guard !ids.isEmpty else { return }
             center.removePendingNotificationRequests(withIdentifiers: ids)
         }
     }

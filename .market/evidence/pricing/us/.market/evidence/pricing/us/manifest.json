@@ -1,0 +1,202 @@
+{
+  "written_by": "market-evidence.mjs",
+  "kind": "pricing",
+  "storefront": "us",
+  "asc_version": "4.0.0 (commit: unknown, date: unknown)",
+  "fetched_at": "2026-08-12T13:40:23.943Z",
+  "terms": [
+    "no buy tracker",
+    "no spend day"
+  ],
+  "top_n": 5,
+  "top_by_term": {
+    "no-buy-tracker": [
+      {
+        "appId": "1223471316",
+        "name": "Shop: All your favorite brands",
+        "ratingCount": 7071694,
+        "sellerName": "Shopify Inc."
+      },
+      {
+        "appId": "938003185",
+        "name": "Robinhood: Trading & Investing",
+        "ratingCount": 4798790,
+        "sellerName": "Robinhood Markets Inc"
+      },
+      {
+        "appId": "878577184",
+        "name": "SHEIN - Shopping Online",
+        "ratingCount": 3314791,
+        "sellerName": "ROADGET BUSINESS PTE. LTD."
+      },
+      {
+        "appId": "436672029",
+        "name": "AliExpress - Shopping App",
+        "ratingCount": 653044,
+        "sellerName": "Alibaba.com Singapore E-Commerce Private Limited"
+      },
+      {
+        "appId": "1449803898",
+        "name": "Route: Package Tracker",
+        "ratingCount": 516199,
+        "sellerName": "Route App LLC"
+      }
+    ],
+    "no-spend-day": [
+      {
+        "appId": "1193801909",
+        "name": "Dave: Credit, Cash & Money App",
+        "ratingCount": 875552,
+        "sellerName": "Dave, Inc"
+      },
+      {
+        "appId": "1494523953",
+        "name": "OnePay – Mobile Banking",
+        "ratingCount": 404159,
+        "sellerName": "One Finance, Inc."
+      },
+      {
+        "appId": "1517676784",
+        "name": "Varo Bank: Online Banking",
+        "ratingCount": 233474,
+        "sellerName": "Varo Money, Inc."
+      },
+      {
+        "appId": "1438006983",
+        "name": "Step: All-In-One Money App",
+        "ratingCount": 81326,
+        "sellerName": "Step Mobile Inc"
+      },
+      {
+        "appId": "1495384779",
+        "name": "ZayZoon - Wages On-Demand",
+        "ratingCount": 39731,
+        "sellerName": "ZayZoon Inc."
+      }
+    ]
+  },
+  "files": [
+    {
+      "path": ".market/evidence/pricing/us/search-no-buy-tracker.json",
+      "sha256": "2059a775fd56b0eb51c3ed91b4c2cdbdc946d2c1295042932d83c2a0f67896d3",
+      "bytes": 120781
+    },
+    {
+      "path": ".market/evidence/pricing/us/view-1223471316.json",
+      "sha256": "008f1c776b3c850cddea26361cc308a87ed8a998375ee8f5ad53a1cc501d9f26",
+      "bytes": 2129
+    },
+    {
+      "path": ".market/evidence/pricing/us/iap-1223471316.json",
+      "sha256": "f7794aab76c91787375a07f2362a780d067885ef26717ee351979916c065bcf5",
+      "bytes": 461
+    },
+    {
+      "path": ".market/evidence/pricing/us/view-938003185.json",
+      "sha256": "7c7b36d904b24f2b352693ae6f1ef3625645fd5c97d14bca922cafcdfc080a98",
+      "bytes": 4783
+    },
+    {
+      "path": ".market/evidence/pricing/us/iap-938003185.json",
+      "sha256": "8df717e4b0578bb5668638e66e28ca15fbc8cafd0d6342659fc545896a4e3943",
+      "bytes": 468
+    },
+    {
+      "path": ".market/evidence/pricing/us/view-878577184.json",
+      "sha256": "d7d0409db464a7fae23c3bae9e0ef89d3f400f323a47ba99545d9426c41e278e",
+      "bytes": 2927
+    },
+    {
+      "path": ".market/evidence/pricing/us/iap-878577184.json",
+      "sha256": "f493836f1bb6cc4d885dadc1529a6b00b7656fca09523fdf52c559eaa2efa0f6",
+      "bytes": 466
+    },
+    {
+      "path": ".market/evidence/pricing/us/view-436672029.json",
+      "sha256": "435669c75ebd05a325c371a1355db1f73a92e4ed4285d64fd8260352edc37744",
+      "bytes": 3843
+    },
+    {
+      "path": ".market/evidence/pricing/us/iap-436672029.json",
+      "sha256": "8d67f654ff5f4fae73450137052bd7b03ef32c7811f84f19f51288c1819dee85",
+      "bytes": 489
+    },
+    {
+      "path": ".market/evidence/pricing/us/view-1449803898.json",
+      "sha256": "5931badc29f9c59dd20957fe2564b29f7af77413ba4aee5be6ed512aae529b55",
+      "bytes": 3255
+    },
+    {
+      "path": ".market/evidence/pricing/us/iap-1449803898.json",
+      "sha256": "9228743f02e9662be5d58c0e4079b64bbacb3777f3bff2d50aab227da9314384",
+      "bytes": 453
+    },
+    {
+      "path": ".market/evidence/pricing/us/search-no-spend-day.json",
+      "sha256": "5cc572f70747d3ad360180478f9abed8c6043522e5b6c5f10d5c6297223e4676",
+      "bytes": 52504
+    },
+    {
+      "path": ".market/evidence/pricing/us/view-1193801909.json",
+      "sha256": "f2e1cc9353b348f6f91eaa8767e3d4e997adc2277027a241af53053d9079a264",
+      "bytes": 4014
+    },
+    {
+      "path": ".market/evidence/pricing/us/iap-1193801909.json",
+      "sha256": "7f35fa664520b753cbe0975e183d1c31d17a32aeefded721954ae2cf7123beb3",
+      "bytes": 455
+    },
+    {
+      "path": ".market/evidence/pricing/us/view-1494523953.json",
+      "sha256": "160a2f94cc98d14f333235645622d9bb6f6df1bfc0f7bf45741428a267df99de",
+      "bytes": 4457
+    },
+    {
+      "path": ".market/evidence/pricing/us/iap-1494523953.json",
+      "sha256": "9a297f6ab4d7ee68d9c88be1ac22dcad7ecf1bb5fa35b7122ab35fd6243b59d9",
+      "bytes": 456
+    },
+    {
+      "path": ".market/evidence/pricing/us/view-1517676784.json",
+      "sha256": "147d42fc0d830354706c63526a9b6da4ad51ad4133dbb74c503ceb3ac7fa5455",
+      "bytes": 1892
+    },
+    {
+      "path": ".market/evidence/pricing/us/iap-1517676784.json",
+      "sha256": "134c8c679f5f757cbfe1ecb1e2d445538a51b3e4b504c5ed8866aff36030cd6c",
+      "bytes": 457
+    },
+    {
+      "path": ".market/evidence/pricing/us/view-1438006983.json",
+      "sha256": "ef419832bd5cb8b64ec97087fc145554a68e6aaa2be37a9ac8e4f61b749ce638",
+      "bytes": 3199
+    },
+    {
+      "path": ".market/evidence/pricing/us/iap-1438006983.json",
+      "sha256": "4cf2829903f74821d5f8dbbc8e775ff0844e7124f1e6595d937816d47d53521f",
+      "bytes": 456
+    },
+    {
+      "path": ".market/evidence/pricing/us/view-1495384779.json",
+      "sha256": "80a5e1ffc0ca581b5905299e8bef96a33c75daffc44f3a3605bf8b8617ac855b",
+      "bytes": 1792
+    },
+    {
+      "path": ".market/evidence/pricing/us/iap-1495384779.json",
+      "sha256": "9d8429dc530033ea75e80812a2e23613da629a889d5dcc5d85f8271fbbb19843",
+      "bytes": 452
+    }
+  ],
+  "problems": [
+    "IAP okunamadı 1223471316 (Shop: All your favorite brands): sayfada \"In-App Purchases\" bloğu yok (app IAP satmıyor olabilir)",
+    "IAP okunamadı 938003185 (Robinhood: Trading & Investing): sayfada \"In-App Purchases\" bloğu yok (app IAP satmıyor olabilir)",
+    "IAP okunamadı 878577184 (SHEIN - Shopping Online): sayfada \"In-App Purchases\" bloğu yok (app IAP satmıyor olabilir)",
+    "IAP okunamadı 436672029 (AliExpress - Shopping App): sayfada \"In-App Purchases\" bloğu yok (app IAP satmıyor olabilir)",
+    "IAP okunamadı 1449803898 (Route: Package Tracker): sayfada \"In-App Purchases\" bloğu yok (app IAP satmıyor olabilir)",
+    "IAP okunamadı 1193801909 (Dave: Credit, Cash & Money App): sayfada \"In-App Purchases\" bloğu yok (app IAP satmıyor olabilir)",
+    "IAP okunamadı 1494523953 (OnePay – Mobile Banking): sayfada \"In-App Purchases\" bloğu yok (app IAP satmıyor olabilir)",
+    "IAP okunamadı 1517676784 (Varo Bank: Online Banking): sayfada \"In-App Purchases\" bloğu yok (app IAP satmıyor olabilir)",
+    "IAP okunamadı 1438006983 (Step: All-In-One Money App): sayfada \"In-App Purchases\" bloğu yok (app IAP satmıyor olabilir)",
+    "IAP okunamadı 1495384779 (ZayZoon - Wages On-Demand): sayfada \"In-App Purchases\" bloğu yok (app IAP satmıyor olabilir)"
+  ]
+}

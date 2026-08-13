@@ -1,0 +1,25 @@
+{
+  "version": "2.0.0",
+  "override": {
+    "by": "owner",
+    "date": "2026-08-12",
+    "reason": "Owner asked for the subscription migration, the full design-pipeline redesign and the interactive widget in ONE release, after being shown rule 13 and the Caliper measurement behind it (11 of 11 findings in rounds 2-3 came from code the fix rounds themselves wrote). Accepted knowingly. The compensating control is scope freeze at the end of the design round: .asc/scope-freeze.json is written before ship review round 1, and after it a new file under Sources/ is a scope violation, not a fix."
+  },
+  "categories_in_this_release": [
+    "monetization structure change (one-time unlock -> monthly + yearly)",
+    "full visual redesign via the Claude Design pipeline (first ever for this app)",
+    "product-completeness compliance (paywall entry context, canonical ReviewGate)",
+    "new peripheral surface (WidgetKit + App Group data migration)"
+  ],
+  "signature_surfaces": [
+    "subscription paywall + StoreKit 2 subscription service",
+    "new design language across every screen",
+    "interactive Home/Lock Screen widget"
+  ],
+  "compensating_controls": [
+    "scope freeze written before ship review round 1 (.asc/scope-freeze.json)",
+    "rule 6 UNCHANGED: round cap stays 3, closing round is FULL with zero blocking",
+    "rule 15 default composition: Layer 0 -> ONE full ship-review round -> deterministic verification",
+    "grandfathering of the 60 existing lifetime owners is a hard requirement, tested, not a best effort"
+  ]
+}

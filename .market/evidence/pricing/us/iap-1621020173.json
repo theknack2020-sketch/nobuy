@@ -1,0 +1,50 @@
+{
+  "appId": "1621020173",
+  "name": "Fleur - Budget Planner App",
+  "ratingCount": 12550,
+  "sellerName": "Akash Jain",
+  "term": "no spend tracker",
+  "storefront": "us",
+  "fetched_at": "2026-08-12T13:37:01.074Z",
+  "readable": true,
+  "typed": true,
+  "url": "https://apps.apple.com/us/app/id1621020173",
+  "sha256": "ce8003214ff70ced572ef619baa1a5812cb1a21905278040e17770b08d8a099d",
+  "iap": [
+    {
+      "name": "Fleur Lifetime",
+      "price": 9.99,
+      "tier": "lifetime"
+    },
+    {
+      "name": "Fleur Budget Lifetime",
+      "price": 15.99,
+      "tier": "lifetime"
+    },
+    {
+      "name": "Fleur Lifetime",
+      "price": 25.99,
+      "tier": "lifetime"
+    },
+    {
+      "name": "Fleur Budget Yearly",
+      "price": 39.99,
+      "tier": "yearly"
+    },
+    {
+      "name": "Fleur Budget Yearly",
+      "price": 29.99,
+      "tier": "yearly"
+    },
+    {
+      "name": "Fleur Budget Monthly",
+      "price": 6.99,
+      "tier": "monthly"
+    }
+  ],
+  "tiers": {
+    "lifetime": 15.99,
+    "yearly": 34.99,
+    "monthly": 6.99
+  }
+}

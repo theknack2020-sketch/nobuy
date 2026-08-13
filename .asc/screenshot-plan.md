@@ -1,33 +1,27 @@
-# NoBuy — Screenshot Plan (v1.2.0)
+# Store panel plan — v2.0.0 (Escapement)
 
-patterns_read: 2026-07-21
+DERIVED from `.asc/shots/panels-geometry.json`, which is itself derived from the accepted
+round-2 deliverable (`.design/rounds/r2/store/`). Do not hand-edit either; regenerate.
 
-Conversion funnel: P1 hook (brand promise) → P2 moat (in-the-moment anti-impulse
-toolkit — no rival has it) → P3 depth (calendar outcome state). P5 pre-sells Pro
-value (unlocked charts, never the price wall). Captions reuse metadata vocabulary
-(impulse, no-spend, savings, streaks, underconsumption audience).
+**Owner law:** no panel carries a paywall, a price or lock imagery. The v1.2 plan that
+lived here sold "pay once" and kept a price-forward alternate ("Own Pro forever — $4.99")
+— both false as of v2.0.0 and both banned outright. Panel 5 shows Pro VALUE unlocked and
+working; the one screenshot that must show the paywall is the App Review screenshot, and
+it lives in `.asc/shots/review/`.
 
-| # | Panel | uiState | Caption | Sub | bg |
-|---|---|---|---|---|---|
-| 1 | Home hero (23-day streak, $575 saved, challenge 23/30) | today | Break impulse buying | One tap a day. No budgets, no bank logins. | mint-light + halo |
-| 2 | Urge Surfing timer sheet | urge | Beat the urge in minutes | 10-minute urge-surfing timer for impulse moments | forest-dark |
-| 3 | Calendar month (green outcome state) | calendar | Your month at a glance | Color-coded no-spend calendar with streaks and freezes | ocean |
-| 4 | Stats top (savings + achievements) | stats | Watch real savings grow | Savings estimate, achievements, monthly progress | sunset |
-| 5 | Stats Pro charts (scrolled) | statsCharts | Pro insights keep you going | Trends, weekday patterns, streak history — pay once | forest-dark |
-| 6 | Impulse checklist sheet | checklist | Think before you buy | Honest checklist and a 24-hour waiting list | mint-light |
+| device | # | id | uiState | caption | subline | field |
+|---|---|---|---|---|---|---|
+| iphone | 1 | 01-question | today-quiet-dark | One question, every evening. | Answer with one tap. Keep the days. | dark |
+| iphone | 2 | 02-record | calendar-light | The record keeps its shape. | Five truths a day can carry, including the honest one. | light |
+| iphone | 3 | 03-waiting | urge-running-dark | Waiting is the mechanism. | Ten minutes for an urge. Twenty-four hours for a want. | dark |
+| iphone | 4 | 04-glance | widget-home-light | Glance without opening. | Home and Lock Screen, with tonight's answer one tap away. | light |
+| iphone | 5 | 05-finishes | settings-finishes-dark | Five dials, one record. | The finish changes. The truth doesn't. | dark |
+| iphone | 6 | 06-yours | settings-privacy-light | Yours alone, on this phone. | No account. No bank connection. No analytics. Ever. | light |
+| ipad | 1 | 01-question | today-quiet-dark | One question, every evening. | Answer with one tap. Keep the days. | dark |
+| ipad | 2 | 02-record | calendar-light | The record keeps its shape. | Five truths a day can carry, including the honest one. | light |
+| ipad | 3 | 03-waiting | urge-running-dark | Waiting is the mechanism. | Ten minutes for an urge. Twenty-four hours for a want. | dark |
+| ipad | 4 | 05-finishes | settings-finishes-dark | Five dials, one record. | The finish changes. The truth doesn't. | dark |
+| ipad | 5 | 06-yours | settings-privacy-light | Yours alone, on this phone. | No account. No bank connection. No analytics. Ever. | light |
 
-## A/B variants (post-launch PPO)
-
-- P1 alt: "Stop impulse buying today" / "Join the no-buy challenge"
-- P2 alt: "Outsmart the impulse" / "Urge surfing + waiting list beat regret"
-- P5 alt: "Own Pro forever — $4.99" (price-forward test; only if conversion dips)
-
-## Capture notes
-
-- Demo data: `-demoData` (DemoSeeder — 23-day streak, ~$575 saved, challenge 23/30,
-  Pro unlocked). Fresh container before the run (`simctl uninstall`) + one warm-up
-  launch (cold-start blank rule).
-- Devices: iPhone 17 Pro Max (1320×2868) + iPad Pro 13-inch M5 (2064×2752), en_US
-  locale, status bar 9:41 / discharging / full bars.
-- 6.7" (1290×2796) set derived from the composed 6.9" PNGs (0.2% aspect resize,
-  imperceptible) so the stale live APP_IPHONE_67 set gets replaced too.
+Captures come from the FINAL binary, once (global rule 5). Stale v1.2 PNGs are quarantined
+under `.asc/shots/_stale-v1.2.0/` and must never be uploaded.

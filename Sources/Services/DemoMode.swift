@@ -9,7 +9,22 @@ enum DemoMode {
     #if DEBUG
         static let isActive = ProcessInfo.processInfo.arguments.contains("-demoData")
             || UserDefaults.standard.bool(forKey: "screenshotMode")
+            || persists
+
+        /// Seeds the REAL store instead of an in-memory one.
+        ///
+        /// Needed for exactly one panel: the widget lives in its own process and reads the shared
+        /// store, so it cannot see an in-memory demo. Photographing it against a one-record store
+        /// would have shown "1 day" under a caption about glancing at your run. DEBUG-only, opt-in
+        /// by launch argument, and it seeds ONCE — a second launch finds records and leaves them.
+        static let persists = ProcessInfo.processInfo.arguments.contains("-demoDataPersist")
+
+        /// Photographs the app with Pro unlocked, for the one panel that must show paid value
+        /// working rather than locked.
+        static let showsProUnlocked = ProcessInfo.processInfo.arguments.contains("-demoPro")
     #else
         static let isActive = false
+        static let persists = false
+        static let showsProUnlocked = false
     #endif
 }

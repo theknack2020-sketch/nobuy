@@ -14,7 +14,7 @@ struct MilestoneModal: View {
 
     var body: some View {
         ZStack {
-            Color.black.opacity(appear ? 0.4 : 0)
+            Color.surfaceScrim.opacity(appear ? 0.4 : 0)
                 .ignoresSafeArea()
                 .onTapGesture { dismiss() }
 
@@ -22,12 +22,7 @@ struct MilestoneModal: View {
                 ZStack {
                     Circle()
                         .fill(
-                            RadialGradient(
-                                colors: [milestoneColor.opacity(0.3), milestoneColor.opacity(0.05)],
-                                center: .center,
-                                startRadius: 10,
-                                endRadius: 70
-                            )
+                            milestoneColor.opacity(0.12)
                         )
                         .frame(width: 120, height: 120)
                         .scaleEffect(appear ? 1.0 : (reduceMotion ? 1.0 : 0.3))
@@ -37,13 +32,13 @@ struct MilestoneModal: View {
                         .font(Font.adaptiveDisplay(size: 56, isRegular: isRegular))
                         .foregroundStyle(milestoneColor)
                         .symbolEffect(.bounce, value: reduceMotion ? false : appear)
-                        .shadow(color: milestoneColor.opacity(0.4), radius: 8, x: 0, y: 4)
+
                         .accessibilityHidden(true)
                 }
 
                 VStack(spacing: DS.Spacing.sm) {
                     Text(achievement?.title ?? milestoneTitle)
-                        .font(Font.adaptiveDisplay(size: 28, weight: .bold, design: .rounded, isRegular: isRegular))
+                        .font(Font.adaptiveDisplay(size: 28, weight: .semibold, isRegular: isRegular))
                         .multilineTextAlignment(.center)
 
                     Text(achievement?.description ?? milestoneDescription)
@@ -54,16 +49,11 @@ struct MilestoneModal: View {
                 }
 
                 Text("\(streak)")
-                    .font(Font.adaptiveDisplay(size: 64, weight: .black, design: .rounded, isRegular: isRegular))
+                    .font(Font.adaptiveDisplay(size: 64, weight: .semibold, isRegular: isRegular))
                     .foregroundStyle(
-                        LinearGradient(
-                            colors: [milestoneColor, milestoneColor.opacity(0.7)],
-                            startPoint: .topLeading,
-                            endPoint: .bottomTrailing
-                        )
+                        milestoneColor
                     )
                     .contentTransition(.numericText())
-                    .shadow(color: milestoneColor.opacity(0.3), radius: 4, x: 0, y: 2)
 
                 Text("day streak")
                     .font(.subheadline)
@@ -80,20 +70,16 @@ struct MilestoneModal: View {
                 } label: {
                     Text("Continue")
                         .font(.headline)
-                        .foregroundStyle(.white)
+                        .foregroundStyle(Color.inkOnAccent)
                         .frame(maxWidth: .infinity)
                         .frame(height: 50)
                         .background(
                             RoundedRectangle(cornerRadius: DS.Radius.md)
                                 .fill(
-                                    LinearGradient(
-                                        colors: [milestoneColor, milestoneColor.opacity(0.8)],
-                                        startPoint: .leading,
-                                        endPoint: .trailing
-                                    )
+                                    milestoneColor
                                 )
                         )
-                        .shadow(color: milestoneColor.opacity(0.35), radius: 10, x: 0, y: 5)
+
                 }
                 .buttonStyle(.scale)
                 .padding(.horizontal, DS.Spacing.xxl)
@@ -103,12 +89,12 @@ struct MilestoneModal: View {
             .padding(DS.Spacing.xxxl)
             .background(
                 RoundedRectangle(cornerRadius: DS.Radius.xl)
-                    .fill(Color.surfacePrimary)
+                    .fill(Color.surfaceField)
                     .overlay(
                         RoundedRectangle(cornerRadius: DS.Radius.xl)
                             .fill(DS.Gradient.card)
                     )
-                    .shadow(color: .black.opacity(0.15), radius: 30, y: 10)
+
             )
             .padding(.horizontal, DS.Spacing.xxl)
             .scaleEffect(appear ? 1.0 : (reduceMotion ? 1.0 : 0.8))
@@ -139,11 +125,11 @@ struct MilestoneModal: View {
 
     private var milestoneColor: Color {
         switch streak {
-        case 1 ... 3: .noBuyGreen
-        case 4 ... 7: .blue
-        case 8 ... 14: .purple
-        case 15 ... 30: .orange
-        default: Color(red: 0.85, green: 0.65, blue: 0.13) // Gold
+        case 1 ... 3: .accentKept
+        case 4 ... 7: .stateWait
+        case 8 ... 14: .stateWait
+        case 15 ... 30: .accentSpentMark
+        default: Color.accentKept // one accent; milestones do not get their own hue
         }
     }
 

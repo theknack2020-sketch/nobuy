@@ -54,3 +54,16 @@ extension Calendar {
         return self.component(.weekday, from: startOfMonth)
     }
 }
+
+// MARK: - Sentence case
+//
+// The five truths are stored as spoken words ("essentials only") so VoiceOver and the widget
+// read them verbatim; a surface that needs one at the head of a sentence raises only the first
+// letter. `.capitalized` would turn it into "Essentials Only" — Title Case the app does not use.
+
+extension String {
+    var capitalizedFirst: String {
+        guard let first else { return self }
+        return String(first).uppercased() + dropFirst()
+    }
+}

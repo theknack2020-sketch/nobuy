@@ -9,7 +9,6 @@ struct StreakInfo: Equatable {
     let frozenDaysThisMonth: Int
 
     var monthSummary: String {
-        let calendar = Calendar.current
         let formatter = DateFormatter()
         formatter.locale = Locale(identifier: "en_US")
         formatter.dateFormat = "MMMM"

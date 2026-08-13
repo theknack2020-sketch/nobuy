@@ -1,0 +1,237 @@
+{
+  "written_by": "market-evidence.mjs",
+  "kind": "pricing",
+  "storefront": "us",
+  "asc_version": "4.0.0 (commit: unknown, date: unknown)",
+  "fetched_at": "2026-08-12T13:38:03.176Z",
+  "terms": [
+    "no spend challenge",
+    "stop impulse buying",
+    "no buy year"
+  ],
+  "top_n": 5,
+  "top_by_term": {
+    "no-spend-challenge": [
+      {
+        "appId": "443052658",
+        "name": "Surveys On The Go",
+        "ratingCount": 92788,
+        "sellerName": "MFour Mobile Research, Inc"
+      },
+      {
+        "appId": "599455669",
+        "name": "Coupa Mobile",
+        "ratingCount": 4687,
+        "sellerName": "Coupa Software"
+      },
+      {
+        "appId": "1510760825",
+        "name": "Money+ Cute Expense Tracker",
+        "ratingCount": 3820,
+        "sellerName": "Chongqing Zhouhu Technology Co.,Ltd"
+      },
+      {
+        "appId": "6739215932",
+        "name": "Dollarwise: Budget & Tracking",
+        "ratingCount": 3809,
+        "sellerName": "Hammer Media LLC"
+      },
+      {
+        "appId": "6444917344",
+        "name": "Track Spending : Wise Budget",
+        "ratingCount": 2958,
+        "sellerName": "Marwan Ghafoor"
+      }
+    ],
+    "stop-impulse-buying": [
+      {
+        "appId": "1672070246",
+        "name": "bless. minimal shopping habits",
+        "ratingCount": 204,
+        "sellerName": "Stoic app inc."
+      },
+      {
+        "appId": "6757983716",
+        "name": "ThinkTwice - Save Money",
+        "ratingCount": 192,
+        "sellerName": "Lit Apps LLC (Mobile)"
+      },
+      {
+        "appId": "6736944441",
+        "name": "Boycott Detective",
+        "ratingCount": 151,
+        "sellerName": "ERDEM OZVEREN"
+      },
+      {
+        "appId": "1505368956",
+        "name": "MoodWallet: Mind Your Money",
+        "ratingCount": 145,
+        "sellerName": "Jomo Labs, LLC"
+      },
+      {
+        "appId": "6475173011",
+        "name": "Stop Impulse Buying | Budget",
+        "ratingCount": 76,
+        "sellerName": "Britney Shawstad"
+      }
+    ],
+    "no-buy-year": [
+      {
+        "appId": "375380948",
+        "name": "Apple Store",
+        "ratingCount": 167958,
+        "sellerName": "Apple Inc."
+      },
+      {
+        "appId": "6466286877",
+        "name": "YearsHK",
+        "ratingCount": 0,
+        "sellerName": "Years Veggie Limited"
+      }
+    ]
+  },
+  "files": [
+    {
+      "path": ".market/evidence/pricing/us/search-no-spend-challenge.json",
+      "sha256": "f2ac83318e1336f2485f06fdfc53ef01c53ff6271da2fb0527890682adbe3d08",
+      "bytes": 112204
+    },
+    {
+      "path": ".market/evidence/pricing/us/view-443052658.json",
+      "sha256": "1eac462170d626fe4a30064f68a647b01a0257f80f4a718aa2c848f5c8614365",
+      "bytes": 3505
+    },
+    {
+      "path": ".market/evidence/pricing/us/iap-443052658.json",
+      "sha256": "9fb180e085f288e3a49851386e1b9f392b51973a3ff623c687ffa0dd3a264ad3",
+      "bytes": 462
+    },
+    {
+      "path": ".market/evidence/pricing/us/view-599455669.json",
+      "sha256": "0e8ca80e4bcf28b2d58c4c4971916bc57e6620a1cbe62af8475acec0327af9e0",
+      "bytes": 1840
+    },
+    {
+      "path": ".market/evidence/pricing/us/iap-599455669.json",
+      "sha256": "25df39a2b086f09d6c6788e3b0e6e2cb86ead831895d315f933b2befe4fd129e",
+      "bytes": 444
+    },
+    {
+      "path": ".market/evidence/pricing/us/view-1510760825.json",
+      "sha256": "25b711150c48394857567ddd074ea99ad3dbcd255ebcde29861de35100d2156c",
+      "bytes": 4150
+    },
+    {
+      "path": ".market/evidence/pricing/us/iap-1510760825.json",
+      "sha256": "8adc60f10a633a27b6dc7fa4879cb79c050ebb3b5388a94fecfb78866d51eb45",
+      "bytes": 840
+    },
+    {
+      "path": ".market/evidence/pricing/us/view-6739215932.json",
+      "sha256": "03e29a1407084bfccb97bb377f58c2626ffc02cffb660589173a75788ff01d25",
+      "bytes": 2078
+    },
+    {
+      "path": ".market/evidence/pricing/us/iap-6739215932.json",
+      "sha256": "b82b607bf6510e5fc291b51dc11f695fd44388698c618f73e35d49d88ad96976",
+      "bytes": 1404
+    },
+    {
+      "path": ".market/evidence/pricing/us/view-6444917344.json",
+      "sha256": "3824d6e2adbee199909616158696f028e12cf6bac2ae895dd97eb148d75e33e8",
+      "bytes": 4358
+    },
+    {
+      "path": ".market/evidence/pricing/us/iap-6444917344.json",
+      "sha256": "898fa9da27ac34b3bc77d94c311540f8c030c7c6dc519dad79d92c3dda487a7a",
+      "bytes": 1282
+    },
+    {
+      "path": ".market/evidence/pricing/us/search-stop-impulse-buying.json",
+      "sha256": "800cb6aa5491bafd5f4023850d0cda4044b80b73ca20fc80bcca40c9739196c8",
+      "bytes": 116771
+    },
+    {
+      "path": ".market/evidence/pricing/us/view-1672070246.json",
+      "sha256": "aa355358847ee12c7c976d04162e6adda99c1931605cd1ab8544127221dab89d",
+      "bytes": 3739
+    },
+    {
+      "path": ".market/evidence/pricing/us/iap-1672070246.json",
+      "sha256": "ea0d22e2a07ef9985c15c5066bd76006319d185ec7f37b8c2fb8a4227037fa25",
+      "bytes": 548
+    },
+    {
+      "path": ".market/evidence/pricing/us/view-6757983716.json",
+      "sha256": "aa18551f88e6969db92f4e89e357aee6273cdb8d079a97e6f708f20ac2bf430f",
+      "bytes": 1901
+    },
+    {
+      "path": ".market/evidence/pricing/us/iap-6757983716.json",
+      "sha256": "e98294c600f55e370f758be97930afd8bcf6a556824f3da1efadb639253b1572",
+      "bytes": 858
+    },
+    {
+      "path": ".market/evidence/pricing/us/view-6736944441.json",
+      "sha256": "95b218389ab73db9691bcc836550cd197bea88e08159fc0585f6c3363cc159f0",
+      "bytes": 1907
+    },
+    {
+      "path": ".market/evidence/pricing/us/iap-6736944441.json",
+      "sha256": "8d3473f3f99694ab94820df9c49cb2b08bf616dee237afbf2854978f959eed22",
+      "bytes": 450
+    },
+    {
+      "path": ".market/evidence/pricing/us/view-1505368956.json",
+      "sha256": "3e42e7567115cbc20809a0baf45984c2d3d70a1ccb1de7d8c042cbb8edbad48e",
+      "bytes": 3315
+    },
+    {
+      "path": ".market/evidence/pricing/us/iap-1505368956.json",
+      "sha256": "b533123d659619db8e2583cf41eb5ac81e21ded616be190e5f9805fc1e82b708",
+      "bytes": 965
+    },
+    {
+      "path": ".market/evidence/pricing/us/view-6475173011.json",
+      "sha256": "f5e5dcd776f371b56f63f88611590dbd1b8682c5316ab4b130ff709195b2b25d",
+      "bytes": 4195
+    },
+    {
+      "path": ".market/evidence/pricing/us/iap-6475173011.json",
+      "sha256": "92da5e87850846860f5785d00127edf5157ac5724268083549b57e08787685a5",
+      "bytes": 615
+    },
+    {
+      "path": ".market/evidence/pricing/us/search-no-buy-year.json",
+      "sha256": "2a53b5089b04d2444fd36ec534a8e8636c2ef2895f6e9c42dce24715f618335d",
+      "bytes": 1335
+    },
+    {
+      "path": ".market/evidence/pricing/us/view-375380948.json",
+      "sha256": "fe68cdd27cd5a9dc650ef0e2e0ef8e55f6be49b28882b86ad8c63169292878bb",
+      "bytes": 3080
+    },
+    {
+      "path": ".market/evidence/pricing/us/iap-375380948.json",
+      "sha256": "e3a4ab10c4b6fa02a15f0f206f4e7008807f69450ccf84c276929deb4dfb8314",
+      "bytes": 434
+    },
+    {
+      "path": ".market/evidence/pricing/us/view-6466286877.json",
+      "sha256": "1bfbbbb5bab99890a415276954acfa8d4c839cc80ffea21b6de0b15c6eb5e57a",
+      "bytes": 1454
+    },
+    {
+      "path": ".market/evidence/pricing/us/iap-6466286877.json",
+      "sha256": "8dd14bc2ca9813ce0b5c37c1c9c9309098c2ec64b1a423476ae9ca051b770c0e",
+      "bytes": 437
+    }
+  ],
+  "problems": [
+    "IAP okunamadı 443052658 (Surveys On The Go): sayfada \"In-App Purchases\" bloğu yok (app IAP satmıyor olabilir)",
+    "IAP okunamadı 599455669 (Coupa Mobile): sayfada \"In-App Purchases\" bloğu yok (app IAP satmıyor olabilir)",
+    "IAP okunamadı 6736944441 (Boycott Detective): sayfada \"In-App Purchases\" bloğu yok (app IAP satmıyor olabilir)",
+    "IAP okunamadı 375380948 (Apple Store): sayfada \"In-App Purchases\" bloğu yok (app IAP satmıyor olabilir)",
+    "IAP okunamadı 6466286877 (YearsHK): sayfada \"In-App Purchases\" bloğu yok (app IAP satmıyor olabilir)"
+  ]
+}

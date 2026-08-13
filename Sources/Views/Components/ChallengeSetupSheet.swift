@@ -32,32 +32,23 @@ struct ChallengeSetupSheet: View {
                     ZStack {
                         Circle()
                             .fill(
-                                RadialGradient(
-                                    colors: [.noBuyGreen.opacity(0.2), .noBuyGreen.opacity(0.02)],
-                                    center: .center,
-                                    startRadius: 5,
-                                    endRadius: 40
-                                )
+                                .accentKept.opacity(0.12)
                             )
                             .frame(width: 72, height: 72)
 
-                        Image(systemName: "flame.fill")
+                        Image(systemName: "flame")
                             .font(Font.adaptiveDisplay(size: 40, isRegular: isRegular))
                             .foregroundStyle(
-                                LinearGradient(
-                                    colors: [.noBuyGreen, .green.opacity(0.7)],
-                                    startPoint: .top,
-                                    endPoint: .bottom
-                                )
+                                .accentKept
                             )
                     }
 
                     Text("Challenge Duration")
-                        .font(Font.adaptiveDisplay(size: 22, weight: .bold, design: .rounded, isRegular: isRegular))
+                        .font(Font.adaptiveDisplay(size: 22, weight: .semibold, isRegular: isRegular))
 
                     Text("How many no-spend days are you aiming for?")
                         .font(.subheadline)
-                        .foregroundStyle(.textSecondary)
+                        .foregroundStyle(.inkSecondary)
                         .multilineTextAlignment(.center)
                         .padding(.horizontal, DS.Spacing.xl)
                 }
@@ -80,21 +71,21 @@ struct ChallengeSetupSheet: View {
                         } label: {
                             VStack(spacing: DS.Spacing.sm) {
                                 Text("\(preset.days)")
-                                    .font(Font.adaptiveDisplay(size: 28, weight: .bold, design: .rounded, isRegular: isRegular))
-                                    .foregroundStyle(selectedDuration == preset.days ? .white : .noBuyGreen)
+                                    .font(Font.adaptiveDisplay(size: 28, weight: .semibold, isRegular: isRegular))
+                                    .foregroundStyle(selectedDuration == preset.days ? Color.inkOnAccent : .accentKept)
                                 Text("days")
                                     .font(.caption)
-                                    .foregroundStyle(selectedDuration == preset.days ? .white.opacity(0.8) : .textSecondary)
+                                    .foregroundStyle(selectedDuration == preset.days ? Color.inkOnAccent.opacity(0.8) : .inkSecondary)
                             }
                             .frame(maxWidth: .infinity)
                             .frame(height: 80)
                             .background(
                                 RoundedRectangle(cornerRadius: DS.Radius.md)
                                     .fill(selectedDuration == preset.days
-                                        ? AnyShapeStyle(LinearGradient(colors: [.noBuyGreen, .noBuyGreen.opacity(0.8)], startPoint: .topLeading, endPoint: .bottomTrailing))
-                                        : AnyShapeStyle(Color.surfaceSecondary))
+                                        ? AnyShapeStyle(.accentKept)
+                                        : AnyShapeStyle(Color.surfaceDial))
                             )
-                            .shadow(color: selectedDuration == preset.days ? .noBuyGreen.opacity(0.25) : .black.opacity(0.05), radius: selectedDuration == preset.days ? 8 : 4, x: 0, y: 3)
+
                         }
                         .buttonStyle(.scale)
                     }
@@ -111,21 +102,21 @@ struct ChallengeSetupSheet: View {
                         VStack(spacing: DS.Spacing.sm) {
                             Image(systemName: "pencil.circle.fill")
                                 .font(Font.adaptiveDisplay(size: 24, isRegular: isRegular))
-                                .foregroundStyle(selectedDuration == -1 ? .white : .noBuyGreen)
+                                .foregroundStyle(selectedDuration == -1 ? Color.inkOnAccent : .accentKept)
                                 .accessibilityHidden(true)
                             Text("Custom")
                                 .font(.caption)
-                                .foregroundStyle(selectedDuration == -1 ? .white.opacity(0.8) : .textSecondary)
+                                .foregroundStyle(selectedDuration == -1 ? Color.inkOnAccent.opacity(0.8) : .inkSecondary)
                         }
                         .frame(maxWidth: .infinity)
                         .frame(height: 80)
                         .background(
                             RoundedRectangle(cornerRadius: DS.Radius.md)
                                 .fill(selectedDuration == -1
-                                    ? AnyShapeStyle(LinearGradient(colors: [.noBuyGreen, .noBuyGreen.opacity(0.8)], startPoint: .topLeading, endPoint: .bottomTrailing))
-                                    : AnyShapeStyle(Color.surfaceSecondary))
+                                    ? AnyShapeStyle(.accentKept)
+                                    : AnyShapeStyle(Color.surfaceDial))
                         )
-                        .shadow(color: selectedDuration == -1 ? .noBuyGreen.opacity(0.25) : .black.opacity(0.05), radius: selectedDuration == -1 ? 8 : 4, x: 0, y: 3)
+
                     }
                     .buttonStyle(.scale)
                 }
@@ -145,13 +136,13 @@ struct ChallengeSetupSheet: View {
                             .padding(.vertical, DS.Spacing.md)
                             .background(
                                 RoundedRectangle(cornerRadius: DS.Radius.md)
-                                    .fill(Color.surfaceSecondary)
+                                    .fill(Color.surfaceDial)
                                     .overlay(
                                         RoundedRectangle(cornerRadius: DS.Radius.md)
-                                            .stroke(validationError != nil ? Color.spendRed.opacity(0.5) : Color.clear, lineWidth: 1.5)
+                                            .stroke(validationError != nil ? Color.accentSpentText.opacity(0.5) : Color.clear, lineWidth: 1.5)
                                     )
                             )
-                            .shadow(color: .black.opacity(0.06), radius: 4, x: 0, y: 2)
+
                             .offset(x: shakeCustomField ? -8 : 0)
                             .onChange(of: customDays) {
                                 validateCustomDays()
@@ -159,7 +150,7 @@ struct ChallengeSetupSheet: View {
 
                             Text("days")
                                 .font(.headline)
-                                .foregroundStyle(.textSecondary)
+                                .foregroundStyle(.inkSecondary)
                         }
 
                         // Inline validation error
@@ -167,10 +158,10 @@ struct ChallengeSetupSheet: View {
                             HStack(spacing: DS.Spacing.xs) {
                                 Image(systemName: "exclamationmark.circle.fill")
                                     .font(.caption2)
-                                    .foregroundStyle(.spendRed)
+                                    .foregroundStyle(.accentSpentText)
                                 Text(error)
                                     .font(.caption)
-                                    .foregroundStyle(.spendRed)
+                                    .foregroundStyle(.accentSpentText)
                             }
                             .transition(.opacity.combined(with: .move(edge: .top)))
                         }
@@ -195,18 +186,18 @@ struct ChallengeSetupSheet: View {
                 } label: {
                     Text("Start Challenge")
                         .font(.headline)
-                        .foregroundStyle(.white)
+                        .foregroundStyle(Color.inkOnAccent)
                         .frame(maxWidth: .infinity)
                         .frame(height: 56)
                         .background(
                             RoundedRectangle(cornerRadius: DS.Radius.lg)
                                 .fill(
                                     isValid
-                                        ? AnyShapeStyle(LinearGradient(colors: [.noBuyGreen, .noBuyGreen.opacity(0.8)], startPoint: .leading, endPoint: .trailing))
-                                        : AnyShapeStyle(Color.noBuyGreen.opacity(0.4))
+                                        ? AnyShapeStyle(.accentKept)
+                                        : AnyShapeStyle(Color.accentKept.opacity(0.4))
                                 )
                         )
-                        .shadow(color: isValid ? .noBuyGreen.opacity(0.3) : .clear, radius: 12, x: 0, y: 6)
+
                 }
                 .buttonStyle(.scale)
                 .disabled(!isValid && selectedDuration != -1)

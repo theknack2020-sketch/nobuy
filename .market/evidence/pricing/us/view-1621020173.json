@@ -1,0 +1,24 @@
+{
+  "appId": 1621020173,
+  "name": "Fleur - Budget Planner App",
+  "bundleId": "com.fleurbudget",
+  "country": "US",
+  "countryName": "United States",
+  "url": "https://apps.apple.com/us/app/fleur-budget-planner-app/id1621020173?uo=4",
+  "artworkUrl": "https://is1-ssl.mzstatic.com/image/thumb/Purple221/v4/8c/40/a8/8c40a842-ed22-c4d8-c3b0-33c79a9a4ff4/NewFleurSingleAppIcon-0-0-1x_U007epad-0-1-0-85-220.png/512x512bb.jpg",
+  "sellerName": "Akash Jain",
+  "primaryGenreName": "Finance",
+  "genres": [
+    "Finance",
+    "Productivity"
+  ],
+  "version": "3.0.6",
+  "description": "Fleur is a cute and simple budget planner and tracker app. The app allows you to easily add daily expenses and income. You can also set a monthly budget, create multiple accounts and track your debt. Fleur is an all in one app that will help you manage your money.\n\nKey Features:\n- Minimal, elegant, and aesthetically pleasing design\n- Easily log expenses and income\n- Set a monthly budget\n- View insights and understand spending habits\n- View transaction history\n- Add repeating transactions\n- Create new categories\n- iCloud sync\n- No sign in required\n- Easy search and filter\n\nRead more about our Terms & Conditions and Privacy Policy here:\nhttps://fleurbudget.com/privacy_terms.html\n\nWe are always there for you!\n- If you are facing any issues or have questions, please feel free to email us. Hope you enjoy using our app as much as we do! :)",
+  "price": 0,
+  "formattedPrice": "Free",
+  "currency": "USD",
+  "averageRating": 4.8045,
+  "ratingCount": 12538,
+  "currentVersionRating": 4.8045,
+  "currentVersionCount": 12538
+}

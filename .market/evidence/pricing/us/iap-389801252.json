@@ -1,0 +1,67 @@
+{
+  "appId": "389801252",
+  "name": "Instagram",
+  "ratingCount": 29354708,
+  "sellerName": "Instagram, Inc.",
+  "term": "no buy challenge",
+  "storefront": "us",
+  "fetched_at": "2026-08-12T13:37:08.203Z",
+  "readable": true,
+  "typed": false,
+  "url": "https://apps.apple.com/us/app/id389801252",
+  "sha256": "62efd8999e402a7d4861e1db60195562d1b26a4c742825dc8ead756400270586",
+  "iap": [
+    {
+      "name": "Instagram Badge",
+      "price": 4.99,
+      "tier": "unknown"
+    },
+    {
+      "name": "Meta Verified Standard",
+      "price": 14.99,
+      "tier": "unknown"
+    },
+    {
+      "name": "Instagram Badge",
+      "price": 0.99,
+      "tier": "unknown"
+    },
+    {
+      "name": "Meta Verified Standard",
+      "price": 14.99,
+      "tier": "unknown"
+    },
+    {
+      "name": "Meta Verified Standard",
+      "price": 14.99,
+      "tier": "unknown"
+    },
+    {
+      "name": "Meta Verified Standard",
+      "price": 14.99,
+      "tier": "unknown"
+    },
+    {
+      "name": "Meta Verified Standard",
+      "price": 14.99,
+      "tier": "unknown"
+    },
+    {
+      "name": "Meta Verified Standard",
+      "price": 14.99,
+      "tier": "unknown"
+    },
+    {
+      "name": "Meta Verified Standard",
+      "price": 14.99,
+      "tier": "unknown"
+    },
+    {
+      "name": "Meta Verified Standard",
+      "price": 14.99,
+      "tier": "unknown"
+    }
+  ],
+  "tiers": {},
+  "untypedReason": "10 SKU bulundu ama hiçbirinin adında süre yok (ör. \"Instagram Badge\") — kademe atanamadı; medyana katkı vermez"
+}

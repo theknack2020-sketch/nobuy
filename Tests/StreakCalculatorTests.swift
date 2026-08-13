@@ -93,3 +93,84 @@ struct StreakCalculatorTests {
         #expect(info.noBuyDaysThisMonth >= 2)
     }
 }
+
+// MARK: - Every run, kept (the M-09 graft)
+//
+// The measure carried over from the rejected Doorframe direction: an ended run is never
+// deleted, truncated or zeroed. Stats draws these forever, so the computation behind them is
+// pinned here — this is the product's answer to its largest churn risk, and a refactor that
+// quietly drops a settled run would remove the answer without removing the promise.
+
+@Suite("Every run, kept")
+struct RunHistoryTests {
+    private let calendar = Calendar(identifier: .gregorian)
+    private let now = Date(timeIntervalSince1970: 1_800_000_000)
+
+    private func day(_ offset: Int) -> Date {
+        calendar.date(byAdding: .day, value: offset, to: calendar.startOfDay(for: now))!
+    }
+
+    private func kept(_ offsets: [Int]) -> [DayRecord] {
+        offsets.map { DayRecord(date: day($0), didSpend: false) }
+    }
+
+    @Test("No records means no runs")
+    func emptyRecord() {
+        #expect(StreakCalculator.allRuns(from: [], now: now).isEmpty)
+    }
+
+    @Test("Consecutive kept days form one run")
+    func oneRun() {
+        let runs = StreakCalculator.allRuns(from: kept([-2, -1, 0]), now: now)
+        #expect(runs.count == 1)
+        #expect(runs.first?.days == 3)
+        #expect(runs.first?.isOpen == true)
+    }
+
+    @Test("A gap splits runs, and the older one settles")
+    func twoRuns() {
+        let runs = StreakCalculator.allRuns(from: kept([-10, -9, -8, -2, -1, 0]), now: now)
+        #expect(runs.count == 2)
+        // Newest first.
+        #expect(runs[0].days == 3)
+        #expect(runs[0].isOpen)
+        #expect(runs[1].days == 3)
+        #expect(!runs[1].isOpen, "an ended run must settle, not stay open")
+    }
+
+    /// The pending case: today is unanswered, so a run that reaches yesterday is still open —
+    /// the same rule `calculate(from:)` uses to anchor the current streak.
+    @Test("A run reaching yesterday is still open when today is unanswered")
+    func pendingTodayKeepsRunOpen() {
+        let runs = StreakCalculator.allRuns(from: kept([-2, -1]), now: now)
+        #expect(runs.first?.isOpen == true)
+    }
+
+    @Test("A run that ended before yesterday is settled")
+    func olderRunIsSettled() {
+        let runs = StreakCalculator.allRuns(from: kept([-5, -4, -3]), now: now)
+        #expect(runs.first?.isOpen == false)
+    }
+
+    /// Frozen and essentials-only days hold a run — the three truths that keep a streak.
+    @Test("Frozen and essentials-only days keep the run unbroken")
+    func mercyDaysHoldTheRun() {
+        let records = [
+            DayRecord(date: day(-3), didSpend: false),
+            DayRecord(date: day(-2), didSpend: true, isMandatoryOnly: true),
+            DayRecord(date: day(-1), didSpend: false, isFrozen: true),
+            DayRecord(date: day(0), didSpend: false),
+        ]
+        let runs = StreakCalculator.allRuns(from: records, now: now)
+        #expect(runs.count == 1, "an essentials-only or frozen day must not split the run")
+        #expect(runs.first?.days == 4)
+    }
+
+    @Test("A spent day ends the run it interrupts")
+    func spentDayEndsRun() {
+        let records = kept([-4, -3]) + [DayRecord(date: day(-2), didSpend: true)] + kept([-1, 0])
+        let runs = StreakCalculator.allRuns(from: records, now: now)
+        #expect(runs.count == 2)
+        #expect(runs.allSatisfy { $0.days == 2 })
+    }
+}

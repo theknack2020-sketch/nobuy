@@ -32,7 +32,7 @@ struct SavingsGoalCard: View {
         VStack(spacing: DS.Spacing.md) {
             HStack {
                 Image(systemName: goalIcon)
-                    .foregroundStyle(.noBuyGreen)
+                    .foregroundStyle(.accentKept)
                 Text("Savings Goal")
                     .fontWeight(.semibold)
                     .accessibilityAddTraits(.isHeader)
@@ -45,14 +45,14 @@ struct SavingsGoalCard: View {
                     if targetAmount > 0, dailyEstimate > 0 {
                         // Background track
                         Circle()
-                            .stroke(Color.noBuyGreenLight, lineWidth: 6)
+                            .stroke(Color.accentKeptWash, lineWidth: 6)
                             .frame(width: 56, height: 56)
 
                         // Progress ring
                         Circle()
                             .trim(from: 0, to: progressAnimationValue)
                             .stroke(
-                                Color.noBuyGreen,
+                                Color.accentKept,
                                 style: StrokeStyle(lineWidth: 6, lineCap: .round)
                             )
                             .frame(width: 56, height: 56)
@@ -61,15 +61,15 @@ struct SavingsGoalCard: View {
                         // Percentage or icon inside
                         Text("\(Int(progressAnimationValue * 100))%")
                             .font(Font.adaptiveCaption(isRegular: isRegular).weight(.bold))
-                            .foregroundStyle(.noBuyGreen)
+                            .foregroundStyle(.accentKept)
                             .contentTransition(.numericText())
                     } else {
                         Circle()
-                            .fill(Color.noBuyGreenLight)
+                            .fill(Color.accentKeptWash)
                             .frame(width: 56, height: 56)
                         Image(systemName: goalIcon)
                             .font(Font.adaptiveTitle3(isRegular: isRegular))
-                            .foregroundStyle(.noBuyGreen)
+                            .foregroundStyle(.accentKept)
                             .accessibilityHidden(true)
                     }
                 }
@@ -84,18 +84,18 @@ struct SavingsGoalCard: View {
                         HStack(spacing: DS.Spacing.xs) {
                             Text("Estimated savings:")
                                 .font(.caption)
-                                .foregroundStyle(.textSecondary)
+                                .foregroundStyle(.inkSecondary)
                             Text(estimatedSavings)
                                 .font(.caption)
                                 .fontWeight(.bold)
-                                .foregroundStyle(.noBuyGreen)
+                                .foregroundStyle(.accentKept)
                                 .contentTransition(.numericText())
                         }
 
                         if targetAmount > 0 {
                             Text("\(formattedAmount(currentSavings)) of \(formattedAmount(targetAmount))")
                                 .font(.caption2)
-                                .foregroundStyle(.textTertiary)
+                                .foregroundStyle(.inkSecondary)
                         }
                     }
                 }
@@ -105,12 +105,12 @@ struct SavingsGoalCard: View {
                 if dailyEstimate > 0 {
                     VStack(spacing: 2) {
                         Text("\(noBuyDays)")
-                            .font(Font.adaptiveDisplay(size: 24, weight: .bold, design: .rounded, isRegular: isRegular))
-                            .foregroundStyle(.noBuyGreen)
+                            .font(Font.adaptiveDisplay(size: 24, weight: .semibold, isRegular: isRegular))
+                            .foregroundStyle(.accentKept)
                             .contentTransition(.numericText())
                         Text("days")
                             .font(.caption2)
-                            .foregroundStyle(.textTertiary)
+                            .foregroundStyle(.inkSecondary)
                     }
                 }
             }
@@ -121,10 +121,10 @@ struct SavingsGoalCard: View {
                 GeometryReader { geo in
                     ZStack(alignment: .leading) {
                         RoundedRectangle(cornerRadius: 4)
-                            .fill(Color.surfaceTertiary)
+                            .fill(Color.surfaceWell)
                             .frame(height: 6)
                         RoundedRectangle(cornerRadius: 4)
-                            .fill(Color.noBuyGreen)
+                            .fill(Color.accentKept)
                             .frame(
                                 width: geo.size.width * min(Double(noBuyDays) / daysInMonth, 1.0),
                                 height: 6
@@ -136,12 +136,12 @@ struct SavingsGoalCard: View {
             }
         }
         .padding(DS.Spacing.xl)
-        .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: DS.Radius.lg))
+        .background(Color.surfaceWell, in: RoundedRectangle(cornerRadius: DS.Radius.lg))
         .background(
             RoundedRectangle(cornerRadius: DS.Radius.lg)
-                .fill(Color.surfaceSecondary)
+                .fill(Color.surfaceDial)
         )
-        .shadow(color: .black.opacity(0.06), radius: 6, x: 0, y: 3)
+
         .opacity(appeared ? 1 : 0)
         .offset(y: appeared ? 0 : (reduceMotion ? 0 : 10))
         .onAppear {

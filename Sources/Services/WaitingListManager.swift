@@ -1,5 +1,6 @@
 import Foundation
 import Observation
+import WidgetKit
 import os
 import UserNotifications
 
@@ -97,7 +98,9 @@ final class WaitingListManager {
     }
 
     private func load() {
-        guard let data = UserDefaults.standard.data(forKey: storageKey) else { return }
+        // Shared suite, so the medium widget can name the nearest wait without a second copy
+        // of the list to keep in step.
+        guard let data = SharedDefaults.data(forKey: storageKey) else { return }
         do {
             let decoded = try JSONDecoder().decode([WaitingItem].self, from: data)
             items = decoded
@@ -111,7 +114,8 @@ final class WaitingListManager {
     private func save() {
         do {
             let data = try JSONEncoder().encode(items)
-            UserDefaults.standard.set(data, forKey: storageKey)
+            SharedDefaults.set(data, forKey: storageKey)
+            WidgetCenter.shared.reloadAllTimelines()
             lastError = nil
         } catch {
             AppLogger.data.error("Failed to save waiting list: \(error.localizedDescription)")

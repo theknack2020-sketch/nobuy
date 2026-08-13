@@ -1,0 +1,24 @@
+{
+  "appId": 694925116,
+  "name": "ChallengeRunner",
+  "bundleId": "com.trainermax.ChallengeRunnerMobile",
+  "country": "US",
+  "countryName": "United States",
+  "url": "https://apps.apple.com/us/app/challengerunner/id694925116?uo=4",
+  "artworkUrl": "https://is1-ssl.mzstatic.com/image/thumb/Purple211/v4/32/c3/e5/32c3e508-85eb-caaf-594a-cfa1bf49c344/AppIcon-1x_U007emarketing-0-8-0-85-220-0.png/512x512bb.jpg",
+  "sellerName": "ChallengeRunner LLC",
+  "primaryGenreName": "Health & Fitness",
+  "genres": [
+    "Health & Fitness",
+    "Business"
+  ],
+  "version": "3.1.8",
+  "description": "ChallengeRunner Fitness Challenge Logging provides a lightweight interface to the ChallengeRunner employee health challenge platform. This application gives participants access to the fitness challenges they are currently enrolled in. \n\nChallengeRunner Fitness Challenge Logging allows participants to view and submit health challenge data and review the challenge leaderboard. \n\nThis application features a simple challenge data logging interface, real-time leaderboards, messaging and comments. Participants may join challenges using links, QR Codes, or challenge codes provided by a Challenge Administrator.\n\nIt is now possible for ChallengeRunner to pull steps, active minutes, distance and calories from the Apple Health app. To turn on this functionality, enable the Health Integration switch in Settings and accept the HealthKit privileges when prompted in the ChallengeRunner app. With HealthKit enabled, ChallengeRunner will sync with the Health app whenever the ChallengeRunner app is opened.\n\nNOTE: Most functions require an Internet connection",
+  "price": 0,
+  "formattedPrice": "Free",
+  "currency": "USD",
+  "averageRating": 4.52863,
+  "ratingCount": 8681,
+  "currentVersionRating": 4.52863,
+  "currentVersionCount": 8681
+}

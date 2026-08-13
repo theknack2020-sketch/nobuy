@@ -20,11 +20,11 @@ enum L10n {
         "Best: \(days) days"
     }
 
-    static let noBuyButton = "I Didn't Spend Today"
-    static let noBuyDone = "No Spending ✓"
+    static let noBuyButton = "Kept"
+    static let noBuyDone = "No spending"
     static let spentButton = "I spent today"
     static let noRecordYet = "No record yet today"
-    static let noBuyToday = "No spending today! 💪"
+    static let noBuyToday = "No spending today"
     static let spentToday = "You spent today"
     static let thisMonth = "This Month"
     static func monthSummary(_: Int, _ total: Int) -> String {
@@ -34,10 +34,10 @@ enum L10n {
     // MARK: - Spend Options
 
     static let spendTypeQuestion = "What kind of spending?"
-    static let mandatorySpend = "Essential Only"
-    static let mandatoryDesc = "Rent, bills, transport — streak preserved"
-    static let discretionarySpend = "Discretionary"
-    static let discretionaryDesc = "Dining, shopping, entertainment"
+    static let mandatorySpend = "Essentials only"
+    static let mandatoryDesc = "Rent, bills, transport, groceries — the run survives"
+    static let discretionarySpend = "Spent"
+    static let discretionaryDesc = "Something unnecessary. A fact, not a failure."
     static let cancel = "Cancel"
 
     // MARK: - Calendar
@@ -72,23 +72,42 @@ enum L10n {
 
     // MARK: - Paywall
 
-    static let paywallTitle = "Power Up Your Habit"
-    static let paywallSubtitle = "Unlock all features"
-    static let paywallPriceAnchor = "Less than one impulse buy"
-    static let paywallFeature1 = "Enhanced streak sharing cards"
-    static let paywallFeature2 = "Unlimited essential categories"
-    static let paywallFeature3 = "Export your data as CSV"
-    static func paywallUnlock(_ price: String) -> String {
-        "Go Pro — \(price)"
+    /// Legal pages, in one place. They are referenced from the paywall (where App Review checks
+    /// for them) and from Settings; two hardcoded copies is how one of them goes stale.
+    enum AppLinks {
+        static let privacy = "https://theknack2020-sketch.github.io/nobuy/privacy/"
+        static let terms = "https://theknack2020-sketch.github.io/nobuy/terms/"
+        static let support = "https://theknack2020-sketch.github.io/nobuy/support/"
     }
 
-    static let paywallRestore = "Restore Purchase"
-    static let paywallWelcome = "Welcome to Pro! 🎉"
-    static let paywallWelcomeDetail = "All features are now yours"
-    static let paywallRestoreSuccess = "Purchase restored ✓"
+    static let paywallTitle = "NoBuy Pro"
+    static let paywallSubtitle = "Deeper analysis, unlimited essentials, and your record wherever you need it."
+
+    /// The generous truth, and it sits ABOVE the price: what the user already has stays theirs.
+    /// Owner law 2026-08-07 — the offer's other half is what free ALLOWS.
+    static let paywallGenerous = "Your streak and every day you've logged stay yours — free, always."
+
+    static let paywallFreeListLink = "See what the free version does"
+    static let paywallFreeListTitle = "Free, with no time limit"
+    static let paywallStartTrial = "Start free trial"
+    static let paywallSubscribe = "Subscribe"
+    static let paywallPlanMonthly = "Monthly"
+    static let paywallPlanYearly = "Yearly"
+    static func paywallSaving(_ percent: Int) -> String {
+        "Save \(percent)%"
+    }
+
+    static let paywallRestore = "Restore Purchases"
+    static let paywallWelcome = "You're on Pro"
+    static let paywallWelcomeDetail = "Everything is unlocked."
+    static let paywallRestoreSuccess = "Purchases restored"
     static let paywallRestoreFail = "No purchase found to restore"
+    static let paywallLegacyOwner = "You bought NoBuy Pro outright. It stays yours — permanently, with no subscription."
+    static let paywallLoadingPrice = "Loading price"
+    static let paywallLoadFailed = "Prices could not be loaded."
+    static let paywallRetry = "Try again"
     static let proBadge = "PRO"
-    static let upgradeButton = "Go Pro"
+    static let upgradeButton = "NoBuy Pro"
     static let categoryLimitReached = "Free version allows up to 3 categories."
 
     // MARK: - Paywall Errors
@@ -100,7 +119,7 @@ enum L10n {
     // MARK: - Soft Paywall / Milestones
 
     static func milestonePaywallMessage(_ days: Int) -> String {
-        "Celebrate your \(days)-day streak — unlock more with Pro!"
+        "\(days) days in. NoBuy Pro adds the analysis behind the run."
     }
 
     // MARK: - Settings Pro
@@ -210,34 +229,38 @@ enum L10n {
 
     // MARK: - Notification Text
 
-    static let notifStreakDaySuffix = "Days!"
-    static let notifStreak1 = "Your first no-spend day — great start!"
-    static let notifStreak3 = "3 days in a row! A habit is forming."
-    static let notifStreak7 = "One week no-spend! You're on fire 🎯"
-    static let notifStreak14 = "2-week streak! It's a lifestyle now 💪"
-    static let notifStreak30 = "30 days! Legend. You're a savings machine 🏆"
-    static let notifStreak60 = "60 days! Two months strong. Incredible 🌟"
-    static let notifStreak90 = "90 days! A quarter year no-spend. Legendary 🏅"
-    static let notifStreak100 = "💯 100 days! A true milestone!"
-    static let notifStreak180 = "Half a year streak! 180 days of discipline 🎖️"
-    static let notifStreak365 = "🎉 ONE YEAR! 365 days no-spend. Unbelievable!"
-    static let notifDailyReminder1 = "Don't forget to log today! 💪"
-    static let notifDailyReminder2 = "Did you spend today? Update your log 📝"
-    static let notifDailyReminder3 = "Check your streak — every day counts 🔥"
-    static let notifDailyReminder4 = "How was your mindful spending day? Log it ✅"
-    static let notifDailyReminder5 = "Another day done. Was it a NoBuy day? 🤔"
-    static let notifDailyReminder6 = "Small steps, big changes. Log today 🌱"
-    static let notifDailyReminder7 = "Don't forget your spending log! We're waiting 💚"
-    static let notifApproachingBestTitle = "1 day from your record! 🏆"
+    // v2.0.0 voice pass: no emoji anywhere in the product (design law), and no gamified cheer.
+    // These lines arrive on a lock screen at night — the tone is a colleague stating a fact,
+    // not a coach shouting. Exclamation marks removed with the emoji: the number is already
+    // the good news, and adding volume to it reads as a product that doubts its own value.
+    static let notifStreakDaySuffix = "days"
+    static let notifStreak1 = "Your first no-spend day is on the board."
+    static let notifStreak3 = "Three in a row. That's a pattern starting."
+    static let notifStreak7 = "A full week without an unnecessary purchase."
+    static let notifStreak14 = "Two weeks. This is how it starts looking normal."
+    static let notifStreak30 = "Thirty days. A month of deliberate spending."
+    static let notifStreak60 = "Sixty days. Two months of holding the line."
+    static let notifStreak90 = "Ninety days. A full quarter."
+    static let notifStreak100 = "One hundred days."
+    static let notifStreak180 = "Half a year of no-spend days."
+    static let notifStreak365 = "One year. Three hundred and sixty-five days."
+    static let notifDailyReminder1 = "How did today go? One tap closes it."
+    static let notifDailyReminder2 = "Ready to log today?"
+    static let notifDailyReminder3 = "Today is still open."
+    static let notifDailyReminder4 = "One question left for today."
+    static let notifDailyReminder5 = "Was today a no-spend day?"
+    static let notifDailyReminder6 = "A minute to close out the day."
+    static let notifDailyReminder7 = "Today hasn't been logged yet."
+    static let notifApproachingBestTitle = "One day from your best run"
     static let notifStreakBreakTitle = "Streak ended"
     static let notifStreakBreak1 = "One day doesn't change everything. Tomorrow is a fresh start."
     static let notifStreakBreak2 = "You were strong. That's still an achievement."
-    static let notifStreakBreak3 = "Falling isn't failing. Tomorrow's with you 💚"
-    static let notifWeeklySummaryTitle = "Weekly Summary 📊"
-    static let notifWeeklySummaryBody = "Open NoBuy to see this week's performance."
-    static let notifLapsed1 = "We miss you! How about logging today? 💚"
-    static let notifLapsed2 = "No records for 2 days. Protect your streak! 🔥"
-    static let notifLapsed3 = "Great day to come back. We're waiting 🌱"
+    static let notifStreakBreak3 = "Falling isn't failing. Tomorrow is still yours."
+    static let notifWeeklySummaryTitle = "Your week"
+    static let notifWeeklySummaryBody = "Open NoBuy to see how the week went."
+    static let notifLapsed1 = "Your record is waiting whenever you are."
+    static let notifLapsed2 = "Two days unlogged. You can still fill them in."
+    static let notifLapsed3 = "Today is a good day to pick it back up."
 
     // MARK: - Data Export
 

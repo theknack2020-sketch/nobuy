@@ -1,0 +1,24 @@
+{
+  "appId": 599455669,
+  "name": "Coupa Mobile",
+  "bundleId": "com.coupa.push",
+  "country": "US",
+  "countryName": "United States",
+  "url": "https://apps.apple.com/us/app/coupa-mobile/id599455669?uo=4",
+  "artworkUrl": "https://is1-ssl.mzstatic.com/image/thumb/Purple211/v4/b8/1d/80/b81d80c2-ed57-9b2c-1673-ae9bf69b93ff/AppIcon-0-0-1x_U007ephone-0-1-0-85-220.png/512x512bb.jpg",
+  "sellerName": "Coupa Software",
+  "primaryGenreName": "Business",
+  "genres": [
+    "Business",
+    "Finance"
+  ],
+  "version": "45.1.1",
+  "description": "Use Coupa’s Business Spend Management mobile app for rapid access, personalized for you:\n\nHOME PAGE\n• See an overview of your activity and navigate easily\n• Take quick actions or jump directly to recent documents\n• View announcements from your company\n\nAPPROVE\n• Get push notifications when a request needs your attention\n• Approve, reject, or hold documents to keep your business moving\n\nEXPENSE\n• Create and submit expense reports on the go\n• Capture expenses easily with receipt photos and quick OCR, or manual entry\n\nSHOP\n• See personalized catalog and Open Buy recommendations\n• Write a Request for off-catalog items\n\nRECEIVE\n• Mark PO lines as received so suppliers can get paid\n• Use the camera to attach pictures as proof of receipt\n\nVIRTUAL CARDS\n• View active virtual cards for purchase orders or pre-approved expenses\n• See card balances and upload receipts for individual transactions\n• View your expired cards and transactions\n\nCoupa mobile is free for Coupa users. Use the same URL and login as in a web browser. App and feature availability depend on your company settings.",
+  "price": 0,
+  "formattedPrice": "Free",
+  "currency": "USD",
+  "averageRating": 4.69362,
+  "ratingCount": 4687,
+  "currentVersionRating": 4.69362,
+  "currentVersionCount": 4687
+}

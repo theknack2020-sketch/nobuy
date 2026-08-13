@@ -1,0 +1,61 @@
+{
+  "appId": "6444917344",
+  "name": "Track Spending : Wise Budget",
+  "ratingCount": 2958,
+  "sellerName": "Marwan Ghafoor",
+  "term": "no spend challenge",
+  "storefront": "us",
+  "fetched_at": "2026-08-12T13:37:48.579Z",
+  "readable": true,
+  "typed": true,
+  "url": "https://apps.apple.com/us/app/id6444917344",
+  "sha256": "b9726af18d335f37d337808b6e8243ddc1b5d1309e3576bc175b806f76f9ef7e",
+  "iap": [
+    {
+      "name": "Life Time Offer",
+      "price": 149,
+      "tier": "unknown"
+    },
+    {
+      "name": "Wise Budget Monthly Plan",
+      "price": 4.99,
+      "tier": "monthly"
+    },
+    {
+      "name": "Wise Budget Yearly Plan",
+      "price": 29.99,
+      "tier": "yearly"
+    },
+    {
+      "name": "Yearly Discounted Price",
+      "price": 29.99,
+      "tier": "yearly"
+    },
+    {
+      "name": "Remove Ads",
+      "price": 9.99,
+      "tier": "unknown"
+    },
+    {
+      "name": "Wise Budget Six Month",
+      "price": 24.99,
+      "tier": "unknown"
+    },
+    {
+      "name": "3 Month Subscription",
+      "price": 14.99,
+      "tier": "quarterly"
+    },
+    {
+      "name": "Lifetime Offer",
+      "price": 149.99,
+      "tier": "lifetime"
+    }
+  ],
+  "tiers": {
+    "monthly": 4.99,
+    "yearly": 29.99,
+    "quarterly": 14.99,
+    "lifetime": 149.99
+  }
+}

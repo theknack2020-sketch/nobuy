@@ -35,7 +35,7 @@ struct MainTabView: View {
                 default: HomeScreen()
                 }
             }
-            .tint(Color.themePrimary)
+            .tint(Color.accentKept)
             .onChange(of: quickActionHandler?.selectedTab) { _, newTab in
                 if let newTab {
                     sidebarSelection = newTab
@@ -72,7 +72,7 @@ struct MainTabView: View {
                     .tag(3)
                     .accessibilityIdentifier("tab_settings")
             }
-            .tint(Color.themePrimary)
+            .tint(Color.accentKept)
             .onChange(of: selectedTab) { _, _ in
                 HapticManager.impact(.light)
             }

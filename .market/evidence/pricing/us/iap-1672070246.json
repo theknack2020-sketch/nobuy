@@ -1,0 +1,23 @@
+{
+  "appId": "1672070246",
+  "name": "bless. minimal shopping habits",
+  "ratingCount": 204,
+  "sellerName": "Stoic app inc.",
+  "term": "stop impulse buying",
+  "storefront": "us",
+  "fetched_at": "2026-08-12T13:37:53.432Z",
+  "readable": true,
+  "typed": true,
+  "url": "https://apps.apple.com/us/app/id1672070246",
+  "sha256": "d48e118ad3b17b0cd3597fda021875d0c30b83f2ede49b03531051043340f8fe",
+  "iap": [
+    {
+      "name": "bless. yearly premium",
+      "price": 14.99,
+      "tier": "yearly"
+    }
+  ],
+  "tiers": {
+    "yearly": 14.99
+  }
+}

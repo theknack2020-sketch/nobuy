@@ -1,0 +1,68 @@
+{
+  "appId": "6749851029",
+  "name": "Goods Hunt - Shopping Hole",
+  "ratingCount": 6844,
+  "sellerName": "LIHUHU PTE. LTD.",
+  "term": "no buy challenge",
+  "storefront": "us",
+  "fetched_at": "2026-08-12T13:37:11.446Z",
+  "readable": true,
+  "typed": true,
+  "url": "https://apps.apple.com/us/app/id6749851029",
+  "sha256": "8f8e83486fad4797b8deff5427d98c95d51b10852c84e45da80946b998e736bb",
+  "iap": [
+    {
+      "name": "Piggy Bank",
+      "price": 4.99,
+      "tier": "unknown"
+    },
+    {
+      "name": "Pack 1",
+      "price": 1.99,
+      "tier": "unknown"
+    },
+    {
+      "name": "Cart Offer 1",
+      "price": 0.99,
+      "tier": "unknown"
+    },
+    {
+      "name": "Mini Bundle",
+      "price": 9.99,
+      "tier": "unknown"
+    },
+    {
+      "name": "Cart Offer 2",
+      "price": 1.99,
+      "tier": "unknown"
+    },
+    {
+      "name": "Weekly Offer",
+      "price": 9.99,
+      "tier": "weekly"
+    },
+    {
+      "name": "Pack 2",
+      "price": 8.99,
+      "tier": "unknown"
+    },
+    {
+      "name": "Double Pack",
+      "price": 12.99,
+      "tier": "unknown"
+    },
+    {
+      "name": "Mission Pass",
+      "price": 9.99,
+      "tier": "unknown"
+    },
+    {
+      "name": "Master Bundle",
+      "price": 19.99,
+      "tier": "unknown"
+    }
+  ],
+  "tiers": {
+    "weekly": 9.99
+  }
+}

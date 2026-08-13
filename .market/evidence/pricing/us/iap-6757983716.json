@@ -1,0 +1,40 @@
+{
+  "appId": "6757983716",
+  "name": "ThinkTwice - Save Money",
+  "ratingCount": 192,
+  "sellerName": "Lit Apps LLC (Mobile)",
+  "term": "stop impulse buying",
+  "storefront": "us",
+  "fetched_at": "2026-08-12T13:37:55.042Z",
+  "readable": true,
+  "typed": true,
+  "url": "https://apps.apple.com/us/app/id6757983716",
+  "sha256": "ee4cb770ab785d782fb67a993b64d5756eca85b1d203536fdca1f3f8e1e6a742",
+  "iap": [
+    {
+      "name": "Yearly",
+      "price": 29.99,
+      "tier": "yearly"
+    },
+    {
+      "name": "Lifetime Access",
+      "price": 19.99,
+      "tier": "lifetime"
+    },
+    {
+      "name": "Weekly Subscription",
+      "price": 5.99,
+      "tier": "weekly"
+    },
+    {
+      "name": "Yearly Subscription",
+      "price": 34.99,
+      "tier": "yearly"
+    }
+  ],
+  "tiers": {
+    "yearly": 32.49,
+    "lifetime": 19.99,
+    "weekly": 5.99
+  }
+}

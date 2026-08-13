@@ -1,0 +1,21 @@
+{
+  "adopted": "2026-08-12",
+  "note": "NoBuy adopted the design contract at its v2.0.0 round — the first design-pipeline round this app has ever had. Round 2 accepted 2026-08-12 (.design/ACCEPTANCE.md); tokens and the panel schema now exist, so those checks are armed.",
+  "claudeDesignProject": {
+    "name": "NoBuy",
+    "id": "7cb929ac-3aff-4109-8da1-eeed6f3b9d04"
+  },
+  "tokens": ".design/rounds/r2/tokens/tokens.json",
+  "sources": [
+    "Sources"
+  ],
+  "acceptance": ".design/ACCEPTANCE.md",
+  "appIcon": "Resources/Assets.xcassets/AppIcon.appiconset",
+  "panels": ".asc/shots/panels-geometry.json",
+  "themeGenerator": "Tools/gen-theme.mjs",
+  "themeOutputs": [
+    "Sources/Extensions/NoBuyTheme.swift"
+  ],
+  "themeCatalog": "Resources/Assets.xcassets/Colors",
+  "themeEnum": "NoBuyTheme"
+}

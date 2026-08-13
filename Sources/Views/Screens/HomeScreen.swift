@@ -1,6 +1,6 @@
 import SwiftData
 import SwiftUI
-import TipKit
+import WidgetKit
 
 struct HomeScreen: View {
     @Environment(\.modelContext) private var modelContext
@@ -9,6 +9,7 @@ struct HomeScreen: View {
     @Query(sort: \DayRecord.date, order: .reverse) private var records: [DayRecord]
     @State private var viewModel = HomeViewModel()
     @State private var showPaywall = false
+    @State private var paywallEntry: PaywallEntry = .general
     @State private var showShareSheet = false
     @State private var showMilestoneModal = false
     @State private var showConfetti = false
@@ -22,7 +23,6 @@ struct HomeScreen: View {
     @State private var isLoading = true
     @State private var sectionsAppeared = false
 
-    private let streakTip = StreakTip()
 
     private static let celebrationStreaks: Set<Int> = [1, 3, 7, 14, 30, 60, 100]
 
@@ -42,6 +42,12 @@ struct HomeScreen: View {
     @State private var showWaitingList = false
     @State private var showResetConfirmation = false
 
+    /// countXL (78pt) and the question (20pt) are the two type roles the tokens size in points.
+    /// Both scale with the user's setting; the count floors at 56 and the question at 20, below
+    /// which they stop doing the job they were sized for.
+    @ScaledMetric(relativeTo: .largeTitle) private var scaledCount: CGFloat = 78
+    @ScaledMetric(relativeTo: .body) private var scaledQuestion: CGFloat = 20
+
     /// Milestones that trigger a soft paywall nudge
     private let milestoneDays: Set<Int> = [7, 14, 30, 60, 100]
 
@@ -55,88 +61,44 @@ struct HomeScreen: View {
     var body: some View {
         NavigationStack {
             ZStack {
-                Color.surfacePrimary
+                Color.surfaceField
                     .ignoresSafeArea()
                     .accessibilityHidden(true)
 
-                ScrollView {
-                    VStack(spacing: DS.Spacing.xxl) {
-                        Spacer().frame(height: DS.Spacing.lg)
+                // The whole screen ticks once a minute: the arc, the hand and the remainder all
+                // read from the same clock, and a dial that lags its own remainder is worse
+                // than no dial. One TimelineView drives them so they can never disagree.
+                TimelineView(.periodic(from: .now, by: 60)) { context in
+                    ScrollView {
+                        VStack(spacing: 0) {
+                            dateHeader
+                                .padding(.top, DS.Spacing.sm)
 
-                        // MARK: - Streak Section
+                            dayDial(now: context.date)
+                                .padding(.top, DS.Spacing.lg)
 
-                        if records.isEmpty {
-                            emptyStateView
-                        } else {
-                            streakBadge
-                                .opacity(sectionsAppeared ? 1 : 0)
-                                .offset(y: sectionsAppeared ? 0 : 15)
-                                .animation(reduceMotion ? nil : DS.Anim.normal.delay(DS.Anim.stagger * 0), value: sectionsAppeared)
+                            // Fixed slot: the remainder normally, the fault notice when a past
+                            // day is unanswered. It always renders — an element that appears and
+                            // disappears reads as disorder (M-05).
+                            noticeLine(now: context.date)
+                                .padding(.top, DS.Spacing.lg)
+
+                            questionSheet
+                                .padding(.top, DS.Spacing.xl)
+
+                            well
+                                .padding(.top, DS.Spacing.xxl)
+
+                            // Everything below is v1 furniture that has not yet moved to its
+                            // v2 home in Stats. It is kept mounted rather than deleted so no
+                            // feature silently disappears mid-redesign; each one leaves as its
+                            // destination screen is rebuilt.
+                            legacySections
+                                .padding(.top, DS.Spacing.xxl)
                         }
-
-                        // Freeze indicator
-                        freezeIndicator
-                            .opacity(sectionsAppeared ? 1 : 0)
-                            .animation(reduceMotion ? nil : DS.Anim.normal.delay(DS.Anim.stagger * 1), value: sectionsAppeared)
-
-                        // MARK: - Action Section
-
-                        mainButton
-                            .opacity(sectionsAppeared ? 1 : 0)
-                            .offset(y: sectionsAppeared ? 0 : 10)
-                            .animation(reduceMotion ? nil : DS.Anim.normal.delay(DS.Anim.stagger * 2), value: sectionsAppeared)
-
-                        TipView(streakTip)
-                            .tipBackground(Color.surfaceSecondary)
-                            .padding(.horizontal, DS.Spacing.xl)
-
-                        todayStatus
-                            .transition(.asymmetric(insertion: .scale.combined(with: .opacity), removal: .opacity))
-                            .opacity(sectionsAppeared ? 1 : 0)
-                            .animation(reduceMotion ? nil : DS.Anim.normal.delay(DS.Anim.stagger * 3), value: sectionsAppeared)
-
-                        // Error banner
-                        if let error = viewModel.lastError, showErrorBanner {
-                            errorBanner(message: error)
-                                .transition(.move(edge: .top).combined(with: .opacity))
-                        }
-
-                        // MARK: - Goals & Progress Section
-
-                        if !viewModel.savingsGoal.isEmpty {
-                            savingsGoalCard
-                        }
-
-                        challengeSection
-
-                        // Milestone-based soft paywall banner
-                        if showMilestoneBanner, !store.isPro {
-                            SoftPaywallBanner(
-                                message: L10n.milestonePaywallMessage(milestoneDay),
-                                onUpgrade: { showPaywall = true },
-                                onDismiss: {
-                                    showMilestoneBanner = false
-                                    store.notePaywallDismissed()
-                                }
-                            )
-                        }
-
-                        // MARK: - Stats Section
-
-                        monthlySummaryCard
-
-                        TipCard()
-                            .padding(.top, DS.Spacing.sm)
-
-                        // MARK: - Tools Section
-
-                        TipView(ImpulseChecklistTip())
-                            .tipBackground(Color.surfaceSecondary)
-
-                        impulseChecklistButton
+                        .padding(.horizontal, DS.Spacing.screenGutter)
+                        .padding(.bottom, DS.Spacing.xxl)
                     }
-                    .padding(.horizontal, DS.Spacing.xl)
-                    .padding(.bottom, DS.Spacing.lg)
                 }
                 .redacted(reason: isLoading ? .placeholder : [])
                 .allowsHitTesting(!isLoading)
@@ -182,7 +144,7 @@ struct HomeScreen: View {
                             showUrgeSurfing = true
                         } label: {
                             Image(systemName: "brain.head.profile")
-                                .foregroundStyle(.noBuyGreen)
+                                .foregroundStyle(.accentKept)
                         }
                         .buttonStyle(.scale)
                         .accessibilityLabel("Urge Surfing")
@@ -194,14 +156,14 @@ struct HomeScreen: View {
                         } label: {
                             ZStack(alignment: .topTrailing) {
                                 Image(systemName: "clock.badge.questionmark")
-                                    .foregroundStyle(.noBuyGreen)
+                                    .foregroundStyle(.accentKept)
 
                                 if WaitingListManager.shared.activeItems.count > 0 {
                                     Text("\(WaitingListManager.shared.activeItems.count)")
                                         .font(Font.adaptiveBadge(isRegular: isRegular))
-                                        .foregroundStyle(.white)
+                                        .foregroundStyle(Color.inkOnAccent)
                                         .frame(width: 16, height: 16)
-                                        .background(Circle().fill(Color.spendRed))
+                                        .background(Circle().fill(Color.accentSpentText))
                                         .offset(x: 6, y: -6)
                                         .accessibilityHidden(true)
                                 }
@@ -222,10 +184,10 @@ struct HomeScreen: View {
                             } label: {
                                 Text(L10n.proBadge)
                                     .font(.caption2.bold())
-                                    .foregroundStyle(.noBuyGreen)
+                                    .foregroundStyle(.accentKept)
                                     .padding(.horizontal, 8)
                                     .padding(.vertical, 3)
-                                    .background(Capsule().fill(Color.noBuyGreenLight))
+                                    .background(Capsule().fill(Color.accentKeptWash))
                             }
                             .buttonStyle(.scale)
                             .accessibilityLabel("Upgrade to Pro")
@@ -240,19 +202,19 @@ struct HomeScreen: View {
                                     shareEnhancedCard()
                                 } label: {
                                     Image(systemName: "square.and.arrow.up")
-                                        .foregroundStyle(.noBuyGreen)
+                                        .foregroundStyle(.accentKept)
                                 }
                                 .buttonStyle(.scale)
                                 .accessibilityLabel("Share enhanced streak card")
                                 .accessibilityHint("Double tap to share your streak card image")
                             } else {
                                 ShareLink(
-                                    item: "I'm on a \(viewModel.streakInfo.currentStreak)-day no-spend streak! 🔥 #NoBuy",
+                                    item: "\(viewModel.streakInfo.currentStreak) days without an unnecessary purchase.",
                                     subject: Text("My NoBuy Streak"),
                                     message: Text("I'm on a \(viewModel.streakInfo.currentStreak)-day no-spend streak!")
                                 ) {
                                     Image(systemName: "square.and.arrow.up")
-                                        .foregroundStyle(.noBuyGreen)
+                                        .foregroundStyle(.accentKept)
                                 }
                                 .accessibilityLabel("Share your streak")
                                 .accessibilityHint("Double tap to share your no-spend streak")
@@ -283,13 +245,15 @@ struct HomeScreen: View {
                 // animation so the capture never catches a mid-slide frame.
                 // Slight delay: presenting the instant onAppear fires is flaky
                 // on iPad's split-view cold start (sheet silently no-ops).
-                if ScreenshotTour.state == .urge || ScreenshotTour.state == .checklist {
+                // Reads the ONE vocabulary (`ScreenshotTour.sheet`) rather than matching raw
+                // cases here — the v2 keys were added to the enum and this switch would have
+                // kept ignoring them, which is how a panel set silently captures the wrong screen.
+                if let requested = ScreenshotTour.sheet {
                     DispatchQueue.main.asyncAfter(deadline: .now() + 0.8) {
                         withTransaction(\.disablesAnimations, true) {
-                            switch ScreenshotTour.state {
-                            case .urge: showUrgeSurfing = true
+                            switch requested {
+                            case .urgeSurfing: showUrgeSurfing = true
                             case .checklist: showImpulseChecklist = true
-                            default: break
                             }
                         }
                     }
@@ -353,7 +317,7 @@ struct HomeScreen: View {
         }
         .sheet(isPresented: $viewModel.showSpendOptions) {
             SpendOptionsSheet(viewModel: viewModel, records: records)
-                .presentationDetents([.height(280)])
+                .presentationDetents([.medium, .large])
                 .presentationDragIndicator(.visible)
         }
         .sheet(isPresented: $viewModel.showStreakBreak) {
@@ -391,7 +355,7 @@ struct HomeScreen: View {
             .presentationDragIndicator(.visible)
         }
         .fullScreenCover(isPresented: $showPaywall) {
-            PaywallView(store: store)
+            PaywallView(store: store, entry: paywallEntry)
         }
         .sheet(isPresented: $showImpulseChecklist) {
             ImpulseChecklistScreen()
@@ -406,7 +370,7 @@ struct HomeScreen: View {
             RatingPrompt.shared.dismissed()
         }) {
             RatingPromptCard(streak: RatingPrompt.shared.milestoneStreak)
-                .presentationDetents([.height(340)])
+                .presentationDetents([.medium, .large])
                 .presentationDragIndicator(.visible)
         }
         .sheet(isPresented: $showShareCardSheet) {
@@ -415,7 +379,7 @@ struct HomeScreen: View {
             }
         }
         .fullScreenCover(isPresented: softPaywallBinding) {
-            PaywallView(store: store)
+            PaywallView(store: store, entry: .general)
         }
     }
 
@@ -433,6 +397,7 @@ struct HomeScreen: View {
         }
         do {
             try modelContext.save()
+            WidgetCenter.shared.reloadAllTimelines()
             viewModel.todayRecord = nil
             viewModel.loadToday(records: records)
             HapticManager.toggle()
@@ -498,168 +463,314 @@ struct HomeScreen: View {
     // MARK: - Freeze Indicator
 
     @ViewBuilder
-    private var freezeIndicator: some View {
-        if viewModel.streakInfo.currentStreak > 0 {
-            Text(viewModel.freezeDisplayText)
-                .font(.caption)
-                .foregroundStyle(.textSecondary)
-                .padding(.horizontal, DS.Spacing.md)
-                .padding(.vertical, DS.Spacing.xs)
-                .background(
-                    Capsule().fill(Color.surfaceSecondary)
-                )
-                .accessibilityLabel("Streak freeze status: \(viewModel.freezeDisplayText)")
+    // MARK: - Today, v2.0.0 (Escapement)
+    //
+    // Four things, in one order: who today is, where the day stands, the question, and the
+    // waits. The question is the ONLY element on the white dial surface (round-2 correction 3);
+    // every wait lives in the recessed well at reduced scale, so even in the densest honest
+    // state — timer running, two items held, a freeze used — the question still wins the eye.
+
+    /// The date, and the freeze's standing. Both always rendered.
+    private var dateHeader: some View {
+        HStack(alignment: .firstTextBaseline) {
+            Text(Self.headerDateFormatter.string(from: .now))
+                .font(.subheadline)
+                .foregroundStyle(.inkSecondary)
+
+            Spacer(minLength: DS.Spacing.md)
+
+            HStack(spacing: DS.Spacing.xs) {
+                DayMark(truth: .frozen)
+                    .accessibilityHidden(true)
+                Text(freezeChipText)
+                    .font(.caption)
+                    .tracking(1.2)
+                    .textCase(.uppercase)
+                    .foregroundStyle(.inkSecondary)
+            }
+            .accessibilityElement(children: .combine)
+            .accessibilityLabel("Freeze: \(viewModel.streakFreezeCount > 0 ? "held" : "used this month")")
         }
     }
 
-    // MARK: - Streak Badge
+    private var freezeChipText: String {
+        viewModel.streakFreezeCount > 0 ? "Freeze · held" : "Freeze · used"
+    }
 
-    @State private var streakGlowPulse = false
+    /// The day dial: a 24-hour face whose arc is how much of today has passed, with the count
+    /// at its centre. The hand travels the day and SEATS into the midnight index at close —
+    /// the product's one expressive beat.
+    private func dayDial(now: Date) -> some View {
+        let progress = Self.dayProgress(at: now)
+        return DialFace(
+            size: 266,
+            scale: .day,
+            progress: progress,
+            handPosition: progress
+        ) {
+            VStack(spacing: 2) {
+                Text("\(viewModel.streakInfo.currentStreak)")
+                    .font(.system(size: countSize, weight: .semibold))
+                    .monospacedDigit()
+                    .foregroundStyle(.inkPrimary)
+                    .contentTransition(.numericText())
 
-    private var streakBadge: some View {
-        VStack(spacing: DS.Spacing.sm) {
-            ZStack {
-                // Hero glow behind streak number
-                if viewModel.streakInfo.currentStreak > 0 {
-                    Circle()
-                        .fill(
-                            RadialGradient(
-                                colors: [Color.noBuyGreen.opacity(0.25), Color.noBuyGreen.opacity(0.05), Color.clear],
-                                center: .center,
-                                startRadius: 20,
-                                endRadius: 100
-                            )
-                        )
-                        .frame(width: 180, height: 180)
-                        .scaleEffect(streakGlowPulse ? 1.08 : 0.95)
-                        .opacity(streakGlowPulse ? 1 : 0.7)
-                        .animation(
-                            reduceMotion ? nil : .easeInOut(duration: 2).repeatForever(autoreverses: true),
-                            value: streakGlowPulse
-                        )
-                        .onAppear { streakGlowPulse = true }
+                // "1 day kept", not "1 days kept" — the count under the dial is the reader's own
+                // number, and this label used to be a ternary whose two branches were the same
+                // string, so it never said anything either branch was for.
+                Text(viewModel.streakInfo.currentStreak == 1 ? "day kept" : "days kept")
+                    .font(.caption)
+                    .foregroundStyle(.inkSecondary)
+
+                Text(dialSubline)
+                    .font(.caption2)
+                    .foregroundStyle(.inkSecondary)
+                    .multilineTextAlignment(.center)
+            }
+            .padding(.horizontal, DS.Spacing.xxl)
+        }
+        .animation(reduceMotion ? DS.Anim.beatReduced : DS.Anim.beat, value: viewModel.streakInfo.currentStreak)
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel(dialAccessibilityText)
+    }
+
+    /// First run says what happens tonight rather than showing a zero; afterwards it carries
+    /// the best run, which is what the current one is measured against.
+    private var dialSubline: String {
+        if records.isEmpty { return "the record starts tonight" }
+        return "best \(viewModel.streakInfo.longestStreak)"
+    }
+
+    private var dialAccessibilityText: String {
+        records.isEmpty
+            ? "No days kept yet. The record starts tonight."
+            : "\(viewModel.streakInfo.currentStreak) days kept, best \(viewModel.streakInfo.longestStreak)"
+    }
+
+    /// countXL scales with Dynamic Type and floors at 56 — below that the one heroic number
+    /// stops being readable from a hand's length away, which is its whole job.
+    private var countSize: CGFloat { max(scaledCount, 56) }
+
+    /// Fixed notice slot. Normally the remainder in words; when a past day was never answered,
+    /// the fault notice takes the same slot — attention without alarm, no red anywhere.
+    @ViewBuilder
+    private func noticeLine(now: Date) -> some View {
+        if let error = viewModel.lastError, showErrorBanner {
+            noticeRow(glyph: "exclamationmark.triangle", text: error)
+        } else {
+            Text(Self.remainderText(at: now))
+                .font(.footnote)
+                .foregroundStyle(.inkSecondary)
+                .accessibilityLabel(Self.remainderAccessibilityText(at: now))
+        }
+    }
+
+    private func noticeRow(glyph: String, text: String) -> some View {
+        HStack(spacing: DS.Spacing.sm) {
+            Image(systemName: glyph)
+                .font(.footnote)
+                .foregroundStyle(.stateWait)
+                .accessibilityHidden(true)
+            Text(text)
+                .font(.footnote)
+                .foregroundStyle(.inkPrimary)
+                .multilineTextAlignment(.leading)
+        }
+        .accessibilityElement(children: .combine)
+    }
+
+    /// The question, alone on the one white surface in the screen.
+    private var questionSheet: some View {
+        VStack(spacing: DS.Spacing.lg) {
+            Text("Buy anything unnecessary today?")
+                .font(.system(size: max(scaledQuestion, 20), weight: .semibold))
+                .foregroundStyle(.inkPrimary)
+                .multilineTextAlignment(.center)
+                .fixedSize(horizontal: false, vertical: true)
+
+            HStack(spacing: DS.Spacing.md) {
+                answerButton(
+                    title: "No",
+                    isPrimary: true,
+                    identifier: "home_answer_no"
+                ) {
+                    HapticManager.noBuySuccess()
+                    SoundManager.playIfEnabled(.success)
+                    viewModel.markNoBuy(context: modelContext, allRecords: records)
                 }
 
-                Text("\(viewModel.streakInfo.currentStreak)")
-                    .font(Font.adaptiveDisplay(size: 80, weight: .black, design: .rounded, isRegular: isRegular))
-                    .foregroundStyle(viewModel.streakInfo.currentStreak > 0 ? Color.noBuyGreen : Color.textTertiary)
-                    .contentTransition(.numericText())
-                    .animation(reduceMotion ? nil : .spring(duration: 0.4), value: viewModel.streakInfo.currentStreak)
+                answerButton(
+                    title: "Yes",
+                    isPrimary: false,
+                    identifier: "home_answer_yes"
+                ) {
+                    HapticManager.tap()
+                    viewModel.showSpendOptions = true
+                }
             }
 
-            Text(L10n.dayStreak)
-                .font(.subheadline)
-                .fontWeight(.medium)
-                .foregroundStyle(.textSecondary)
-                .textCase(.uppercase)
-                .tracking(2)
-
-            if viewModel.streakInfo.longestStreak > 0 {
-                Text(L10n.longestStreak(viewModel.streakInfo.longestStreak))
-                    .font(.caption)
-                    .foregroundStyle(.textTertiary)
-            }
+            Text("Rent, utilities, transport and groceries never count.")
+                .font(.caption)
+                .foregroundStyle(.inkSecondary)
+                .multilineTextAlignment(.center)
+                .fixedSize(horizontal: false, vertical: true)
         }
         .padding(DS.Spacing.xl)
-        .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: DS.Radius.xl))
-        .shadow(color: viewModel.streakInfo.currentStreak > 0 ? .noBuyGreen.opacity(0.15) : .clear, radius: 16, y: 4)
-        .accessibilityElement(children: .combine)
-        .accessibilityLabel(String(
-            format: "%d day streak. Longest streak: %d days",
-            viewModel.streakInfo.currentStreak,
-            viewModel.streakInfo.longestStreak
-        ))
-    }
-
-    // MARK: - Main Button
-
-    private var mainButton: some View {
-        VStack(spacing: 0) {
-            Button {
-                if viewModel.isTodayRecorded, viewModel.isTodayNoBuy {
-                    viewModel.showSpendOptions = true
-                } else {
-                    viewModel.markNoBuy(context: modelContext, allRecords: records)
-                    checkCelebration()
-                    RatingPrompt.shared.noteMilestone(currentStreak: viewModel.streakInfo.currentStreak)
-                }
-            } label: {
-                VStack(spacing: DS.Spacing.md) {
-                    Image(systemName: viewModel.isTodayNoBuy ? "checkmark.circle.fill" : "circle")
-                        .font(Font.adaptiveDisplay(size: 56, isRegular: isRegular))
-                        .symbolEffect(.bounce, value: viewModel.isTodayNoBuy)
-
-                    Text(viewModel.isTodayNoBuy ? L10n.noBuyDone : L10n.noBuyButton)
-                        .font(.title3)
-                        .fontWeight(.bold)
-                }
-                .foregroundStyle(viewModel.isTodayNoBuy ? .white : Color.noBuyGreen)
-                .frame(maxWidth: .infinity)
-                .frame(height: 160)
-                .background(
-                    RoundedRectangle(cornerRadius: DS.Radius.xl)
-                        .fill(viewModel.isTodayNoBuy ? Color.noBuyGreen : Color.noBuyGreenLight)
+        .frame(maxWidth: .infinity)
+        .background(
+            RoundedRectangle(cornerRadius: DS.Radius.sheet)
+                .fill(Color.surfaceDial)
+                .overlay(
+                    RoundedRectangle(cornerRadius: DS.Radius.sheet)
+                        .strokeBorder(Color.inkHairline, lineWidth: DS.Stroke.hairline)
                 )
-                .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: DS.Radius.xl))
-            }
-            .buttonStyle(.scale)
-            .accessibilityLabel(viewModel.isTodayNoBuy
-                ? "Today marked as no-spend"
-                : "Mark today as no-spend")
-            .accessibilityHint(viewModel.isTodayNoBuy
-                ? "Tap to see spending options"
-                : "Tap to record a no-spend day")
-            .accessibilityIdentifier("main_nobuy_button")
-            .contextMenu {
-                if viewModel.isTodayRecorded {
-                    Button {
-                        viewModel.showSpendOptions = true
-                    } label: {
-                        Label("Change to Spent", systemImage: "cart.fill")
-                    }
+        )
+        // Answered days keep the question in place, disabled — the slot never empties.
+        //
+        // `.disabled` rather than `.allowsHitTesting(false)`: hit-testing alone stops the taps but
+        // says nothing, so VoiceOver kept announcing both buttons as available and reading a
+        // question that had already been answered. `.disabled` dims, blocks AND emits the
+        // not-enabled trait, and the label below states the fact plus where to change it.
+        .opacity(viewModel.isTodayRecorded ? 0.45 : 1)
+        .disabled(viewModel.isTodayRecorded)
+        .accessibilityElement(children: viewModel.isTodayRecorded ? .ignore : .contain)
+        .accessibilityLabel(viewModel.isTodayRecorded
+            ? "Today is already answered. Change it in the calendar."
+            : "Buy anything unnecessary today?")
+        .animation(reduceMotion ? nil : DS.Anim.functional, value: viewModel.isTodayRecorded)
+    }
 
-                    Button(role: .destructive) {
-                        showResetConfirmation = true
-                    } label: {
-                        Label("Reset Today", systemImage: "arrow.counterclockwise")
-                    }
-                }
+    private func answerButton(
+        title: String,
+        isPrimary: Bool,
+        identifier: String,
+        action: @escaping () -> Void
+    ) -> some View {
+        Button(action: action) {
+            Text(title)
+                .font(.headline)
+                .foregroundStyle(isPrimary ? Color.inkOnAccent : Color.inkPrimary)
+                .frame(maxWidth: .infinity)
+                .frame(height: 52)
+                .background(
+                    Capsule()
+                        .fill(isPrimary ? Color.accentKept : Color.surfaceDial)
+                        .overlay(
+                            Capsule().strokeBorder(
+                                isPrimary ? Color.clear : Color.accentSpentText,
+                                lineWidth: DS.Stroke.hairline
+                            )
+                        )
+                )
+        }
+        .buttonStyle(.scale)
+        .accessibilityIdentifier(identifier)
+    }
+
+    /// The recessed well: three fixed rows. They render whether or not they hold anything,
+    /// because a row that vanishes when empty is the "conditional chrome" the grammar forbids.
+    private var well: some View {
+        VStack(spacing: DS.Stroke.hairline) {
+            WellSlotRow(
+                glyph: "timer",
+                label: "Urge timer",
+                detail: "10 minutes, whenever it hits"
+            ) {
+                Button("Start") { showUrgeSurfing = true }
+                    .font(.subheadline.weight(.medium))
+                    .foregroundStyle(.accentKept)
+                    .accessibilityIdentifier("well_urge_timer")
             }
 
-            if !viewModel.isTodayRecorded || viewModel.isTodayNoBuy {
-                Button {
-                    viewModel.showSpendOptions = true
-                } label: {
-                    Text(L10n.spentButton)
-                        .font(.subheadline)
-                        .foregroundStyle(.spendRed)
+            WellSlotRow(
+                glyph: "hourglass",
+                label: waitingLabel,
+                detail: waitingDetail
+            ) {
+                Button(WaitingListManager.shared.activeItems.isEmpty ? "Add" : "Open") {
+                    showWaitingList = true
                 }
-                .buttonStyle(.scale)
-                .padding(.top, DS.Spacing.md)
-                .accessibilityLabel("I spent today")
-                .accessibilityHint("Double tap to log spending for today")
-                .accessibilityIdentifier("spent_button")
+                .font(.subheadline.weight(.medium))
+                .foregroundStyle(.accentKept)
+                .accessibilityIdentifier("well_waiting_list")
             }
+
+            WellSlotRow(
+                glyph: "list.bullet",
+                label: "Impulse checklist",
+                detail: "five questions before you buy"
+            ) {
+                Button("Open") { showImpulseChecklist = true }
+                    .font(.subheadline.weight(.medium))
+                    .foregroundStyle(.accentKept)
+                    .accessibilityIdentifier("well_impulse_checklist")
+            }
+        }
+        .clipShape(RoundedRectangle(cornerRadius: DS.Radius.sheet))
+    }
+
+    private var waitingLabel: String {
+        let count = WaitingListManager.shared.activeItems.count
+        return count == 0 ? "Waiting — none held" : "Waiting — \(count) held"
+    }
+
+    private var waitingDetail: String {
+        guard let first = WaitingListManager.shared.activeItems.first else {
+            return "add from a craving"
+        }
+        return first.name
+    }
+
+    /// v1 sections still mounted while their v2 homes are built.
+    @ViewBuilder
+    private var legacySections: some View {
+        VStack(spacing: DS.Spacing.xxl) {
+            if !viewModel.savingsGoal.isEmpty {
+                savingsGoalCard
+            }
+            challengeSection
+            monthlySummaryCard
         }
     }
 
-    // MARK: - Today Status
+    // MARK: - Clock helpers
+    //
+    // Static and pure so the same arithmetic can be unit-tested without a view, and so the
+    // widget can reuse it later without dragging a screen along.
 
-    private var todayStatus: some View {
-        VStack(spacing: DS.Spacing.xs) {
-            Text(viewModel.todayStatusText)
-                .font(.callout)
-                .foregroundStyle(.textSecondary)
-
-            Text(viewModel.todayMotivationalText)
-                .font(.caption)
-                .foregroundStyle(.textTertiary)
-                .multilineTextAlignment(.center)
-        }
-        .accessibilityElement(children: .combine)
-        .accessibilityLabel("Today: \(viewModel.todayStatusText). \(viewModel.todayMotivationalText)")
-        .animation(reduceMotion ? nil : .easeInOut, value: viewModel.todayStatusText)
+    static func dayProgress(at date: Date, calendar: Calendar = .current) -> Double {
+        let start = calendar.startOfDay(for: date)
+        guard let end = calendar.date(byAdding: .day, value: 1, to: start) else { return 0 }
+        let total = end.timeIntervalSince(start)
+        guard total > 0 else { return 0 }
+        return min(max(date.timeIntervalSince(start) / total, 0), 1)
     }
+
+    static func remainderText(at date: Date, calendar: Calendar = .current) -> String {
+        let start = calendar.startOfDay(for: date)
+        guard let end = calendar.date(byAdding: .day, value: 1, to: start) else { return "" }
+        let remaining = Int(end.timeIntervalSince(date))
+        guard remaining > 0 else { return "The day is closing — a new one is opening" }
+        let hours = remaining / 3600
+        let minutes = (remaining % 3600) / 60
+        if hours == 0 { return "\(minutes) m until the day closes" }
+        return "\(hours) h \(minutes) m until the day closes"
+    }
+
+    static func remainderAccessibilityText(at date: Date, calendar: Calendar = .current) -> String {
+        remainderText(at: date, calendar: calendar)
+            .replacingOccurrences(of: " h ", with: " hours ")
+            .replacingOccurrences(of: " m ", with: " minutes ")
+    }
+
+    private static let headerDateFormatter: DateFormatter = {
+        let f = DateFormatter()
+        f.locale = Locale(identifier: "en_US")
+        f.dateFormat = "EEEE d MMMM"
+        return f
+    }()
+
+    // MARK: - Streak Badge
 
     // MARK: - Savings Goal Card
 
@@ -687,41 +798,48 @@ struct HomeScreen: View {
         } else {
             // Pro-locked challenge teaser
             Button {
+                paywallEntry = .challenges
                 showPaywall = true
             } label: {
                 HStack(spacing: DS.Spacing.md) {
-                    Image(systemName: "flame.fill")
-                        .foregroundStyle(.noBuyGreen.opacity(0.5))
+                    Image(systemName: "flame")
+                        .foregroundStyle(.accentKept.opacity(0.5))
                         .accessibilityHidden(true)
                     VStack(alignment: .leading, spacing: 2) {
                         HStack(spacing: DS.Spacing.xs) {
                             Text("Challenges")
                                 .font(.subheadline)
                                 .fontWeight(.semibold)
-                                .foregroundStyle(.textPrimary)
+                                .foregroundStyle(.inkPrimary)
                             Text(L10n.proBadge)
                                 .font(.caption2.bold())
-                                .foregroundStyle(.noBuyGreen)
+                                .foregroundStyle(.accentKept)
                                 .padding(.horizontal, 6)
                                 .padding(.vertical, 2)
-                                .background(Capsule().fill(Color.noBuyGreenLight))
+                                .background(Capsule().fill(Color.accentKeptWash))
                         }
                         Text("Set no-spend goals and track progress")
                             .font(.caption)
-                            .foregroundStyle(.textSecondary)
+                            .foregroundStyle(.inkSecondary)
                     }
                     Spacer()
-                    Image(systemName: "lock.fill")
+                    // No padlock. The row already says PRO in words; a lock glyph on top of it
+                    // is the "you cannot have this" register the design bans, and it sat over a
+                    // material blur the token system does not own.
+                    Image(systemName: "chevron.right")
                         .font(.caption)
-                        .foregroundStyle(.textTertiary)
+                        .foregroundStyle(.inkSecondary)
                 }
                 .padding(DS.Spacing.lg)
-                .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: DS.Radius.lg))
                 .background(
                     RoundedRectangle(cornerRadius: DS.Radius.lg)
-                        .fill(Color.surfaceSecondary)
+                        .fill(Color.surfaceWell)
+                        .overlay(
+                            RoundedRectangle(cornerRadius: DS.Radius.lg)
+                                .strokeBorder(Color.inkHairline, lineWidth: DS.Stroke.hairline)
+                        )
                 )
-                .shadow(color: .black.opacity(0.06), radius: 6, x: 0, y: 3)
+
             }
             .buttonStyle(.scale)
         }
@@ -732,8 +850,8 @@ struct HomeScreen: View {
     private var monthlySummaryCard: some View {
         VStack(spacing: DS.Spacing.md) {
             HStack {
-                Image(systemName: "chart.bar.fill")
-                    .foregroundStyle(.noBuyGreen)
+                Image(systemName: "chart.bar")
+                    .foregroundStyle(.accentKept)
                 Text(L10n.thisMonth)
                     .fontWeight(.semibold)
                     .accessibilityAddTraits(.isHeader)
@@ -744,19 +862,19 @@ struct HomeScreen: View {
 
             HStack(spacing: DS.Spacing.xs) {
                 Text("\(viewModel.streakInfo.noBuyDaysThisMonth)")
-                    .font(Font.adaptiveDisplay(size: 32, weight: .black, design: .rounded, isRegular: isRegular))
-                    .foregroundStyle(.noBuyGreen)
+                    .font(Font.adaptiveDisplay(size: 32, weight: .semibold, isRegular: isRegular))
+                    .foregroundStyle(.accentKept)
 
                 Text(L10n.monthSummary(viewModel.streakInfo.noBuyDaysThisMonth, viewModel.streakInfo.totalDaysThisMonth))
                     .font(.callout)
-                    .foregroundStyle(.textSecondary)
+                    .foregroundStyle(.inkSecondary)
 
                 Spacer()
 
                 Text("\(Int(viewModel.streakInfo.noBuyPercentageThisMonth))%")
                     .font(.title2)
                     .fontWeight(.bold)
-                    .foregroundStyle(.noBuyGreen)
+                    .foregroundStyle(.accentKept)
             }
             .opacity(summaryAppeared ? 1 : 0)
             .offset(y: summaryAppeared ? 0 : 10)
@@ -764,10 +882,10 @@ struct HomeScreen: View {
             GeometryReader { geo in
                 ZStack(alignment: .leading) {
                     RoundedRectangle(cornerRadius: 4)
-                        .fill(Color.surfaceTertiary)
+                        .fill(Color.surfaceWell)
                         .frame(height: 8)
                     RoundedRectangle(cornerRadius: 4)
-                        .fill(Color.noBuyGreen)
+                        .fill(Color.accentKept)
                         .frame(
                             width: geo.size.width * viewModel.streakInfo.noBuyPercentageThisMonth / 100,
                             height: 8
@@ -782,16 +900,16 @@ struct HomeScreen: View {
             // Estimated savings display
             if viewModel.dailySpendingEstimate > 0 {
                 HStack(spacing: DS.Spacing.xs) {
-                    Image(systemName: "leaf.fill")
+                    Image(systemName: "leaf")
                         .font(.caption2)
-                        .foregroundStyle(.noBuyGreen)
+                        .foregroundStyle(.accentKept)
                         .accessibilityHidden(true)
                     Text(String(
                         format: "~$%d saved",
                         Int(viewModel.estimatedSavings)
                     ))
                     .font(.caption)
-                    .foregroundStyle(.noBuyGreen)
+                    .foregroundStyle(.accentKept)
                     .fontWeight(.medium)
                 }
                 .opacity(summaryAppeared ? 1 : 0)
@@ -799,10 +917,10 @@ struct HomeScreen: View {
             }
         }
         .padding(DS.Spacing.xl)
-        .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: DS.Radius.lg))
+        .background(Color.surfaceWell, in: RoundedRectangle(cornerRadius: DS.Radius.lg))
         .background(
             RoundedRectangle(cornerRadius: DS.Radius.lg)
-                .fill(Color.surfaceSecondary)
+                .fill(Color.surfaceDial)
         )
         .accessibilityElement(children: .combine)
         .accessibilityLabel("This month: \(viewModel.streakInfo.noBuyDaysThisMonth) no-spend days out of \(viewModel.streakInfo.totalDaysThisMonth), \(Int(viewModel.streakInfo.noBuyPercentageThisMonth)) percent")
@@ -815,47 +933,6 @@ struct HomeScreen: View {
                 }
             }
         }
-    }
-
-    // MARK: - Impulse Checklist Button
-
-    private var impulseChecklistButton: some View {
-        Button {
-            showImpulseChecklist = true
-        } label: {
-            HStack(spacing: DS.Spacing.md) {
-                Image(systemName: "checklist")
-                    .font(.title3)
-                    .foregroundStyle(.noBuyGreen)
-
-                VStack(alignment: .leading, spacing: DS.Spacing.xs) {
-                    Text("I want to buy, but...")
-                        .font(.subheadline)
-                        .fontWeight(.semibold)
-                        .foregroundStyle(.textPrimary)
-                    Text("Check before you buy")
-                        .font(.caption)
-                        .foregroundStyle(.textSecondary)
-                }
-
-                Spacer()
-
-                Image(systemName: "chevron.right")
-                    .font(.caption)
-                    .foregroundStyle(.textTertiary)
-                    .accessibilityHidden(true)
-            }
-            .padding(DS.Spacing.lg)
-            .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: DS.Radius.lg))
-            .background(
-                RoundedRectangle(cornerRadius: DS.Radius.lg)
-                    .fill(Color.surfaceSecondary)
-            )
-        }
-        .buttonStyle(.scale)
-        .accessibilityLabel("Impulse checklist")
-        .accessibilityHint("Double tap to check before you buy")
-        .accessibilityIdentifier("impulse_checklist_button")
     }
 
     // MARK: - Pending Quick Action
@@ -920,407 +997,11 @@ struct HomeScreen: View {
         }
     }
 
-    // MARK: - Empty State
-
-    private var emptyStateView: some View {
-        VStack(spacing: DS.Spacing.lg) {
-            Image(systemName: "leaf.circle.fill")
-                .font(Font.adaptiveDisplay(size: 64, isRegular: isRegular))
-                .foregroundStyle(.noBuyGreen.opacity(0.6))
-                .symbolEffect(.pulse, options: reduceMotion ? .nonRepeating : .repeating)
-                .accessibilityHidden(true)
-
-            VStack(spacing: DS.Spacing.sm) {
-                Text(L10n.emptyHomeTitle)
-                    .font(.title3)
-                    .fontWeight(.semibold)
-                    .foregroundStyle(.textPrimary)
-
-                Text(L10n.emptyHomeDesc)
-                    .font(.callout)
-                    .foregroundStyle(.textSecondary)
-                    .multilineTextAlignment(.center)
-                    .padding(.horizontal, DS.Spacing.xl)
-            }
-        }
-        .accessibilityElement(children: .combine)
-    }
-
-    // MARK: - Error Banner
-
-    private func errorBanner(message: String) -> some View {
-        HStack(spacing: DS.Spacing.sm) {
-            Image(systemName: "exclamationmark.triangle.fill")
-                .foregroundStyle(.spendRed)
-                .font(.callout)
-
-            Text(message)
-                .font(.caption)
-                .foregroundStyle(.textPrimary)
-                .lineLimit(2)
-
-            Spacer()
-
-            Button {
-                withAnimation {
-                    viewModel.dismissError()
-                    showErrorBanner = false
-                }
-            } label: {
-                Image(systemName: "xmark.circle.fill")
-                    .foregroundStyle(.textTertiary)
-                    .font(.callout)
-                    .frame(minWidth: 44, minHeight: 44)
-            }
-            .accessibilityLabel("Dismiss error")
-            .accessibilityIdentifier("dismiss_error")
-        }
-        .padding(DS.Spacing.md)
-        .background(
-            RoundedRectangle(cornerRadius: DS.Radius.md)
-                .fill(Color.spendRed.opacity(0.1))
-                .overlay(
-                    RoundedRectangle(cornerRadius: DS.Radius.md)
-                        .stroke(Color.spendRed.opacity(0.3), lineWidth: 1)
-                )
-        )
-    }
 }
 
-// MARK: - Share Card Gradient Helpers
-
-private extension Int {
-    /// Gradient colors based on streak length
-    var shareCardGradient: [Color] {
-        switch self {
-        case 100...:
-            // Rainbow/prismatic for legendary 100+ streaks
-            [
-                Color(red: 0.55, green: 0.27, blue: 0.68),
-                Color(red: 0.27, green: 0.50, blue: 0.78),
-                Color(red: 0.27, green: 0.63, blue: 0.45),
-                Color(red: 0.92, green: 0.75, blue: 0.28),
-            ]
-        case 30...:
-            // Gold gradient for 30+ streaks
-            [
-                Color(red: 0.76, green: 0.60, blue: 0.20),
-                Color(red: 0.92, green: 0.78, blue: 0.38),
-                Color(red: 0.76, green: 0.60, blue: 0.20),
-            ]
-        default:
-            // Green gradient for early streaks
-            [
-                Color(red: 0.20, green: 0.52, blue: 0.38),
-                Color(red: 0.32, green: 0.72, blue: 0.52),
-                Color(red: 0.20, green: 0.52, blue: 0.38),
-            ]
-        }
-    }
-
-    var shareCardDarkGradient: [Color] {
-        switch self {
-        case 100...:
-            [
-                Color(red: 0.15, green: 0.10, blue: 0.22),
-                Color(red: 0.10, green: 0.15, blue: 0.25),
-                Color(red: 0.10, green: 0.20, blue: 0.18),
-                Color(red: 0.22, green: 0.18, blue: 0.08),
-            ]
-        case 30...:
-            [
-                Color(red: 0.18, green: 0.14, blue: 0.05),
-                Color(red: 0.25, green: 0.20, blue: 0.08),
-                Color(red: 0.18, green: 0.14, blue: 0.05),
-            ]
-        default:
-            [
-                Color(red: 0.06, green: 0.16, blue: 0.12),
-                Color(red: 0.10, green: 0.22, blue: 0.16),
-                Color(red: 0.06, green: 0.16, blue: 0.12),
-            ]
-        }
-    }
-
-    var shareCardEmoji: String {
-        switch self {
-        case 100...: "💯"
-        case 60...: "👑"
-        case 30...: "🏆"
-        case 14...: "⭐"
-        case 7...: "🔥"
-        default: "🌱"
-        }
-    }
-}
-
-private func formattedStartDate(_ date: Date?) -> String? {
-    guard let date else { return nil }
-    let formatter = DateFormatter()
-    formatter.locale = Locale.current
-    formatter.dateStyle = .medium
-    return formatter.string(from: date)
-}
-
-private func localizedGoalText(_ goal: String) -> String? {
-    guard !goal.isEmpty else { return nil }
-    switch goal {
-    case "emergencyFund": return L10n.goalEmergencyFund
-    case "vacation": return L10n.goalVacation
-    case "debtFree": return L10n.goalDebtFree
-    case "discipline": return L10n.goalDiscipline
-    default: return goal
-    }
-}
-
-// MARK: - Streak Share Card (Basic)
-
-struct StreakShareCard: View {
-    let streakInfo: StreakInfo
-    var savingsGoal: String = ""
-    var firstNoBuyDate: Date?
-
-    @Environment(\.colorScheme) private var colorScheme
-    @Environment(\.horizontalSizeClass) private var sizeClass
-
-    private var isRegular: Bool {
-        sizeClass == .regular
-    }
-
-    private var gradientColors: [Color] {
-        colorScheme == .dark
-            ? streakInfo.currentStreak.shareCardDarkGradient
-            : streakInfo.currentStreak.shareCardGradient
-    }
-
-    private var textColor: Color {
-        .white
-    }
-
-    var body: some View {
-        VStack(spacing: DS.Spacing.xl) {
-            Spacer().frame(height: DS.Spacing.md)
-
-            // Emoji
-            Text(streakInfo.currentStreak.shareCardEmoji)
-                .font(Font.adaptiveDisplay(size: 52, isRegular: isRegular))
-
-            // Streak number
-            Text("\(streakInfo.currentStreak)")
-                .font(Font.adaptiveDisplay(size: 80, weight: .black, design: .rounded, isRegular: isRegular))
-                .foregroundStyle(textColor)
-
-            // "DAY STREAK"
-            Text(L10n.shareStreakDays)
-                .font(.headline)
-                .tracking(3)
-                .foregroundStyle(textColor.opacity(0.8))
-
-            // Start date
-            if let dateStr = formattedStartDate(firstNoBuyDate) {
-                Text(L10n.shareSince(dateStr))
-                    .font(.caption)
-                    .foregroundStyle(textColor.opacity(0.6))
-            }
-
-            // Savings goal
-            if let goalText = localizedGoalText(savingsGoal) {
-                HStack(spacing: DS.Spacing.xs) {
-                    Image(systemName: "target")
-                        .font(.caption2)
-                        .accessibilityHidden(true)
-                    Text(goalText)
-                        .font(.caption)
-                        .fontWeight(.medium)
-                }
-                .foregroundStyle(textColor.opacity(0.7))
-                .padding(.horizontal, DS.Spacing.lg)
-                .padding(.vertical, DS.Spacing.xs)
-                .background(
-                    Capsule()
-                        .fill(textColor.opacity(0.15))
-                )
-            }
-
-            Spacer()
-
-            // Bottom CTA
-            VStack(spacing: DS.Spacing.xs) {
-                Rectangle()
-                    .fill(textColor.opacity(0.15))
-                    .frame(height: 1)
-                    .padding(.horizontal, DS.Spacing.xxxl)
-
-                Text(L10n.shareNoBuy)
-                    .font(.caption)
-                    .fontWeight(.semibold)
-                    .foregroundStyle(textColor.opacity(0.7))
-
-                Text("Download NoBuy on the App Store")
-                    .font(.caption2)
-                    .foregroundStyle(textColor.opacity(0.45))
-            }
-
-            Spacer().frame(height: DS.Spacing.lg)
-        }
-        .frame(width: 360, height: 480)
-        .background(
-            RoundedRectangle(cornerRadius: DS.Radius.xl)
-                .fill(
-                    LinearGradient(
-                        colors: gradientColors,
-                        startPoint: .topLeading,
-                        endPoint: .bottomTrailing
-                    )
-                )
-                .shadow(color: .black.opacity(0.2), radius: 20, y: 10)
-        )
-    }
-}
-
-// MARK: - Streak Share Card (Pro)
-
-struct StreakShareCardPro: View {
-    let streakInfo: StreakInfo
-    var savingsGoal: String = ""
-    var firstNoBuyDate: Date?
-
-    @Environment(\.colorScheme) private var colorScheme
-    @Environment(\.horizontalSizeClass) private var sizeClass
-
-    private var isRegular: Bool {
-        sizeClass == .regular
-    }
-
-    private var gradientColors: [Color] {
-        colorScheme == .dark
-            ? streakInfo.currentStreak.shareCardDarkGradient
-            : streakInfo.currentStreak.shareCardGradient
-    }
-
-    private var textColor: Color {
-        .white
-    }
-
-    var body: some View {
-        VStack(spacing: DS.Spacing.lg) {
-            // PRO badge
-            HStack {
-                Spacer()
-                Text(L10n.proBadge)
-                    .font(.caption2.bold())
-                    .foregroundStyle(gradientColors.first ?? .noBuyGreen)
-                    .padding(.horizontal, DS.Spacing.sm)
-                    .padding(.vertical, 3)
-                    .background(
-                        Capsule()
-                            .fill(textColor.opacity(0.9))
-                    )
-            }
-            .padding(.horizontal, DS.Spacing.lg)
-            .padding(.top, DS.Spacing.lg)
-
-            // Emoji
-            Text(streakInfo.currentStreak.shareCardEmoji)
-                .font(Font.adaptiveDisplay(size: 52, isRegular: isRegular))
-
-            // Streak number
-            Text("\(streakInfo.currentStreak)")
-                .font(Font.adaptiveDisplay(size: 80, weight: .black, design: .rounded, isRegular: isRegular))
-                .foregroundStyle(textColor)
-
-            // "DAY STREAK"
-            Text(L10n.shareStreakDays)
-                .font(.headline)
-                .tracking(3)
-                .foregroundStyle(textColor.opacity(0.8))
-
-            // Start date
-            if let dateStr = formattedStartDate(firstNoBuyDate) {
-                Text(L10n.shareSince(dateStr))
-                    .font(.caption)
-                    .foregroundStyle(textColor.opacity(0.6))
-            }
-
-            // Savings goal
-            if let goalText = localizedGoalText(savingsGoal) {
-                HStack(spacing: DS.Spacing.xs) {
-                    Image(systemName: "target")
-                        .font(.caption2)
-                        .accessibilityHidden(true)
-                    Text(goalText)
-                        .font(.caption)
-                        .fontWeight(.medium)
-                }
-                .foregroundStyle(textColor.opacity(0.7))
-                .padding(.horizontal, DS.Spacing.lg)
-                .padding(.vertical, DS.Spacing.xs)
-                .background(
-                    Capsule()
-                        .fill(textColor.opacity(0.15))
-                )
-            }
-
-            // Stats row
-            HStack(spacing: DS.Spacing.xxxl) {
-                VStack(spacing: DS.Spacing.xs) {
-                    Text("\(streakInfo.longestStreak)")
-                        .font(.title3.bold())
-                        .foregroundStyle(textColor)
-                    Text(L10n.shareLongest)
-                        .font(.caption2)
-                        .foregroundStyle(textColor.opacity(0.6))
-                }
-                VStack(spacing: DS.Spacing.xs) {
-                    Text("\(Int(streakInfo.noBuyPercentageThisMonth))%")
-                        .font(.title3.bold())
-                        .foregroundStyle(textColor)
-                    Text(L10n.shareThisMonth)
-                        .font(.caption2)
-                        .foregroundStyle(textColor.opacity(0.6))
-                }
-            }
-            .padding(.top, DS.Spacing.sm)
-
-            Spacer()
-
-            // Bottom CTA
-            VStack(spacing: DS.Spacing.xs) {
-                Rectangle()
-                    .fill(textColor.opacity(0.15))
-                    .frame(height: 1)
-                    .padding(.horizontal, DS.Spacing.xxxl)
-
-                Text(L10n.shareNoBuy)
-                    .font(.caption)
-                    .fontWeight(.semibold)
-                    .foregroundStyle(textColor.opacity(0.7))
-
-                Text("Download NoBuy on the App Store")
-                    .font(.caption2)
-                    .foregroundStyle(textColor.opacity(0.45))
-            }
-
-            Spacer().frame(height: DS.Spacing.lg)
-        }
-        .frame(width: 360, height: 560)
-        .background(
-            RoundedRectangle(cornerRadius: DS.Radius.xl)
-                .fill(
-                    LinearGradient(
-                        colors: gradientColors,
-                        startPoint: .topLeading,
-                        endPoint: .bottomTrailing
-                    )
-                )
-                .shadow(color: .black.opacity(0.25), radius: 24, y: 12)
-        )
-    }
-}
-
-#Preview {
-    HomeScreen()
-        .environment(StoreService.shared)
-        .environment(QuickActionHandler())
-        .modelContainer(for: [DayRecord.self, MandatoryCategory.self], inMemory: true)
-}
+// MARK: - Share Card Surface
+//
+// v2.0.0: the streak-tiered gradients (rainbow at 100, gold at 30, green below) are gone.
+// Two token laws killed them: gradients may not decorate, and an accent may never encode a
+// CATEGORY — a colour that changes with the count means the same ink says different things on
+// different days. The card is now the dial itself, and the number is the only thing that grows.

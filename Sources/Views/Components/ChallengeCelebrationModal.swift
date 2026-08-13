@@ -25,7 +25,7 @@ struct ChallengeCelebrationModal: View {
 
     var body: some View {
         ZStack {
-            Color.black.opacity(appear ? 0.4 : 0)
+            Color.surfaceScrim.opacity(appear ? 0.4 : 0)
                 .ignoresSafeArea()
                 .onTapGesture { dismiss() }
 
@@ -33,12 +33,7 @@ struct ChallengeCelebrationModal: View {
                 ZStack {
                     Circle()
                         .fill(
-                            RadialGradient(
-                                colors: [.mandatoryAmber.opacity(0.3), .mandatoryAmber.opacity(0.05)],
-                                center: .center,
-                                startRadius: 10,
-                                endRadius: 70
-                            )
+                            .stateWait.opacity(0.12)
                         )
                         .frame(width: 120, height: 120)
                         .scaleEffect(appear ? 1.0 : (reduceMotion ? 1.0 : 0.3))
@@ -48,19 +43,15 @@ struct ChallengeCelebrationModal: View {
                         .font(Font.adaptiveDisplay(size: 56, isRegular: isRegular))
                         .accessibilityHidden(true)
                         .foregroundStyle(
-                            LinearGradient(
-                                colors: [.mandatoryAmber, .orange],
-                                startPoint: .topLeading,
-                                endPoint: .bottomTrailing
-                            )
+                            .stateWait
                         )
                         .symbolEffect(.bounce, value: reduceMotion ? false : appear)
-                        .shadow(color: .mandatoryAmber.opacity(0.4), radius: 8, x: 0, y: 4)
+
                 }
 
                 VStack(spacing: DS.Spacing.sm) {
                     Text("Challenge Completed!")
-                        .font(Font.adaptiveDisplay(size: 28, weight: .bold, design: .rounded, isRegular: isRegular))
+                        .font(Font.adaptiveDisplay(size: 28, weight: .semibold, isRegular: isRegular))
                         .multilineTextAlignment(.center)
 
                     Text(celebrationMessage)
@@ -73,16 +64,11 @@ struct ChallengeCelebrationModal: View {
                 // Big number display
                 VStack(spacing: DS.Spacing.xs) {
                     Text("\(totalDays)")
-                        .font(Font.adaptiveDisplay(size: 64, weight: .black, design: .rounded, isRegular: isRegular))
+                        .font(Font.adaptiveDisplay(size: 64, weight: .semibold, isRegular: isRegular))
                         .foregroundStyle(
-                            LinearGradient(
-                                colors: [.mandatoryAmber, .orange],
-                                startPoint: .topLeading,
-                                endPoint: .bottomTrailing
-                            )
+                            .stateWait
                         )
                         .contentTransition(.numericText())
-                        .shadow(color: .mandatoryAmber.opacity(0.3), radius: 4, x: 0, y: 2)
 
                     Text("day challenge")
                         .font(.subheadline)
@@ -99,22 +85,18 @@ struct ChallengeCelebrationModal: View {
                     SoundManager.playIfEnabled(.tap)
                     dismiss()
                 } label: {
-                    Text("Awesome! 🎯")
+                    Text("Well done")
                         .font(.headline)
-                        .foregroundStyle(.white)
+                        .foregroundStyle(Color.inkOnAccent)
                         .frame(maxWidth: .infinity)
                         .frame(height: 50)
                         .background(
                             RoundedRectangle(cornerRadius: DS.Radius.md)
                                 .fill(
-                                    LinearGradient(
-                                        colors: [.mandatoryAmber, .orange.opacity(0.85)],
-                                        startPoint: .leading,
-                                        endPoint: .trailing
-                                    )
+                                    .stateWait
                                 )
                         )
-                        .shadow(color: .mandatoryAmber.opacity(0.35), radius: 10, x: 0, y: 5)
+
                 }
                 .buttonStyle(.scale)
                 .padding(.horizontal, DS.Spacing.xxl)
@@ -122,12 +104,12 @@ struct ChallengeCelebrationModal: View {
             .padding(DS.Spacing.xxxl)
             .background(
                 RoundedRectangle(cornerRadius: DS.Radius.xl)
-                    .fill(Color.surfacePrimary)
+                    .fill(Color.surfaceField)
                     .overlay(
                         RoundedRectangle(cornerRadius: DS.Radius.xl)
                             .fill(DS.Gradient.card)
                     )
-                    .shadow(color: .black.opacity(0.15), radius: 30, y: 10)
+
             )
             .padding(.horizontal, DS.Spacing.xxl)
             .scaleEffect(appear ? 1.0 : (reduceMotion ? 1.0 : 0.8))

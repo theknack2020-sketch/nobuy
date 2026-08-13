@@ -1,0 +1,24 @@
+{
+  "appId": 1517676784,
+  "name": "Varo Bank: Online Banking",
+  "bundleId": "com.varomoney.VaroBank",
+  "country": "US",
+  "countryName": "United States",
+  "url": "https://apps.apple.com/us/app/varo-bank-online-banking/id1517676784?uo=4",
+  "artworkUrl": "https://is1-ssl.mzstatic.com/image/thumb/Purple221/v4/11/b0/d4/11b0d4fe-cbd3-c314-0249-ebb2d8f1848a/AppIcon-0-0-1x_U007epad-0-1-0-85-220.png/512x512bb.jpg",
+  "sellerName": "Varo Money, Inc.",
+  "primaryGenreName": "Finance",
+  "genres": [
+    "Finance",
+    "Shopping"
+  ],
+  "version": "4.38.0",
+  "description": "We are a real bank, built for the digital age.\n\nMember FDIC, backed by the full faith and credit of the U.S. Government\n\n\nONLINE BANKING\n• Early payday⁵\n• No monthly, minimum balance, or overdraft fees¹\n• Send and receive money in minutes with Zelle®⁴\n• 40k+ fee-free US Allpoint® ATMs²\n• Up to 3.75% APY on first $5,000, quals apply¹⁰\n• 1.00% APY on additional balances\n• Auto-saving tools\n• Unlike many money apps, we’re a real bank\n\nINSTANT CASH ADVANCES\n• Borrow up to $250 today. Quals apply³\n• Work up to $700 cash advances over time with direct deposit³\n• Flat fee per cash advance\n\nLINE OF CREDIT\n• From $600 to $2,000. Avg $825. Quals apply⁹\n• No interest, late fees, or penalties\n• Simple flat fees\n• Payment periods between 3 and 12 months\n\nFREE SECURED CREDIT CARD⁶\n• No credit check, interest, annual fees, or minimum security deposit\n• Reported to Equifax, Experian, & TransUnion\n\nDOWNLOAD NOW!\n• Sign up for a Varo Bank Account in less than two minutes with no impact on your credit.\n\n©2026 Varo Bank, N.A. All Rights Reserved. Member FDIC.\n¹⁻¹⁰ See disclosures in app screenshots.",
+  "price": 0,
+  "formattedPrice": "Free",
+  "currency": "USD",
+  "averageRating": 4.85979,
+  "ratingCount": 233474,
+  "currentVersionRating": 4.85979,
+  "currentVersionCount": 233474
+}

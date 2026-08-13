@@ -1,0 +1,37 @@
+{
+  "term": "no buy year",
+  "country": "US",
+  "limit": 200,
+  "results": [
+    {
+      "appId": 375380948,
+      "name": "Apple Store",
+      "bundleId": "com.apple.store.Jolly",
+      "sellerName": "Apple Inc.",
+      "country": "US",
+      "countryName": "United States",
+      "url": "https://apps.apple.com/us/app/apple-store/id375380948?uo=4",
+      "artworkUrl": "https://is1-ssl.mzstatic.com/image/thumb/Purple221/v4/7b/83/16/7b831651-30d2-55a7-aabe-a0d6053df222/AppIcon-0-1x_U007epad-0-0-0-1-0-0-85-220-0.png/512x512bb.jpg",
+      "primaryGenreName": "Shopping",
+      "formattedPrice": "Free",
+      "currency": "USD",
+      "averageRating": 3.50333,
+      "ratingCount": 167958
+    },
+    {
+      "appId": 6466286877,
+      "name": "YearsHK",
+      "bundleId": "com.yearshk.shop.omyrs.consumer",
+      "sellerName": "Years Veggie Limited",
+      "country": "US",
+      "countryName": "United States",
+      "url": "https://apps.apple.com/us/app/yearshk/id6466286877?uo=4",
+      "artworkUrl": "https://is1-ssl.mzstatic.com/image/thumb/Purple221/v4/ce/06/ba/ce06bafe-1904-2743-ee39-d8c950ac604f/AppIconRelease-0-0-1x_U007emarketing-0-6-0-85-220.png/512x512bb.jpg",
+      "primaryGenreName": "Food & Drink",
+      "formattedPrice": "Free",
+      "currency": "USD",
+      "averageRating": 0,
+      "ratingCount": 0
+    }
+  ]
+}

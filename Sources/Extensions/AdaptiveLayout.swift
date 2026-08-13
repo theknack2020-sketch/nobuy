@@ -76,15 +76,6 @@ extension Font {
         isRegular ? .caption.weight(.semibold) : .system(size: 11, weight: .semibold)
     }
 
-    /// Timer display — extra large for the urge-surfing timer
-    static func timerDisplay(isRegular: Bool) -> Font {
-        .system(
-            size: dynamicTypeScaled(isRegular ? 72 : 56, relativeTo: .largeTitle),
-            weight: .light,
-            design: .rounded
-        )
-    }
-
     /// Section header
     static func adaptiveSectionHeader(isRegular: Bool) -> Font {
         isRegular ? .headline : .subheadline.weight(.semibold)

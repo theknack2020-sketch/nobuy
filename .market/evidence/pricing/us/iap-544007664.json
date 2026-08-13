@@ -1,0 +1,67 @@
+{
+  "appId": "544007664",
+  "name": "YouTube",
+  "ratingCount": 48485616,
+  "sellerName": "Google LLC",
+  "term": "no buy challenge",
+  "storefront": "us",
+  "fetched_at": "2026-08-12T13:37:06.666Z",
+  "readable": true,
+  "typed": false,
+  "url": "https://apps.apple.com/us/app/id544007664",
+  "sha256": "197da5faa3cee6ce7d82ad6938c0d5d101e41951a4f0dfd04e6f74890d7105b0",
+  "iap": [
+    {
+      "name": "YouTube Premium",
+      "price": 20.99,
+      "tier": "unknown"
+    },
+    {
+      "name": "YouTube Premium",
+      "price": 20.99,
+      "tier": "unknown"
+    },
+    {
+      "name": "Movies & Shows",
+      "price": 3.99,
+      "tier": "unknown"
+    },
+    {
+      "name": "YouTube Premium",
+      "price": 20.99,
+      "tier": "unknown"
+    },
+    {
+      "name": "YouTube Premium",
+      "price": 20.99,
+      "tier": "unknown"
+    },
+    {
+      "name": "Youtube Premium Family",
+      "price": 34.99,
+      "tier": "unknown"
+    },
+    {
+      "name": "YouTube Premium Family",
+      "price": 34.99,
+      "tier": "unknown"
+    },
+    {
+      "name": "Super Chat",
+      "price": 1.99,
+      "tier": "unknown"
+    },
+    {
+      "name": "Super Chat",
+      "price": 4.99,
+      "tier": "unknown"
+    },
+    {
+      "name": "Movies & Shows",
+      "price": 2.99,
+      "tier": "unknown"
+    }
+  ],
+  "tiers": {},
+  "untypedReason": "10 SKU bulundu ama hiçbirinin adında süre yok (ör. \"YouTube Premium\") — kademe atanamadı; medyana katkı vermez"
+}

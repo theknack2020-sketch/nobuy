@@ -1,5 +1,6 @@
 import Foundation
 import SwiftData
+import WidgetKit
 
 #if DEBUG
     /// Deterministic demo dataset for the store-screenshot pipeline. Seeds an
@@ -26,7 +27,7 @@ import SwiftData
                 switch daysAgo {
                 case 0 ... 22:
                     let note: String? = switch daysAgo {
-                    case 2: "Skipped the flash sale 💪"
+                    case 2: "Skipped the flash sale"
                     case 9: "Left the cart overnight"
                     case 16: "Coffee at home instead"
                     default: nil
@@ -37,11 +38,16 @@ import SwiftData
                 case 30:
                     records.append(DayRecord(date: date, didSpend: true, isFrozen: true))
                 case 24 ... 59:
+                    // The essentials-only days are checked FIRST. Behind the weekday branch they
+                    // never rendered: both landed on a Saturday, so the Saturday-spend case
+                    // claimed them and the calendar showed four of the five truths while its own
+                    // legend promised five — in the panel whose caption is "the record keeps its
+                    // shape. Five truths a day can carry."
                     let weekday = calendar.component(.weekday, from: date)
-                    if weekday == 7 {
-                        records.append(DayRecord(date: date, didSpend: true, amount: 19.99))
-                    } else if daysAgo == 40 || daysAgo == 47 {
+                    if daysAgo == 40 || daysAgo == 47 {
                         records.append(DayRecord(date: date, didSpend: true, isMandatoryOnly: true))
+                    } else if weekday == 7 {
+                        records.append(DayRecord(date: date, didSpend: true, amount: 19.99))
                     } else {
                         records.append(DayRecord(date: date, didSpend: false))
                     }
@@ -57,10 +63,27 @@ import SwiftData
             return records
         }
 
-        /// Seeds the (in-memory) store and UserDefaults for a screenshot run.
-        static func seed(into container: ModelContainer) {
+        /// Seeds the store and UserDefaults for a screenshot run.
+        ///
+        /// `replacingExisting` is for the PERSISTENT run (`-demoDataPersist`), which the widget
+        /// panel needs — the widget reads the shared store from its own process and cannot see an
+        /// in-memory demo. Everything already there is cleared first, so a second run does not
+        /// stack two datasets into one calendar.
+        static func seed(into container: ModelContainer, replacingExisting: Bool = false) {
             let context = container.mainContext
-            let records = makeRecords()
+            if replacingExisting {
+                try? context.delete(model: DayRecord.self)
+                try? context.delete(model: MandatoryCategory.self)
+            }
+            var records = makeRecords()
+            if replacingExisting {
+                // Today stays OPEN in the persistent demo. Every panel that shows the product
+                // shows it at the moment it is used — the evening question unanswered, and the
+                // widget offering both answers. A pre-answered day photographs the state right
+                // AFTER the thing the app is for.
+                let startOfToday = Calendar.current.startOfDay(for: .now)
+                records.removeAll { Calendar.current.startOfDay(for: $0.date) == startOfToday }
+            }
             for record in records {
                 context.insert(record)
             }
@@ -68,6 +91,11 @@ import SwiftData
                 context.insert(MandatoryCategory(name: name, icon: icon))
             }
             try? context.save()
+
+            // The widget is a separate process reading the same store; without this it keeps
+            // rendering the timeline it built before the seed and the panel photographs stale
+            // numbers (rule 8, in miniature: the write happened, the surface was never told).
+            if replacingExisting { WidgetCenter.shared.reloadAllTimelines() }
 
             let defaults = UserDefaults.standard
             // A coherent Home/Stats story: ~$575 saved, challenge 23/30 mid-run.

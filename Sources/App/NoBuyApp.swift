@@ -1,7 +1,6 @@
 import CoreSpotlight
 import SwiftData
 import SwiftUI
-import TipKit
 
 // MARK: - Quick Action Types
 
@@ -59,26 +58,32 @@ struct NoBuyApp: App {
     let modelContainer: ModelContainer
 
     init() {
-        // Bind the schema to its versioned declaration so the migration plan
-        // is anchored before the first real V2 change.
-        let schema = Schema(versionedSchema: NoBuySchema.self)
-        // Demo runs use a throwaway in-memory store so a developer's real
-        // records can never be touched by a screenshot session.
-        let config = ModelConfiguration(schema: schema, isStoredInMemoryOnly: DemoMode.isActive)
+        // The widget cannot read the app's private container, so v2.0.0 moves the store into the
+        // App Group — copy, verify, then switch, with the old file left in place. This runs
+        // BEFORE the container is opened, because the container must be pointed at whichever
+        // store the move settled on (`NoBuyStore.resolvedStoreURL`).
+        if !DemoMode.isActive || DemoMode.persists {
+            switch NoBuyStore.migrateToAppGroupIfNeeded() {
+            case .notNeeded:
+                break
+            case let .migrated(records):
+                AppLogger.data.info("Records moved to the App Group: \(records) days")
+            case let .keptLegacy(reason):
+                AppLogger.data.error("Staying on the old store — \(reason)")
+            }
+        }
+
         do {
-            modelContainer = try ModelContainer(
-                for: schema,
-                migrationPlan: NoBuyMigrationPlan.self,
-                configurations: [config]
-            )
+            // Demo runs use a throwaway in-memory store so a developer's real
+            // records can never be touched by a screenshot session.
+            modelContainer = try NoBuyStore.makeContainer(inMemory: DemoMode.isActive && !DemoMode.persists)
         } catch {
             // Never crash-loop at launch (2.1(a)): fall back to a throwaway
             // in-memory store and tell the user, leaving the on-disk store
             // untouched for the next launch.
             AppLogger.data.error("Could not open persistent store: \(error.localizedDescription)")
-            let fallback = ModelConfiguration(schema: schema, isStoredInMemoryOnly: true)
             do {
-                modelContainer = try ModelContainer(for: schema, configurations: [fallback])
+                modelContainer = try NoBuyStore.makeContainer(inMemory: true)
                 _storeOpenFailed = State(initialValue: true)
             } catch {
                 fatalError("Could not create even an in-memory ModelContainer: \(error)")
@@ -86,15 +91,20 @@ struct NoBuyApp: App {
         }
 
         #if DEBUG
+            // A panel that depends on a finish sets it here, so the set is reproducible from the
+            // launch argument alone rather than from whatever the simulator happened to store.
+            if let finish = ScreenshotTour.finish {
+                UserDefaults.standard.set(finish, forKey: "selectedTheme")
+            }
             if DemoMode.isActive {
-                DemoSeeder.seed(into: modelContainer)
-                Tips.hideAllTipsForTesting()
+                DemoSeeder.seed(into: modelContainer, replacingExisting: DemoMode.persists)
+                // Synchronously, at init. `checkEntitlements()` also unlocks demo runs, but it is
+                // awaited from a `.task` and the first frames render before it lands — which is
+                // precisely the frame a screenshot captures, gate language and all.
+                if DemoMode.showsProUnlocked { store.forceProForDemo() }
             }
         #endif
 
-        try? Tips.configure([
-            .displayFrequency(.daily)
-        ])
     }
 
     var body: some Scene {
@@ -117,8 +127,16 @@ struct NoBuyApp: App {
             }
             .task {
                 appDelegate.quickActionHandler = quickActionHandler
-                await store.loadProducts()
+                // The review gate counts sessions as well as positive actions; without this
+                // call the session half of the policy would never advance and the prompt
+                // could never legitimately fire (rule 8: built is not wired).
+                RatingPrompt.shared.markSession()
+                // Entitlements FIRST. Knowing whether this person is Pro needs no network, while
+                // `loadProducts()` does — and behind it the whole app renders its free-tier state
+                // for as long as the product fetch takes, which on a slow or offline launch means
+                // a paying customer briefly sees locks on things they own.
                 await store.checkEntitlements()
+                await store.loadProducts()
             }
             .task {
                 await store.listenForTransactions()

@@ -1,0 +1,22 @@
+{
+  "appId": "548615579",
+  "name": "Spending Tracker",
+  "ratingCount": 19342,
+  "sellerName": "MH Riley Ltd",
+  "term": "no spend tracker",
+  "storefront": "us",
+  "fetched_at": "2026-08-12T13:36:58.789Z",
+  "readable": true,
+  "typed": false,
+  "url": "https://apps.apple.com/us/app/id548615579",
+  "sha256": "00a80f3060424e7210eba43b74d6a3a52483a6ca6ce8b2295ce04ec24e7e237b",
+  "iap": [
+    {
+      "name": "Pro Upgrade",
+      "price": 2.99,
+      "tier": "unknown"
+    }
+  ],
+  "tiers": {},
+  "untypedReason": "1 SKU bulundu ama hiçbirinin adında süre yok (ör. \"Pro Upgrade\") — kademe atanamadı; medyana katkı vermez"
+}

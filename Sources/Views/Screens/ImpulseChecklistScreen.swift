@@ -1,810 +1,578 @@
 import SwiftUI
 
-// MARK: - Impulse Checklist Screen
-
-// Before-you-buy questionnaire — 5 questions, one at a time.
-// Accessible from HomeScreen ("I want to buy but...") and SpendOptionsSheet.
+// MARK: - Impulse checklist — five questions before a purchase (Escapement, v2.0.0)
+//
+// Opened mid-craving, in a shop, one-handed. The v1 screen asked one question per page with a
+// halo, a gradient answer pad and confetti on the "right" answer; this one is a single list the
+// user can read in one glance, answer in any order, and leave half-finished.
+//
+// Four decisions the round made that this file must not quietly undo:
+//
+//   · **The verdict slot is fixed from the first pixel** (M-05). It renders before anything is
+//     answered — an `if` that removes it would make the screen jump under the thumb at exactly
+//     the moment someone is deciding whether to spend money.
+//   · **The list takes sides only in AGGREGATE.** No single answer is celebrated, scolded or
+//     coloured as correct; the lean lives in a seated tick and the count, nothing else.
+//   · **Both exits are dignified.** "Hold it 24 hours" and "Buy it anyway" are the same size and
+//     the same voice. The product records a purchase, it does not comment on it — so there is
+//     no confetti here, and no warning triangle either.
+//   · **Partial answers count.** "Answer what you can" is the honest instruction: someone
+//     standing at a till will answer two of five, and two of five is a real reading.
 
 struct ImpulseChecklistScreen: View {
     @Environment(\.dismiss) private var dismiss
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
-    @Environment(\.horizontalSizeClass) private var sizeClass
 
-    private var isRegular: Bool {
-        sizeClass == .regular
-    }
-
-    @State private var currentIndex = 0
-    @State private var answers: [Bool?] = Array(repeating: nil, count: 5)
-    @State private var phase: Phase = .questions
-    @State private var showConfetti = false
-    @State private var showWaitingListOffer = false
-    @State private var waitingItemName = ""
-    @State private var waitingItemCost = ""
-
-    private enum OfferField { case name, price }
-    @FocusState private var offerFieldFocus: OfferField?
-    @State private var waitingReminderHours = 24
-
-    /// Callback when the user completes the checklist and decides NOT to buy
+    /// Called when the user leaves without buying — the caller records the day.
     var onDecidedNotToBuy: (() -> Void)?
+    /// Set when the checklist is opened about a specific thing (from the spend sheet).
+    var prefilledItemName: String?
 
-    enum Phase {
-        case questions
-        case earlyExit // Answered in a way that clearly says "don't buy"
-        case summary
+    @State private var store = ChecklistStore.shared
+    /// question id → the user picked the LEFT answer.
+    @State private var answers: [UUID: Bool] = [:]
+    @State private var itemName = ""
+    @State private var itemAmount = ""
+    @State private var isEditingItem = false
+    @State private var isEditingList = false
+    @State private var heldUntil: Date?
+
+    private enum ItemField { case name, amount }
+    @FocusState private var itemFocus: ItemField?
+
+    private var reading: ChecklistReading {
+        ChecklistReading(questions: store.questions, answers: answers)
     }
 
-    // MARK: - Question Model
-
-    private struct Question {
-        let icon: String
-        let text: String
-        /// If the user picks this answer, trigger an early "don't buy" exit.
-        /// `nil` means no early exit for either answer.
-        let earlyExitAnswer: Bool?
-        /// The answer that walks away from the purchase — the only one that
-        /// earns the brand green, so red/green keep their calendar meaning.
-        let frugalAnswer: Bool
+    private var trimmedItemName: String {
+        itemName.trimmingCharacters(in: .whitespacesAndNewlines)
     }
-
-    private let questions: [Question] = [
-        Question(
-            icon: "questionmark.circle.fill",
-            text: "Do I really need this?",
-            earlyExitAnswer: false, // "No" → early exit
-            frugalAnswer: false
-        ),
-        Question(
-            icon: "clock.fill",
-            text: "Can I wait 24 hours?",
-            earlyExitAnswer: true, // "Yes" → early exit
-            frugalAnswer: true
-        ),
-        Question(
-            icon: "banknote.fill",
-            text: "Does this fit my budget?",
-            earlyExitAnswer: nil,
-            frugalAnswer: false
-        ),
-        Question(
-            icon: "calendar.badge.clock",
-            text: "Will I still want this in a week?",
-            earlyExitAnswer: nil,
-            frugalAnswer: false
-        ),
-        Question(
-            icon: "arrow.triangle.branch",
-            text: "Is there something better I want this money for?",
-            earlyExitAnswer: nil,
-            frugalAnswer: true
-        ),
-    ]
 
     var body: some View {
         NavigationStack {
-            ZStack {
-                Color.surfacePrimary.ignoresSafeArea()
-
-                switch phase {
-                case .questions:
-                    questionView
-                        .transition(.asymmetric(
-                            insertion: .move(edge: .trailing).combined(with: .opacity),
-                            removal: .move(edge: .leading).combined(with: .opacity)
-                        ))
-                case .earlyExit:
-                    earlyExitView
-                        .transition(.scale.combined(with: .opacity))
-                case .summary:
-                    summaryView
-                        .transition(.scale.combined(with: .opacity))
-                }
-
-                if showConfetti {
-                    ConfettiView()
-                        .allowsHitTesting(false)
-                        .zIndex(10)
-                }
-            }
-            .toolbar {
-                ToolbarItem(placement: .cancellationAction) {
-                    Button("Close") {
-                        HapticManager.tap()
-                        dismiss()
-                    }
-                    .accessibilityIdentifier("impulse_close")
-                }
-            }
-            .navigationBarTitleDisplayMode(.inline)
-        }
-        .sheet(isPresented: $showWaitingListOffer) {
-            waitingListOfferSheet
-        }
-    }
-
-    // MARK: - Question View
-
-    private var questionView: some View {
-        let question = questions[currentIndex]
-
-        return VStack(spacing: DS.Spacing.xxl) {
-            Spacer().frame(height: DS.Spacing.md)
-
-            // Progress
-            progressDots
-
-            Text("Question \(currentIndex + 1) of \(questions.count)")
-                .font(.footnote.weight(.semibold))
-                .foregroundStyle(.textSecondary)
-                .textCase(.uppercase)
-                .tracking(1.5)
-
-            // Icon
-            ZStack {
-                Circle()
-                    .fill(
-                        RadialGradient(
-                            colors: [.noBuyGreen.opacity(0.2), .noBuyGreen.opacity(0.02)],
-                            center: .center,
-                            startRadius: 10,
-                            endRadius: 60
-                        )
-                    )
-                    .frame(width: 120, height: 120)
-
-                Image(systemName: question.icon)
-                    .font(Font.adaptiveDisplay(size: 52, isRegular: isRegular))
-                    .foregroundStyle(.noBuyGreen)
-                    .shadow(color: .noBuyGreen.opacity(0.3), radius: 6, x: 0, y: 3)
-                    .accessibilityHidden(true)
-            }
-            .id("icon-\(currentIndex)")
-
-            // Question text
-            Text(question.text)
-                .font(Font.adaptiveDisplay(size: 22, weight: .bold, design: .rounded, isRegular: isRegular))
-                .multilineTextAlignment(.center)
-                .padding(.horizontal, DS.Spacing.xxl)
-                .id("text-\(currentIndex)")
-
-            if currentIndex + 1 < questions.count {
-                upNextList
-            }
-
-            Spacer()
-
-            // Answer buttons — only the walk-away answer earns the brand green
-            HStack(spacing: DS.Spacing.lg) {
-                answerButton(
-                    label: "Yes",
-                    icon: "checkmark",
-                    color: question.frugalAnswer ? .noBuyGreen : .answerNeutral,
-                    isYes: true
-                )
-
-                answerButton(
-                    label: "No",
-                    icon: "xmark",
-                    color: question.frugalAnswer ? .answerNeutral : .noBuyGreen,
-                    isYes: false
-                )
-            }
-            .padding(.horizontal, DS.Spacing.xxl)
-            .padding(.bottom, DS.Spacing.xxxl)
-        }
-    }
-
-    /// The remaining questions, muted — fills the frame with the actual
-    /// checklist so the screen (and its store shot) reads as one.
-    private var upNextList: some View {
-        VStack(alignment: .leading, spacing: DS.Spacing.sm) {
-            Text("Up next")
-                .font(.caption.weight(.semibold))
-                .foregroundStyle(.textTertiary)
-                .textCase(.uppercase)
-                .tracking(1)
-
-            ForEach(Array(questions.enumerated().dropFirst(currentIndex + 1)), id: \.offset) { _, upcoming in
-                HStack(spacing: DS.Spacing.sm) {
-                    Image(systemName: upcoming.icon)
-                        .font(.caption)
-                        .foregroundStyle(.textTertiary)
-                        .frame(width: 18)
-                        .accessibilityHidden(true)
-                    Text(upcoming.text)
-                        .font(.subheadline)
-                        .foregroundStyle(.textSecondary)
-                }
-            }
-        }
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .padding(DS.Spacing.lg)
-        .background(
-            RoundedRectangle(cornerRadius: DS.Radius.md)
-                .fill(Color.surfaceSecondary)
-        )
-        .padding(.horizontal, DS.Spacing.xxl)
-    }
-
-    private func answerButton(label: String, icon: String, color: Color, isYes: Bool) -> some View {
-        Button {
-            answer(isYes)
-        } label: {
-            VStack(spacing: DS.Spacing.sm) {
-                Image(systemName: icon)
-                    .font(.title2.bold())
-                Text(label)
-                    .font(.headline)
-            }
-            .foregroundStyle(.white)
-            .frame(maxWidth: .infinity)
-            .frame(height: 100)
-            .background(
-                RoundedRectangle(cornerRadius: DS.Radius.xl)
-                    .fill(
-                        LinearGradient(
-                            colors: [color, color.opacity(0.8)],
-                            startPoint: .topLeading,
-                            endPoint: .bottomTrailing
-                        )
-                    )
-            )
-            .shadow(color: color.opacity(0.3), radius: 10, x: 0, y: 5)
-        }
-        .buttonStyle(.scale)
-        .accessibilityLabel("\(label)")
-        .accessibilityHint("Double tap to answer \(label.lowercased()) to the question")
-    }
-
-    // MARK: - Progress Dots
-
-    private var progressDots: some View {
-        HStack(spacing: DS.Spacing.sm) {
-            ForEach(0 ..< questions.count, id: \.self) { index in
-                Circle()
-                    .fill(dotColor(for: index))
-                    .frame(width: index == currentIndex ? 12 : 8,
-                           height: index == currentIndex ? 12 : 8)
-                    .shadow(color: index == currentIndex ? .noBuyGreen.opacity(0.3) : .clear, radius: 3, x: 0, y: 1)
-                    .animation(reduceMotion ? nil : .spring(response: 0.3, dampingFraction: 0.7), value: currentIndex)
-            }
-        }
-        .accessibilityElement(children: .combine)
-        .accessibilityLabel("Question \(currentIndex + 1) of \(questions.count)")
-    }
-
-    private func dotColor(for index: Int) -> Color {
-        if index < currentIndex {
-            .noBuyGreen
-        } else if index == currentIndex {
-            .noBuyGreen
-        } else {
-            .textTertiary.opacity(0.3)
-        }
-    }
-
-    // MARK: - Answer Logic
-
-    private func answer(_ isYes: Bool) {
-        HapticManager.tap()
-        SoundManager.playIfEnabled(.tap)
-        answers[currentIndex] = isYes
-
-        let question = questions[currentIndex]
-
-        // Check for early exit
-        if let earlyAnswer = question.earlyExitAnswer, isYes == earlyAnswer {
-            withAnimation(reduceMotion ? nil : .spring(response: 0.5, dampingFraction: 0.7)) {
-                phase = .earlyExit
-                showConfetti = true
-            }
-            HapticManager.celebration()
-            SoundManager.playIfEnabled(.celebration)
-            trackCompletion(didBuy: false)
-            scheduleConfettiDismiss()
-            return
-        }
-
-        // Move to next question or summary
-        if currentIndex < questions.count - 1 {
-            withAnimation(reduceMotion ? nil : .spring(response: 0.4, dampingFraction: 0.7)) {
-                currentIndex += 1
-            }
-        } else {
-            withAnimation(reduceMotion ? nil : .spring(response: 0.5, dampingFraction: 0.7)) {
-                phase = .summary
-                if shouldNotBuy {
-                    showConfetti = true
-                    HapticManager.celebration()
-                    SoundManager.playIfEnabled(.celebration)
-                    scheduleConfettiDismiss()
-                } else {
-                    HapticManager.warning()
-                }
-            }
-            trackCompletion(didBuy: !shouldNotBuy)
-        }
-    }
-
-    // MARK: - Early Exit View
-
-    private var earlyExitView: some View {
-        VStack(spacing: DS.Spacing.xxxl) {
-            Spacer()
-
-            ZStack {
-                Circle()
-                    .fill(
-                        RadialGradient(
-                            colors: [.noBuyGreen.opacity(0.2), .noBuyGreen.opacity(0.02)],
-                            center: .center,
-                            startRadius: 15,
-                            endRadius: 70
-                        )
-                    )
-                    .frame(width: 140, height: 140)
-
-                Image(systemName: "hand.raised.fill")
-                    .font(Font.adaptiveDisplay(size: 64, isRegular: isRegular))
-                    .foregroundStyle(.noBuyGreen)
-                    .shadow(color: .noBuyGreen.opacity(0.3), radius: 8, x: 0, y: 4)
-            }
-
-            VStack(spacing: DS.Spacing.md) {
-                Text("Great! Consider holding off on this purchase.")
-                    .font(Font.adaptiveDisplay(size: 22, weight: .bold, design: .rounded, isRegular: isRegular))
-                    .multilineTextAlignment(.center)
-                    .padding(.horizontal, DS.Spacing.xxl)
-                    .accessibilityAddTraits(.isHeader)
-
-                Text("This feeling is temporary. Wait a while and think again.")
-                    .font(.body)
-                    .foregroundStyle(.textSecondary)
-                    .multilineTextAlignment(.center)
-                    .padding(.horizontal, DS.Spacing.xxxl)
-            }
-
-            Spacer()
-
-            VStack(spacing: DS.Spacing.md) {
-                // Waiting list offer
-                Button {
-                    HapticManager.tap()
-                    SoundManager.playIfEnabled(.tap)
-                    showWaitingListOffer = true
-                } label: {
-                    HStack(spacing: DS.Spacing.sm) {
-                        Image(systemName: "clock.badge.questionmark")
-                            .font(.title3)
-                            .accessibilityHidden(true)
-                        Text("Add to Waiting List")
-                            .fontWeight(.semibold)
-                    }
-                    .foregroundStyle(.white)
-                    .frame(maxWidth: .infinity)
-                    .frame(height: 56)
-                    .background(
-                        RoundedRectangle(cornerRadius: DS.Radius.lg)
-                            .fill(
-                                LinearGradient(
-                                    colors: [.noBuyGreen, .noBuyGreen.opacity(0.8)],
-                                    startPoint: .leading,
-                                    endPoint: .trailing
-                                )
-                            )
-                    )
-                    .shadow(color: .noBuyGreen.opacity(0.3), radius: 10, x: 0, y: 5)
-                }
-                .buttonStyle(.scale)
-                .accessibilityLabel("Add to waiting list")
-                .accessibilityHint("Double tap to save this item for later")
-
-                Button {
-                    HapticManager.success()
-                    SoundManager.playIfEnabled(.success)
-                    onDecidedNotToBuy?()
-                    dismiss()
-                } label: {
-                    Text("You strengthened your willpower! 💪")
-                        .font(.subheadline)
-                        .foregroundStyle(.noBuyGreen)
-                }
-
-                Button {
-                    HapticManager.tap()
-                    // Continue with remaining questions
-                    withAnimation(reduceMotion ? nil : .spring(response: 0.4, dampingFraction: 0.7)) {
-                        showConfetti = false
-                        phase = .questions
-                        if currentIndex < questions.count - 1 {
-                            currentIndex += 1
-                        }
-                    }
-                } label: {
-                    Text("Continue anyway")
-                        .font(.subheadline)
-                        .foregroundStyle(.textTertiary)
-                }
-            }
-            .padding(.horizontal, DS.Spacing.xxl)
-            .padding(.bottom, DS.Spacing.xxxl)
-        }
-    }
-
-    // MARK: - Summary View
-
-    private var summaryView: some View {
-        let buyCount = buyScore
-        let waitCount = questions.count - buyCount
-
-        return VStack(spacing: DS.Spacing.xxxl) {
-            Spacer()
-
-            // Result icon
-            ZStack {
-                Circle()
-                    .fill(
-                        RadialGradient(
-                            colors: [(shouldNotBuy ? Color.noBuyGreen : Color.mandatoryAmber).opacity(0.2), (shouldNotBuy ? Color.noBuyGreen : Color.mandatoryAmber).opacity(0.02)],
-                            center: .center,
-                            startRadius: 15,
-                            endRadius: 70
-                        )
-                    )
-                    .frame(width: 140, height: 140)
-
-                Image(systemName: shouldNotBuy ? "trophy.fill" : "exclamationmark.triangle.fill")
-                    .font(Font.adaptiveDisplay(size: 64, isRegular: isRegular))
-                    .foregroundStyle(shouldNotBuy ? .noBuyGreen : .mandatoryAmber)
-                    .shadow(color: (shouldNotBuy ? Color.noBuyGreen : .mandatoryAmber).opacity(0.3), radius: 8, x: 0, y: 4)
-            }
-
-            // Result text
-            VStack(spacing: DS.Spacing.md) {
-                Text(shouldNotBuy
-                    ? "You strengthened your willpower!"
-                    : "You're still not sure")
-                    .font(Font.adaptiveDisplay(size: 24, weight: .bold, design: .rounded, isRegular: isRegular))
-                    .multilineTextAlignment(.center)
-
-                // Score breakdown
-                HStack(spacing: DS.Spacing.xxl) {
-                    scorePill(
-                        count: buyCount,
-                        total: questions.count,
-                        label: "Buy",
-                        color: .spendRed
-                    )
-                    scorePill(
-                        count: waitCount,
-                        total: questions.count,
-                        label: "Wait",
-                        color: .noBuyGreen
-                    )
-                }
-            }
-
-            Spacer()
-
-            // Action buttons
-            VStack(spacing: DS.Spacing.md) {
-                if shouldNotBuy {
-                    // Waiting list offer — primary action
-                    Button {
-                        HapticManager.tap()
-                        SoundManager.playIfEnabled(.tap)
-                        showWaitingListOffer = true
-                    } label: {
-                        HStack(spacing: DS.Spacing.sm) {
-                            Image(systemName: "clock.badge.questionmark")
-                                .font(.title3)
-                                .accessibilityHidden(true)
-                            Text("Add to Waiting List")
-                                .fontWeight(.semibold)
-                        }
-                        .foregroundStyle(.white)
-                        .frame(maxWidth: .infinity)
-                        .frame(height: 56)
-                        .background(
-                            RoundedRectangle(cornerRadius: DS.Radius.lg)
-                                .fill(
-                                    LinearGradient(
-                                        colors: [.noBuyGreen, .noBuyGreen.opacity(0.8)],
-                                        startPoint: .leading,
-                                        endPoint: .trailing
-                                    )
-                                )
-                        )
-                        .shadow(color: .noBuyGreen.opacity(0.3), radius: 10, x: 0, y: 5)
-                    }
-                    .buttonStyle(.scale)
-
-                    Button {
-                        HapticManager.success()
-                        SoundManager.playIfEnabled(.success)
-                        onDecidedNotToBuy?()
-                        dismiss()
-                    } label: {
-                        Text("Great decision! 🎉")
-                            .font(.subheadline)
-                            .foregroundStyle(.noBuyGreen)
-                    }
-                } else {
-                    // Not clearly "don't buy" but offer waiting list on wait action
-                    Button {
-                        HapticManager.tap()
-                        SoundManager.playIfEnabled(.tap)
-                        showWaitingListOffer = true
-                    } label: {
-                        HStack(spacing: DS.Spacing.sm) {
-                            Image(systemName: "clock.badge.questionmark")
-                                .font(.title3)
-                                .accessibilityHidden(true)
-                            Text("Wait & Add to List")
-                                .fontWeight(.semibold)
-                        }
-                        .foregroundStyle(.white)
-                        .frame(maxWidth: .infinity)
-                        .frame(height: 56)
-                        .background(
-                            RoundedRectangle(cornerRadius: DS.Radius.lg)
-                                .fill(
-                                    LinearGradient(
-                                        colors: [.noBuyGreen, .noBuyGreen.opacity(0.8)],
-                                        startPoint: .leading,
-                                        endPoint: .trailing
-                                    )
-                                )
-                        )
-                        .shadow(color: .noBuyGreen.opacity(0.3), radius: 10, x: 0, y: 5)
-                    }
-                    .buttonStyle(.scale)
-
-                    Button {
-                        HapticManager.tap()
-                        dismiss()
-                    } label: {
-                        Text("Buy anyway")
-                            .font(.subheadline)
-                            .foregroundStyle(.textTertiary)
-                    }
-                }
-            }
-            .padding(.horizontal, DS.Spacing.xxl)
-            .padding(.bottom, DS.Spacing.xxxl)
-        }
-    }
-
-    private func scorePill(count: Int, total: Int, label: String, color: Color) -> some View {
-        VStack(spacing: DS.Spacing.xs) {
-            Text("\(count)/\(total)")
-                .font(Font.adaptiveDisplay(size: 28, weight: .black, design: .rounded, isRegular: isRegular))
-                .foregroundStyle(color)
-            Text(label)
-                .font(.caption)
-                .fontWeight(.medium)
-                .foregroundStyle(.textSecondary)
-        }
-        .frame(width: 80)
-        .padding(.vertical, DS.Spacing.lg)
-        .background(
-            RoundedRectangle(cornerRadius: DS.Radius.md)
-                .fill(color.opacity(0.1))
-        )
-        .shadow(color: color.opacity(0.12), radius: 4, x: 0, y: 2)
-        .pressable()
-    }
-
-    // MARK: - Scoring
-
-    /// How many answers point toward "buy".
-    /// Q1 "Yes" (need it) → buy, Q2 "No" (can't wait) → buy,
-    /// Q3 "Yes" (fits budget) → buy, Q4 "Yes" (still want) → buy,
-    /// Q5 "No" (nothing else) → buy
-    private var buyScore: Int {
-        var score = 0
-        if answers[0] == true { score += 1 } // Yes I need it
-        if answers[1] == false { score += 1 } // No I can't wait
-        if answers[2] == true { score += 1 } // Yes fits budget
-        if answers[3] == true { score += 1 } // Yes still want it
-        if answers[4] == false { score += 1 } // No nothing else
-        return score
-    }
-
-    private var shouldNotBuy: Bool {
-        buyScore < 3
-    }
-
-    // MARK: - Tracking
-
-    private func trackCompletion(didBuy: Bool) {
-        let key = "impulseChecklistCompletions"
-        let current = UserDefaults.standard.integer(forKey: key)
-        UserDefaults.standard.set(current + 1, forKey: key)
-
-        if !didBuy {
-            let savedKey = "impulseChecklistSaved"
-            let saved = UserDefaults.standard.integer(forKey: savedKey)
-            UserDefaults.standard.set(saved + 1, forKey: savedKey)
-            SoundManager.playIfEnabled(.success)
-        }
-    }
-
-    // MARK: - Waiting List Offer Sheet
-
-    private var waitingListOfferSheet: some View {
-        NavigationStack {
             ScrollView {
-                VStack(spacing: DS.Spacing.xxl) {
-                    Spacer().frame(height: DS.Spacing.md)
-
-                ZStack {
-                    Circle()
-                        .fill(
-                            RadialGradient(
-                                colors: [.noBuyGreen.opacity(0.2), .noBuyGreen.opacity(0.02)],
-                                center: .center,
-                                startRadius: 5,
-                                endRadius: 40
-                            )
-                        )
-                        .frame(width: 80, height: 80)
-                    Image(systemName: "clock.badge.questionmark")
-                        .font(Font.adaptiveDisplay(size: 36, isRegular: isRegular))
-                        .foregroundStyle(.noBuyGreen)
-                        .accessibilityHidden(true)
-                }
-
-                Text("Set a reminder to prevent impulse purchases")
-                    .font(.subheadline)
-                    .foregroundStyle(.textSecondary)
-                    .multilineTextAlignment(.center)
-                    .padding(.horizontal, DS.Spacing.xxl)
-
                 VStack(spacing: DS.Spacing.lg) {
-                    TextField(
-                        "What do you want to buy?",
-                        text: $waitingItemName
-                    )
-                    .focused($offerFieldFocus, equals: .name)
-                    .font(.body)
-                    .padding(DS.Spacing.lg)
-                    .background(
-                        RoundedRectangle(cornerRadius: DS.Radius.md)
-                            .fill(Color.surfaceSecondary)
-                    )
-                    .shadow(color: .black.opacity(0.04), radius: 3, x: 0, y: 2)
+                    itemChip
 
-                    TextField(
-                        "Estimated price (optional)",
-                        text: $waitingItemCost
-                    )
-                    .focused($offerFieldFocus, equals: .price)
-                    .font(.body)
-                    .keyboardType(.decimalPad)
-                    .padding(DS.Spacing.lg)
-                    .background(
-                        RoundedRectangle(cornerRadius: DS.Radius.md)
-                            .fill(Color.surfaceSecondary)
-                    )
-                    .shadow(color: .black.opacity(0.04), radius: 3, x: 0, y: 2)
-
-                    // Reminder duration picker
-                    VStack(alignment: .leading, spacing: DS.Spacing.sm) {
-                        Text("When should we remind you?")
-                            .font(.subheadline)
-                            .foregroundStyle(.textSecondary)
-
-                        HStack(spacing: DS.Spacing.md) {
-                            ForEach([24, 48, 72], id: \.self) { hours in
-                                Button {
-                                    HapticManager.tap()
-                                    waitingReminderHours = hours
-                                } label: {
-                                    Text(reminderLabel(for: hours))
-                                        .font(.subheadline.weight(.medium))
-                                        .foregroundStyle(waitingReminderHours == hours ? .white : .textSecondary)
-                                        .frame(maxWidth: .infinity)
-                                        .padding(.vertical, DS.Spacing.md)
-                                        .background(
-                                            RoundedRectangle(cornerRadius: DS.Radius.md)
-                                                .fill(waitingReminderHours == hours
-                                                    ? AnyShapeStyle(LinearGradient(colors: [.noBuyGreen, .noBuyGreen.opacity(0.8)], startPoint: .top, endPoint: .bottom))
-                                                    : AnyShapeStyle(Color.surfaceSecondary))
-                                        )
-                                        .shadow(color: waitingReminderHours == hours ? .noBuyGreen.opacity(0.2) : .black.opacity(0.04), radius: 4, x: 0, y: 2)
-                                }
-                                .buttonStyle(.scale)
-                                .animation(reduceMotion ? nil : .spring(response: 0.3, dampingFraction: 0.7), value: waitingReminderHours)
-                            }
-                        }
+                    ForEach(store.questions) { question in
+                        questionRow(question)
                     }
-                }
-                .padding(.horizontal, DS.Spacing.xxl)
 
-                Spacer()
+                    verdictSlot
 
-                Button {
-                    saveToWaitingList()
-                } label: {
-                    Text("Add to Waiting List")
-                        .font(.headline)
-                        .foregroundStyle(.white)
-                        .frame(maxWidth: .infinity)
-                        .frame(height: 52)
-                        .background(
-                            RoundedRectangle(cornerRadius: DS.Radius.lg)
-                                .fill(waitingItemName.trimmingCharacters(in: .whitespaces).isEmpty
-                                    ? AnyShapeStyle(Color.noBuyGreen.opacity(0.4))
-                                    : AnyShapeStyle(LinearGradient(colors: [.noBuyGreen, .noBuyGreen.opacity(0.8)], startPoint: .leading, endPoint: .trailing)))
-                        )
-                        .shadow(color: waitingItemName.trimmingCharacters(in: .whitespaces).isEmpty ? .clear : .noBuyGreen.opacity(0.3), radius: 10, x: 0, y: 5)
+                    exits
                 }
-                .buttonStyle(.scale)
-                .disabled(waitingItemName.trimmingCharacters(in: .whitespaces).isEmpty)
-                .padding(.horizontal, DS.Spacing.xxl)
+                .padding(.horizontal, DS.Spacing.screenGutter)
                 .padding(.bottom, DS.Spacing.xxxl)
-                }
             }
             .scrollDismissesKeyboard(.interactively)
-            .background(Color.surfacePrimary)
-            .navigationTitle("Waiting List")
-            .navigationBarTitleDisplayMode(.inline)
+            .background(Color.surfaceField)
+            .navigationTitle("Before you buy")
+            .navigationBarTitleDisplayMode(.large)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
-                    Button("Cancel") {
-                        HapticManager.tap()
-                        showWaitingListOffer = false
-                    }
-                    .accessibilityIdentifier("waiting_list_cancel")
+                    Button("Today") { dismiss() }
+                        .font(.subheadline)
+                        .accessibilityIdentifier("impulse_close")
+                }
+                ToolbarItem(placement: .primaryAction) {
+                    Button("Edit") { isEditingList = true }
+                        .font(.subheadline)
+                        .accessibilityIdentifier("impulse_edit")
                 }
                 ToolbarItemGroup(placement: .keyboard) {
                     Spacer()
-                    Button("Done") { offerFieldFocus = nil }
+                    Button("Done") { itemFocus = nil }
                 }
             }
+            .sheet(isPresented: $isEditingList) {
+                ChecklistEditSheet(store: store)
+            }
         }
-        .presentationDetents([.medium])
-        .presentationDragIndicator(.visible)
+        .onAppear {
+            if let prefilledItemName, itemName.isEmpty {
+                itemName = prefilledItemName
+            }
+        }
     }
 
-    private func saveToWaitingList() {
-        let name = waitingItemName.trimmingCharacters(in: .whitespaces)
-        guard !name.isEmpty else { return }
+    // MARK: - The thing being weighed
 
-        let cost = Double(waitingItemCost.replacingOccurrences(of: ",", with: "."))
-        let item = WaitingItem(name: name, estimatedCost: cost, reminderHours: waitingReminderHours)
+    @ViewBuilder
+    private var itemChip: some View {
+        if isEditingItem || !trimmedItemName.isEmpty {
+            VStack(alignment: .leading, spacing: DS.Spacing.sm) {
+                TextField("What is it?", text: $itemName)
+                    .font(.headline)
+                    .focused($itemFocus, equals: .name)
+                    .submitLabel(.next)
+                    .onSubmit { itemFocus = .amount }
+                    .accessibilityIdentifier("impulse_item_name")
+
+                TextField("Price — optional, never summed", text: $itemAmount)
+                    .font(.subheadline)
+                    .foregroundStyle(.inkSecondary)
+                    .focused($itemFocus, equals: .amount)
+                    .submitLabel(.done)
+                    .onSubmit { itemFocus = nil }
+                    .accessibilityIdentifier("impulse_item_amount")
+            }
+            .padding(DS.Spacing.lg)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .background(card)
+        } else {
+            Button {
+                isEditingItem = true
+                itemFocus = .name
+            } label: {
+                // Two lines, not one wrapped sentence: the state comes first and the invitation
+                // sits under it, so neither breaks mid-phrase at large type sizes.
+                VStack(alignment: .leading, spacing: 2) {
+                    Text("No item attached")
+                        .font(.subheadline)
+                        .foregroundStyle(.inkSecondary)
+                    Text("Answer in the abstract, or add one")
+                        .font(.footnote)
+                        .foregroundStyle(.inkSecondary)
+                }
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .padding(DS.Spacing.lg)
+                .background(card)
+            }
+            .buttonStyle(.plain)
+            .accessibilityIdentifier("impulse_attach_item")
+            .accessibilityLabel("No item attached. Add one, or answer in the abstract.")
+        }
+    }
+
+    // MARK: - A question
+
+    @ViewBuilder
+    private func questionRow(_ question: ChecklistQuestion) -> some View {
+        if let pickedLeft = answers[question.id] {
+            answeredRow(question, pickedLeft: pickedLeft)
+        } else {
+            unansweredRow(question)
+        }
+    }
+
+    private func unansweredRow(_ question: ChecklistQuestion) -> some View {
+        VStack(alignment: .leading, spacing: DS.Spacing.md) {
+            Text(question.text)
+                .font(.body)
+                .foregroundStyle(.inkPrimary)
+                .fixedSize(horizontal: false, vertical: true)
+                .frame(maxWidth: .infinity, alignment: .leading)
+
+            // Neither button is the good one, so neither carries the accent. The words differ;
+            // the weight does not.
+            HStack(spacing: DS.Spacing.md) {
+                answerButton(question, pickedLeft: true)
+                answerButton(question, pickedLeft: false)
+            }
+        }
+        .padding(DS.Spacing.lg)
+        .background(card)
+        .accessibilityElement(children: .contain)
+        .accessibilityLabel(question.text)
+    }
+
+    private func answerButton(_ question: ChecklistQuestion, pickedLeft: Bool) -> some View {
+        Button {
+            HapticManager.tap()
+            withAnimation(reduceMotion ? nil : DS.Anim.functional) {
+                answers[question.id] = pickedLeft
+            }
+        } label: {
+            Text(question.answerLabel(pickedLeft: pickedLeft))
+                .font(.subheadline.weight(.medium))
+                .foregroundStyle(.inkPrimary)
+                .frame(maxWidth: .infinity)
+                .frame(height: 52)
+                .background(
+                    RoundedRectangle(cornerRadius: DS.Radius.sm)
+                        .fill(Color.surfaceField)
+                        .overlay(
+                            RoundedRectangle(cornerRadius: DS.Radius.sm)
+                                .strokeBorder(Color.inkHairline, lineWidth: DS.Stroke.hairline)
+                        )
+                )
+        }
+        .buttonStyle(.scale)
+        .accessibilityIdentifier("impulse_answer_\(pickedLeft ? "left" : "right")_\(question.id.uuidString.prefix(8))")
+    }
+
+    /// Answered: the row collapses to its answer and seats a tick. Left-leaning is waiting,
+    /// right-leaning is buying — the same grammar the calendar uses for a day's truth.
+    private func answeredRow(_ question: ChecklistQuestion, pickedLeft: Bool) -> some View {
+        let leansWait = question.leansToWaiting(pickedLeft: pickedLeft)
+
+        return Button {
+            HapticManager.tap()
+            withAnimation(reduceMotion ? nil : DS.Anim.functional) {
+                answers[question.id] = nil
+            }
+        } label: {
+            HStack(spacing: DS.Spacing.md) {
+                seatedTick(leansWait: leansWait)
+
+                VStack(alignment: .leading, spacing: 2) {
+                    Text(question.shortLabel)
+                        .font(.caption)
+                        .foregroundStyle(.inkSecondary)
+                    Text(question.answerLabel(pickedLeft: pickedLeft))
+                        .font(.subheadline.weight(.medium))
+                        .foregroundStyle(.inkPrimary)
+                }
+                .frame(maxWidth: .infinity, alignment: .leading)
+            }
+            .padding(DS.Spacing.lg)
+            .frame(minHeight: 44)
+            .background(card)
+        }
+        .buttonStyle(.plain)
+        .accessibilityLabel("\(question.shortLabel): \(question.answerLabel(pickedLeft: pickedLeft)). Points to \(leansWait ? "waiting" : "buying").")
+        .accessibilityHint("Double tap to answer again")
+        .accessibilityIdentifier("impulse_answered_\(question.id.uuidString.prefix(8))")
+    }
+
+    /// The lean, carried by DIRECTION alone: left is waiting, right is buying.
+    ///
+    /// One colour for both, deliberately. Two colours would make the tick say "good" and "bad"
+    /// about a single answer, and this list takes sides only in aggregate — and it would spend
+    /// the kept accent on something that is not a kept day. Direction is also the channel that
+    /// survives Differentiate Without Colour (M-15), so the reading is the same for everyone.
+    ///
+    /// `IndexTriangle` points DOWN at rest, and `rotationEffect` is clockwise-positive: +90°
+    /// seats it left, −90° seats it right.
+    private func seatedTick(leansWait: Bool) -> some View {
+        IndexTriangle()
+            .fill(Color.inkSecondary)
+            .frame(width: 10, height: 8)
+            .rotationEffect(.degrees(leansWait ? 90 : -90))
+            .frame(width: 18)
+            .accessibilityHidden(true)
+    }
+
+    // MARK: - The verdict slot (always present)
+
+    private var verdictSlot: some View {
+        VStack(alignment: .leading, spacing: DS.Spacing.xs) {
+            Text(reading.headline)
+                .font(.headline)
+                .foregroundStyle(reading.answered > 0 ? .inkPrimary : .inkSecondary)
+                .fixedSize(horizontal: false, vertical: true)
+
+            if let reasonLine = reading.reasonLine {
+                Text(reasonLine)
+                    .font(.footnote)
+                    .foregroundStyle(.inkSecondary)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding(.top, DS.Spacing.sm)
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel(reading.spoken)
+        .accessibilityIdentifier("impulse_verdict")
+    }
+
+    // MARK: - Two exits, level
+
+    private var exits: some View {
+        VStack(spacing: DS.Spacing.sm) {
+            Button {
+                hold()
+            } label: {
+                Text("Hold it 24 hours")
+                    .font(.headline)
+                    .foregroundStyle(reading.anythingLeansToWaiting ? Color.inkOnAccent : Color.inkSecondary)
+                    .frame(maxWidth: .infinity)
+                    .frame(height: 54)
+                    .background(
+                        Capsule()
+                            .fill(reading.anythingLeansToWaiting ? Color.accentKept : Color.surfaceWell)
+                            .overlay(
+                                Capsule().strokeBorder(Color.inkHairline, lineWidth: DS.Stroke.hairline)
+                            )
+                    )
+            }
+            .buttonStyle(.scale)
+            .accessibilityIdentifier("impulse_hold")
+
+            Button {
+                // Recorded, never bannered: the product does not scold a purchase.
+                HapticManager.tap()
+                dismiss()
+            } label: {
+                Text("Buy it anyway")
+                    .font(.headline)
+                    .foregroundStyle(.inkPrimary)
+                    .frame(maxWidth: .infinity)
+                    .frame(height: 54)
+                    .background(
+                        Capsule()
+                            .fill(Color.surfaceWell)
+                            .overlay(
+                                Capsule().strokeBorder(Color.inkHairline, lineWidth: DS.Stroke.hairline)
+                            )
+                    )
+            }
+            .buttonStyle(.scale)
+            .accessibilityIdentifier("impulse_buy_anyway")
+
+            // The consequence of holding, stated before it happens and again after.
+            Text(holdFootnote)
+                .font(.footnote)
+                .foregroundStyle(.inkSecondary)
+                .multilineTextAlignment(.center)
+                .fixedSize(horizontal: false, vertical: true)
+                .frame(maxWidth: .infinity)
+                .padding(.top, DS.Spacing.xs)
+        }
+        .padding(.top, DS.Spacing.sm)
+    }
+
+    private var holdFootnote: String {
+        if let heldUntil {
+            return "Held. It can be bought \(Self.relativeClock(heldUntil))."
+        }
+        if trimmedItemName.isEmpty {
+            return "Holding adds it to the waiting list — name it first, so the list holds a thing rather than a feeling."
+        }
+        return "Holding adds it to the waiting list — it can be bought \(Self.relativeClock(Date.now.addingTimeInterval(24 * 3600)))."
+    }
+
+    // MARK: - Actions
+
+    private func hold() {
+        guard !trimmedItemName.isEmpty else {
+            // Nothing to hold yet: open the field rather than refusing silently.
+            HapticManager.warning()
+            withAnimation(reduceMotion ? nil : DS.Anim.functional) { isEditingItem = true }
+            itemFocus = .name
+            return
+        }
+
+        let amount = Double(itemAmount.replacingOccurrences(of: ",", with: "."))
+        let item = WaitingItem(name: trimmedItemName, estimatedCost: amount, reminderHours: 24)
         WaitingListManager.shared.addItem(item)
-
         HapticManager.save()
-        SoundManager.playIfEnabled(.save)
-
-        waitingItemName = ""
-        waitingItemCost = ""
-        waitingReminderHours = 24
-        showWaitingListOffer = false
-
+        heldUntil = Date.now.addingTimeInterval(24 * 3600)
+        recordOutcome(didBuy: false)
         onDecidedNotToBuy?()
         dismiss()
     }
 
-    private func reminderLabel(for hours: Int) -> String {
-        switch hours {
-        case 24: "24 hours"
-        case 48: "48 hours"
-        case 72: "72 hours"
-        default: "\(hours) hours"
-        }
+    /// The two counters Stats reads. Kept as plain integers — this is the app's own bookkeeping,
+    /// not analytics, and it never leaves the device.
+    private func recordOutcome(didBuy: Bool) {
+        let completions = UserDefaults.standard.integer(forKey: "impulseChecklistCompletions")
+        UserDefaults.standard.set(completions + 1, forKey: "impulseChecklistCompletions")
+        guard !didBuy else { return }
+        let saved = UserDefaults.standard.integer(forKey: "impulseChecklistSaved")
+        UserDefaults.standard.set(saved + 1, forKey: "impulseChecklistSaved")
     }
 
-    private func scheduleConfettiDismiss() {
-        DispatchQueue.main.asyncAfter(deadline: .now() + 3.0) {
-            showConfetti = false
-        }
+    private static func relativeClock(_ date: Date) -> String {
+        let time = date.formatted(date: .omitted, time: .shortened)
+        return Calendar.current.isDateInToday(date) ? "at \(time)" : "tomorrow at \(time)"
+    }
+
+    private var card: some View {
+        RoundedRectangle(cornerRadius: DS.Radius.md)
+            .fill(Color.surfaceWell)
+            .overlay(
+                RoundedRectangle(cornerRadius: DS.Radius.md)
+                    .strokeBorder(Color.inkHairline, lineWidth: DS.Stroke.hairline)
+            )
     }
 }
 
-#Preview {
+// MARK: - Edit the questions
+//
+// The user's own records, so all three verbs are here: add, remove, reorder. Removal is
+// reversible for five seconds — a wrong deletion is never permanent (finished-product law 2).
+
+struct ChecklistEditSheet: View {
+    @Environment(\.dismiss) private var dismiss
+    @Bindable var store: ChecklistStore
+
+    @State private var isAdding = false
+    @State private var draftText = ""
+    @State private var draftWaitIsLeft = false
+    @FocusState private var draftFocused: Bool
+    /// Removal is guarded twice — a confirmation before, a five-second undo after. Measured on
+    /// device: five seconds is a courtesy, not a safety net, because a toast can be missed
+    /// entirely; and a custom question is the user's OWN sentence, which nothing can retype for
+    /// them. So the confirmation is the guard and the toast is the second chance.
+    @State private var pendingConfirmation: ChecklistQuestion?
+
+    var body: some View {
+        NavigationStack {
+            ZStack(alignment: .bottom) {
+                List {
+                    Section {
+                        ForEach(store.questions) { question in
+                            VStack(alignment: .leading, spacing: 2) {
+                                Text(question.text)
+                                    .font(.subheadline)
+                                    .foregroundStyle(.inkPrimary)
+                                Text("\(question.waitAnswer) means wait")
+                                    .font(.caption2)
+                                    .foregroundStyle(.inkSecondary)
+                            }
+                            .padding(.vertical, 2)
+                        }
+                        .onDelete { offsets in
+                            guard let index = offsets.first, store.questions.indices.contains(index)
+                            else { return }
+                            pendingConfirmation = store.questions[index]
+                        }
+                        .onMove { source, destination in
+                            store.move(from: source, to: destination)
+                        }
+                    } header: {
+                        Text("Yours to shape. The five stock questions can be removed too.")
+                            .textCase(nil)
+                            .font(.footnote)
+                            .foregroundStyle(.inkSecondary)
+                    }
+
+                    Section {
+                        Button("Add a question") {
+                            isAdding = true
+                            draftFocused = true
+                        }
+                        .accessibilityIdentifier("checklist_add_question")
+
+                        if store.isMissingStockQuestions {
+                            Button("Bring back the stock questions") {
+                                store.restoreStockQuestions()
+                            }
+                            .accessibilityIdentifier("checklist_restore_stock")
+                        }
+                    }
+                }
+                .listStyle(.insetGrouped)
+                .scrollContentBackground(.hidden)
+                .background(Color.surfaceField)
+
+                if let pending = store.pendingRemoval {
+                    undoToast(for: pending)
+                        .padding(.horizontal, DS.Spacing.lg)
+                        .padding(.bottom, DS.Spacing.lg)
+                        .transition(.move(edge: .bottom).combined(with: .opacity))
+                }
+            }
+            .animation(DS.Anim.functional, value: store.pendingRemoval)
+            .navigationTitle("Edit the questions")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button("Done") {
+                        store.clearPendingRemoval()
+                        dismiss()
+                    }
+                    .accessibilityIdentifier("checklist_edit_done")
+                }
+                ToolbarItem(placement: .primaryAction) { EditButton() }
+            }
+            .sheet(isPresented: $isAdding) { addSheet }
+            .confirmationDialog(
+                "Remove this question?",
+                isPresented: Binding(
+                    get: { pendingConfirmation != nil },
+                    set: { if !$0 { pendingConfirmation = nil } }
+                ),
+                titleVisibility: .visible,
+                presenting: pendingConfirmation
+            ) { question in
+                Button("Remove", role: .destructive) {
+                    store.remove(question)
+                    pendingConfirmation = nil
+                }
+                Button("Keep it", role: .cancel) { pendingConfirmation = nil }
+            } message: { question in
+                Text(question.isStock
+                    ? "\u{201C}\(question.text)\u{201D} — you can bring the stock five back at any time."
+                    : "\u{201C}\(question.text)\u{201D} — this one is yours, and only the undo that follows can bring it back.")
+            }
+        }
+    }
+
+    private func undoToast(for pending: ChecklistStore.PendingRemoval) -> some View {
+        HStack(spacing: DS.Spacing.md) {
+            Text("Removed \u{201C}\(pending.question.shortLabel)\u{201D}")
+                .font(.footnote)
+                .foregroundStyle(.surfaceField)
+                .lineLimit(1)
+
+            Spacer(minLength: DS.Spacing.sm)
+
+            Button("Undo") { store.undoRemoval() }
+                .font(.footnote.weight(.semibold))
+                .foregroundStyle(.surfaceField)
+                .accessibilityIdentifier("checklist_undo_remove")
+        }
+        .padding(.horizontal, DS.Spacing.lg)
+        .frame(height: 44)
+        .background(Capsule().fill(Color.inkPrimary))
+    }
+
+    /// Adding a question asks the one thing the app cannot infer: which answer means wait.
+    /// "Do I already own one?" leans wait on YES and "Do I have space?" leans wait on NO — a
+    /// guessed default would miscount half the questions people actually write.
+    private var addSheet: some View {
+        NavigationStack {
+            Form {
+                Section {
+                    TextField("Ask yourself…", text: $draftText, axis: .vertical)
+                        .lineLimit(1 ... 3)
+                        .focused($draftFocused)
+                        .accessibilityIdentifier("checklist_draft_text")
+                }
+
+                Section {
+                    Picker("Which answer means wait?", selection: $draftWaitIsLeft) {
+                        Text("Yes").tag(true)
+                        Text("No").tag(false)
+                    }
+                    .pickerStyle(.segmented)
+                } footer: {
+                    Text("The checklist counts leanings, so it has to know which way yours points.")
+                }
+            }
+            .navigationTitle("New question")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button("Cancel") { closeAddSheet() }
+                }
+                ToolbarItem(placement: .confirmationAction) {
+                    Button("Add") {
+                        store.add(text: draftText, waitIsLeft: draftWaitIsLeft)
+                        closeAddSheet()
+                    }
+                    .disabled(draftText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
+                    .accessibilityIdentifier("checklist_confirm_add")
+                }
+            }
+        }
+        .presentationDetents([.medium])
+    }
+
+    private func closeAddSheet() {
+        draftText = ""
+        draftWaitIsLeft = false
+        isAdding = false
+    }
+}
+
+#Preview("Fresh") {
     ImpulseChecklistScreen()
+}
+
+#Preview("With an item") {
+    ImpulseChecklistScreen(prefilledItemName: "linen shirt")
 }

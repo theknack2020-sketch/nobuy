@@ -1,5 +1,6 @@
 import SwiftData
 import SwiftUI
+import WidgetKit
 
 struct DayEditSheet: View {
     @Environment(\.modelContext) private var modelContext
@@ -27,6 +28,12 @@ struct DayEditSheet: View {
         return record.didSpend && !record.isMandatoryOnly
     }
 
+    /// The one place a record becomes a truth, shared with the widget's reader so the calendar,
+    /// the sheet that edits it and the Lock Screen can never disagree about what a day is.
+    private func truth(of record: DayRecord) -> DayTruth {
+        NoBuySnapshotReader.truth(of: record)
+    }
+
     var body: some View {
         NavigationStack {
             ScrollView {
@@ -40,29 +47,21 @@ struct DayEditSheet: View {
                         .background(
                             Capsule()
                                 .fill(
-                                    LinearGradient(
-                                        colors: [.surfaceSecondary, .surfaceTertiary],
-                                        startPoint: .leading,
-                                        endPoint: .trailing
-                                    )
+                                    .surfaceDial
                                 )
                         )
-                        .shadow(DS.Shadow.card)
 
                     if let record = existingRecord {
                         HStack {
-                            Image(systemName: record.isNoBuyDay ? "checkmark.circle.fill" : "xmark.circle.fill")
-                                .foregroundStyle(record.isNoBuyDay ? .noBuyGreen : .spendRed)
+                            DayMark(truth: truth(of: record))
                                 .accessibilityHidden(true)
-                            Text(record.isNoBuyDay
-                                ? "No-spend day"
-                                : "Spent")
+                            Text(truth(of: record).spokenName.capitalizedFirst)
                                 .fontWeight(.medium)
                         }
                         .padding(.vertical, DS.Spacing.sm)
                         .padding(.horizontal, DS.Spacing.lg)
                         .background(
-                            Capsule().fill(record.isNoBuyDay ? Color.noBuyGreenLight : Color.spendRedLight)
+                            Capsule().fill(record.isNoBuyDay ? Color.accentKeptWash : Color.accentSpentWash)
                         )
                     }
 
@@ -95,25 +94,25 @@ struct DayEditSheet: View {
                     if isSpendingRecord {
                         Toggle(isOn: $isFrozen) {
                             HStack(spacing: DS.Spacing.sm) {
-                                Image(systemName: "shield.fill")
-                                    .foregroundStyle(.noBuyGreen)
+                                Image(systemName: "shield")
+                                    .foregroundStyle(.accentKept)
                                 VStack(alignment: .leading, spacing: DS.Spacing.xs) {
-                                    Text("Mark as Freeze")
+                                    Text("Spend a freeze")
                                         .font(.subheadline)
                                         .fontWeight(.medium)
-                                    Text("Streak is preserved")
+                                    Text("The run is bridged, not broken")
                                         .font(.caption)
-                                        .foregroundStyle(.textSecondary)
+                                        .foregroundStyle(.inkSecondary)
                                 }
                             }
                         }
-                        .tint(.noBuyGreen)
+                        .tint(.accentKept)
                         .padding(DS.Spacing.lg)
                         .background(
                             RoundedRectangle(cornerRadius: DS.Radius.md)
-                                .fill(Color.noBuyGreenLight)
+                                .fill(Color.accentKeptWash)
                         )
-                        .shadow(color: .black.opacity(0.05), radius: 4, x: 0, y: 2)
+
                         .opacity(appeared ? 1 : 0)
                         .offset(y: appeared ? 0 : 15)
                         .animation(reduceMotion ? nil : .spring(response: 0.4, dampingFraction: 0.7).delay(0.1), value: appeared)
@@ -128,23 +127,23 @@ struct DayEditSheet: View {
                         markDay(didSpend: false, mandatoryOnly: false)
                     } label: {
                         HStack {
-                            Image(systemName: "checkmark.circle.fill")
+                            Image(systemName: "checkmark.circle")
                                 .font(.title2)
                             VStack(alignment: .leading, spacing: DS.Spacing.xs) {
                                 Text(L10n.noBuyButton)
                                     .fontWeight(.semibold)
-                                Text("Included in streak")
+                                Text("The run continues")
                                     .font(.caption)
-                                    .foregroundStyle(.textSecondary)
+                                    .foregroundStyle(.inkSecondary)
                             }
                             Spacer()
                         }
                         .padding(DS.Spacing.lg)
                         .background(
                             RoundedRectangle(cornerRadius: DS.Radius.md)
-                                .fill(Color.noBuyGreenLight)
+                                .fill(Color.accentKeptWash)
                         )
-                        .shadow(color: .noBuyGreen.opacity(0.15), radius: 6, x: 0, y: 3)
+
                     }
                     .buttonStyle(.scale)
                     .opacity(appeared ? 1 : 0)
@@ -159,23 +158,23 @@ struct DayEditSheet: View {
                         markDay(didSpend: true, mandatoryOnly: true)
                     } label: {
                         HStack {
-                            Image(systemName: "building.columns.fill")
+                            Image(systemName: "building.columns")
                                 .font(.title2)
                             VStack(alignment: .leading, spacing: DS.Spacing.xs) {
                                 Text(L10n.mandatorySpend)
                                     .fontWeight(.semibold)
                                 Text(L10n.mandatoryDesc)
                                     .font(.caption)
-                                    .foregroundStyle(.textSecondary)
+                                    .foregroundStyle(.inkSecondary)
                             }
                             Spacer()
                         }
                         .padding(DS.Spacing.lg)
                         .background(
                             RoundedRectangle(cornerRadius: DS.Radius.md)
-                                .fill(Color.mandatoryAmberLight)
+                                .fill(Color.stateWaitWash)
                         )
-                        .shadow(color: .mandatoryAmber.opacity(0.15), radius: 6, x: 0, y: 3)
+
                     }
                     .buttonStyle(.scale)
                     .opacity(appeared ? 1 : 0)
@@ -190,23 +189,23 @@ struct DayEditSheet: View {
                         markDay(didSpend: true, mandatoryOnly: false)
                     } label: {
                         HStack {
-                            Image(systemName: "cart.fill")
+                            Image(systemName: "cart")
                                 .font(.title2)
                             VStack(alignment: .leading, spacing: DS.Spacing.xs) {
                                 Text(L10n.discretionarySpend)
                                     .fontWeight(.semibold)
                                 Text(L10n.discretionaryDesc)
                                     .font(.caption)
-                                    .foregroundStyle(.textSecondary)
+                                    .foregroundStyle(.inkSecondary)
                             }
                             Spacer()
                         }
                         .padding(DS.Spacing.lg)
                         .background(
                             RoundedRectangle(cornerRadius: DS.Radius.md)
-                                .fill(Color.spendRedLight)
+                                .fill(Color.accentSpentWash)
                         )
-                        .shadow(color: .spendRed.opacity(0.15), radius: 6, x: 0, y: 3)
+
                     }
                     .buttonStyle(.scale)
                     .opacity(appeared ? 1 : 0)
@@ -222,7 +221,7 @@ struct DayEditSheet: View {
                             HStack {
                                 Image(systemName: "trash")
                                     .accessibilityHidden(true)
-                                Text("Delete Record")
+                                Text("Delete this day")
                             }
                             .font(.subheadline)
                         }
@@ -238,6 +237,7 @@ struct DayEditSheet: View {
                                     modelContext.delete(record)
                                     do {
                                         try modelContext.save()
+                                        WidgetCenter.shared.reloadAllTimelines()
                                     } catch {
                                         saveError = "Failed to delete: \(error.localizedDescription)"
                                     }
@@ -324,6 +324,7 @@ struct DayEditSheet: View {
 
         do {
             try modelContext.save()
+            WidgetCenter.shared.reloadAllTimelines()
         } catch {
             saveError = "Failed to save: \(error.localizedDescription)"
             return

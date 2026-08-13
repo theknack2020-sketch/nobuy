@@ -81,7 +81,7 @@ struct ChallengeCard: View {
         VStack(spacing: DS.Spacing.md) {
             HStack {
                 Image(systemName: isCompleted ? "trophy.fill" : "flame.fill")
-                    .foregroundStyle(isCompleted ? .mandatoryAmber : .noBuyGreen)
+                    .foregroundStyle(isCompleted ? .stateWait : .accentKept)
                     .symbolEffect(.bounce, value: appeared)
                 Text("Challenge")
                     .fontWeight(.semibold)
@@ -89,7 +89,7 @@ struct ChallengeCard: View {
                 Spacer()
                 Text("\(totalDays) days")
                     .font(.caption)
-                    .foregroundStyle(.textTertiary)
+                    .foregroundStyle(.inkSecondary)
             }
 
             // Progress ring + info
@@ -97,14 +97,14 @@ struct ChallengeCard: View {
                 // Circular progress ring
                 ZStack {
                     Circle()
-                        .stroke(Color.surfaceTertiary, lineWidth: 6)
+                        .stroke(Color.surfaceWell, lineWidth: 6)
 
                     Circle()
                         .trim(from: 0, to: appeared ? progress : 0)
                         .stroke(
                             isCompleted
-                                ? LinearGradient(colors: [.mandatoryAmber, .orange], startPoint: .topLeading, endPoint: .bottomTrailing)
-                                : LinearGradient(colors: [.noBuyGreen, .green.opacity(0.7)], startPoint: .topLeading, endPoint: .bottomTrailing),
+                                ? .stateWait
+                                : .accentKept,
                             style: StrokeStyle(lineWidth: 6, lineCap: .round)
                         )
                         .rotationEffect(.degrees(-90))
@@ -113,20 +113,20 @@ struct ChallengeCard: View {
                     VStack(spacing: 0) {
                         Text("\(daysCompleted)")
                             .font(Font.adaptiveTitle3(isRegular: isRegular).weight(.black))
-                            .foregroundStyle(isCompleted ? .mandatoryAmber : .noBuyGreen)
+                            .foregroundStyle(isCompleted ? .stateWait : .accentKept)
                         Text("/\(totalDays)")
                             .font(Font.adaptiveSmallLabel(isRegular: isRegular))
-                            .foregroundStyle(.textTertiary)
+                            .foregroundStyle(.inkSecondary)
                     }
                 }
                 .frame(width: 64, height: 64)
 
                 VStack(alignment: .leading, spacing: DS.Spacing.xs) {
                     if isCompleted {
-                        Text("Challenge completed! 🎉")
+                        Text("Challenge completed")
                             .font(.subheadline)
                             .fontWeight(.semibold)
-                            .foregroundStyle(.mandatoryAmber)
+                            .foregroundStyle(.stateWait)
                     } else {
                         Text("\(daysRemaining) days left")
                             .font(.subheadline)
@@ -135,7 +135,7 @@ struct ChallengeCard: View {
                         // Percentage
                         Text("\(Int(progress * 100))% completed")
                             .font(.caption)
-                            .foregroundStyle(.textSecondary)
+                            .foregroundStyle(.inkSecondary)
                     }
                 }
 
@@ -150,11 +150,11 @@ struct ChallengeCard: View {
                         Text("New")
                             .font(.caption)
                             .fontWeight(.semibold)
-                            .foregroundStyle(.noBuyGreen)
+                            .foregroundStyle(.accentKept)
                             .padding(.horizontal, DS.Spacing.md)
                             .padding(.vertical, DS.Spacing.sm)
                             .background(
-                                Capsule().fill(Color.noBuyGreenLight)
+                                Capsule().fill(Color.accentKeptWash)
                             )
                     }
                     .buttonStyle(.scale)
@@ -164,12 +164,12 @@ struct ChallengeCard: View {
             }
         }
         .padding(DS.Spacing.xl)
-        .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: DS.Radius.lg))
+        .background(Color.surfaceWell, in: RoundedRectangle(cornerRadius: DS.Radius.lg))
         .background(
             RoundedRectangle(cornerRadius: DS.Radius.lg)
-                .fill(Color.surfaceSecondary)
+                .fill(Color.surfaceDial)
         )
-        .shadow(color: .black.opacity(0.08), radius: 8, x: 0, y: 4)
+
         .onAppear {
             if reduceMotion {
                 appeared = true
@@ -201,31 +201,31 @@ struct ChallengeCard: View {
             onSetup()
         } label: {
             HStack(spacing: DS.Spacing.md) {
-                Image(systemName: "flame.fill")
-                    .foregroundStyle(.noBuyGreen)
+                Image(systemName: "flame")
+                    .foregroundStyle(.accentKept)
                     .accessibilityHidden(true)
                 VStack(alignment: .leading, spacing: 2) {
                     Text("Start Challenge")
                         .font(.subheadline)
                         .fontWeight(.semibold)
-                        .foregroundStyle(.textPrimary)
+                        .foregroundStyle(.inkPrimary)
                     Text("Set yourself a goal")
                         .font(.caption)
-                        .foregroundStyle(.textSecondary)
+                        .foregroundStyle(.inkSecondary)
                 }
                 Spacer()
                 Image(systemName: "chevron.right")
                     .font(.caption)
-                    .foregroundStyle(.textTertiary)
+                    .foregroundStyle(.inkSecondary)
                     .accessibilityHidden(true)
             }
             .padding(DS.Spacing.lg)
-            .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: DS.Radius.lg))
+            .background(Color.surfaceWell, in: RoundedRectangle(cornerRadius: DS.Radius.lg))
             .background(
                 RoundedRectangle(cornerRadius: DS.Radius.lg)
-                    .fill(Color.surfaceSecondary)
+                    .fill(Color.surfaceDial)
             )
-            .shadow(color: .black.opacity(0.06), radius: 6, x: 0, y: 3)
+
         }
         .buttonStyle(.scale)
         .accessibilityLabel("Start a no-spend challenge")

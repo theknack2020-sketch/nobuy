@@ -49,6 +49,20 @@
                ReferencedContainer = "container:NoBuy.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
+         <BuildActionEntry
+            buildForTesting = "YES"
+            buildForRunning = "YES"
+            buildForProfiling = "YES"
+            buildForArchiving = "YES"
+            buildForAnalyzing = "YES">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "1716D0C1608EF46694714257"
+               BuildableName = "NoBuyWidget.appex"
+               BlueprintName = "NoBuyWidget"
+               ReferencedContainer = "container:NoBuy.xcodeproj">
+            </BuildableReference>
+         </BuildActionEntry>
       </BuildActionEntries>
    </BuildAction>
    <TestAction
